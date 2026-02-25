@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080c14">
+<title>Inscription — Ramadan Food Aid</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap');
+:root{--bg:#080c14;--bg2:#0d1220;--surface:#111827;--surface2:#1a2438;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--green:#22c55e;--green2:#16a34a;--green-dim:rgba(34,197,94,0.1);--gold:#f59e0b;--gold-dim:rgba(245,158,11,0.1);--danger:#ef4444;--danger-dim:rgba(239,68,68,0.1);--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px 16px 48px}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 30%,rgba(34,197,94,0.05) 0%,transparent 60%),radial-gradient(ellipse at 80% 70%,rgba(245,158,11,0.04) 0%,transparent 50%);pointer-events:none;z-index:0}
+.wrap{max-width:520px;margin:0 auto;position:relative;z-index:1}
+
+/* HEADER */
+.hdr{text-align:center;margin-bottom:28px}
+.moon{font-size:2.5rem;display:block;filter:drop-shadow(0 0 16px rgba(245,158,11,0.5));animation:float 3s ease-in-out infinite;margin-bottom:8px}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.hdr-title{font-family:'Amiri',serif;font-size:1.6rem;font-weight:700;color:#f1f5f9;margin-bottom:4px}
+.hdr-title span{color:var(--green)}
+.hdr-ar{font-family:'Amiri',serif;font-size:0.95rem;color:var(--text3);direction:rtl;margin-bottom:16px}
+
+/* LANG SWITCHER */
+.lang-row{display:flex;gap:8px;justify-content:center;margin-bottom:24px}
+.lang-btn{padding:6px 16px;border-radius:20px;border:1.5px solid var(--border2);background:var(--surface);color:var(--text2);font-family:'Space Grotesk',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.15s}
+.lang-btn.active{background:var(--green);color:#fff;border-color:var(--green)}
+
+/* WELCOME CARD */
+.welcome{background:var(--green-dim);border:1px solid rgba(34,197,94,0.2);border-radius:14px;padding:16px 18px;margin-bottom:22px;font-size:0.88rem;color:var(--text2);line-height:1.7}
+.welcome strong{color:var(--green);display:block;margin-bottom:6px;font-size:0.95rem}
+
+/* PATH SELECTOR */
+.path-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+.path-card{background:var(--surface);border:2px solid var(--border2);border-radius:14px;padding:18px 14px;text-align:center;cursor:pointer;transition:all 0.2s}
+.path-card:hover{border-color:var(--green);background:var(--green-dim)}
+.path-card.selected{border-color:var(--green);background:var(--green-dim)}
+.path-icon{font-size:2rem;display:block;margin-bottom:8px}
+.path-title{font-size:0.9rem;font-weight:700;margin-bottom:4px}
+.path-sub{font-size:0.72rem;color:var(--text3);line-height:1.4}
+
+/* FORM CARD */
+.fcard{background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:24px;position:relative;overflow:hidden}
+.fcard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.fcard-title{font-size:1rem;font-weight:700;margin-bottom:18px;color:var(--text)}
+
+.field{margin-bottom:14px}
+.field label{display:block;font-size:0.7rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px}
+.fi{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:0.92rem;padding:12px 14px;outline:none;transition:border-color 0.2s,box-shadow 0.2s}
+.fi:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(34,197,94,0.1)}
+.fi::placeholder{color:var(--text3)}
+select.fi{cursor:pointer}
+select.fi option{background:var(--surface)}
+
+/* FASTING TOGGLE */
+.fast-toggle{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1.5px solid var(--border2);border-radius:12px;padding:13px 16px;cursor:pointer;transition:all 0.2s;margin-bottom:14px}
+.fast-toggle.on{border-color:rgba(34,197,94,0.4);background:var(--green-dim)}
+.fast-toggle-info{font-size:0.9rem;font-weight:600}
+.fast-toggle-sub{font-size:0.72rem;color:var(--text3);margin-top:2px}
+.sw{width:40px;height:22px;background:var(--surface2);border-radius:11px;position:relative;transition:background 0.2s;flex-shrink:0}
+.sw.on{background:var(--green)}
+.sw::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.3)}
+.sw.on::after{transform:translateX(18px)}
+
+/* VERIFY CARD */
+.verify-card{display:none}
+.verify-card.show{display:block}
+.vphone-row{display:flex;gap:8px;margin-bottom:16px}
+.vphone-row .fi{flex:1}
+.vbtn{padding:12px 18px;background:var(--green);color:#fff;border:none;border-radius:10px;font-family:'Space Grotesk',sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all 0.15s;flex-shrink:0}
+.vbtn:hover{background:var(--green2)}
+.vbtn:disabled{background:var(--surface2);color:var(--text3);cursor:not-allowed}
+
+/* FOUND PROFILE */
+.profile-found{background:var(--green-dim);border:1.5px solid rgba(34,197,94,0.3);border-radius:14px;padding:18px;margin-bottom:16px;display:none}
+.profile-found.show{display:block}
+.pf-label{font-size:0.68rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px}
+.pf-name{font-size:1.1rem;font-weight:700;margin-bottom:4px}
+.pf-details{font-size:0.82rem;color:var(--text2);line-height:1.6}
+.pf-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+
+/* SUBMIT BTN */
+.submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;border:none;border-radius:12px;font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:6px;letter-spacing:0.2px}
+.submit-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(34,197,94,0.3)}
+.submit-btn:active{transform:scale(0.98)}
+.submit-btn:disabled{background:var(--surface2);color:var(--text3);cursor:not-allowed;transform:none;box-shadow:none}
+
+/* ERROR / SUCCESS */
+.ebox{background:var(--danger-dim);border:1px solid var(--danger);border-radius:8px;padding:10px 14px;font-size:0.83rem;color:var(--danger);margin-bottom:14px;display:none}
+.sbox{background:var(--green-dim);border:1px solid var(--green);border-radius:8px;padding:10px 14px;font-size:0.83rem;color:var(--green);margin-bottom:14px;display:none}
+
+/* SUCCESS SCREEN */
+.success-screen{display:none;text-align:center;padding:40px 20px}
+.success-screen.show{display:block}
+.success-icon{font-size:4rem;margin-bottom:16px;animation:pop 0.4s ease}
+@keyframes pop{0%{transform:scale(0)}80%{transform:scale(1.1)}100%{transform:scale(1)}}
+.success-title{font-family:'Amiri',serif;font-size:1.5rem;font-weight:700;color:var(--green);margin-bottom:8px}
+.success-sub{font-size:0.9rem;color:var(--text2);line-height:1.6;max-width:340px;margin:0 auto}
+.pending-badge{display:inline-flex;align-items:center;gap:6px;background:var(--gold-dim);border:1px solid rgba(245,158,11,0.3);border-radius:20px;padding:6px 14px;font-size:0.78rem;font-weight:600;color:var(--gold);margin-top:14px}
+
+/* FOOTER */
+.footer{text-align:center;margin-top:28px;font-family:'Amiri',serif;font-size:0.82rem;color:rgba(201,168,76,0.3);letter-spacing:1px}
+
+.hidden{display:none!important}
+.btn-outline{padding:8px 16px;border-radius:8px;border:1.5px solid var(--border2);background:transparent;color:var(--text2);font-family:'Space Grotesk',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.15s}
+.btn-outline:hover{border-color:var(--green);color:var(--green)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <span class="moon">🌙</span>
+    <div class="hdr-title">Ramadan <span>Food Aid</span></div>
+    <div class="hdr-ar">مساعدات رمضان الغذائية</div>
+  </div>
+
+  <!-- LANG SWITCHER -->
+  <div class="lang-row">
+    <button class="lang-btn active" onclick="setLang('fr')">🇫🇷 Français</button>
+    <button class="lang-btn" onclick="setLang('ar')">🇲🇦 العربية</button>
+    <button class="lang-btn" onclick="setLang('en')">🇬🇧 English</button>
+  </div>
+
+  <!-- WELCOME MESSAGE -->
+  <div class="welcome">
+    <strong id="w-title">🌙 Un mot avant de commencer</strong>
+    <span id="w-body">Nous savons que votre temps est précieux et nous vous remercions de votre patience. Nous travaillons sur un système permanent pour que vous n'ayez plus jamais à faire cela. Pour l'instant, cette inscription unique nous aide à garantir que chacun reçoit ce qu'il mérite — rapidement et équitablement. Merci de faire partie de cette communauté. 🌙</span>
+  </div>
+
+  <!-- PATH SELECTOR -->
+  <div class="path-row" id="pathSelector">
+    <div class="path-card" id="pathNew" onclick="selectPath('new')">
+      <span class="path-icon">✨</span>
+      <div class="path-title" id="p-new-title">Nouveau</div>
+      <div class="path-sub" id="p-new-sub">Je n'ai jamais rempli ce formulaire</div>
+    </div>
+    <div class="path-card" id="pathReturn" onclick="selectPath('return')">
+      <span class="path-icon">🔄</span>
+      <div class="path-title" id="p-ret-title">Déjà inscrit</div>
+      <div class="path-sub" id="p-ret-sub">J'ai déjà donné mes informations</div>
+    </div>
+  </div>
+
+  <!-- NEW STUDENT FORM -->
+  <div class="fcard hidden" id="newForm">
+    <div class="fcard-title" id="f-title">📝 Inscription</div>
+    <div class="ebox" id="newError"></div>
+    <div class="sbox" id="newSuccess"></div>
+
+    <div class="field">
+      <label id="l-name">Nom complet</label>
+      <input type="text" class="fi" id="nName" placeholder="Ahmed Benali"/>
+    </div>
+    <div class="field">
+      <label id="l-phone">Numéro de téléphone</label>
+      <input type="tel" class="fi" id="nPhone" placeholder="+212601234567"/>
+    </div>
+    <div class="field">
+      <label id="l-uni">Université / École</label>
+      <input type="text" class="fi" id="nUni" placeholder="Faculté de Médecine..."/>
+    </div>
+    <div class="field">
+      <label id="l-year">Année d'études</label>
+      <select class="fi" id="nYear">
+        <option value="" id="y-placeholder">Sélectionner...</option>
+        <option value="1">1ère année</option>
+        <option value="2">2ème année</option>
+        <option value="3">3ème année</option>
+        <option value="4">4ème année</option>
+        <option value="5">5ème année</option>
+        <option value="6">6ème année</option>
+        <option value="7">7ème année / Master</option>
+        <option value="other">Autre</option>
+      </select>
+    </div>
+    <div class="field">
+      <label id="l-country">Pays d'origine / Country of origin / بلد الأصل</label>
+      <input type="text" class="fi" id="nCountry" placeholder="Maroc / Morocco / المغرب"/>
+    </div>
+    <div class="field">
+      <label id="l-city">Ville actuelle / Current city / المدينة الحالية</label>
+      <input type="text" class="fi" id="nCity" placeholder="Casablanca"/>
+    </div>
+
+    <div class="fast-toggle" id="nFastToggle" onclick="toggleFast()">
+      <div>
+        <div class="fast-toggle-info" id="l-fast">🌙 Je suis en train de jeûner (Ramadan)</div>
+        <div class="fast-toggle-sub" id="l-fast-sub">Cochez si vous êtes musulman et que vous jeûnez</div>
+      </div>
+      <div class="sw" id="fastSw"></div>
+    </div>
+
+    <button class="submit-btn" id="submitNewBtn" onclick="submitNew()">
+      <span id="submit-label">Envoyer ma demande →</span>
+    </button>
+
+    <div style="margin-top:12px;text-align:center">
+      <button class="btn-outline" onclick="resetPath()" id="back-btn">← Retour</button>
+    </div>
+  </div>
+
+  <!-- RETURNING STUDENT -->
+  <div class="fcard hidden" id="returnForm">
+    <div class="fcard-title" id="r-title">🔄 Vérification</div>
+    <div class="ebox" id="retError"></div>
+
+    <p style="font-size:0.85rem;color:var(--text2);margin-bottom:14px" id="r-sub">Entrez votre numéro de téléphone pour retrouver votre profil.</p>
+
+    <div class="vphone-row">
+      <input type="tel" class="fi" id="rPhone" placeholder="+212601234567" onkeydown="if(event.key==='Enter')lookupPhone()"/>
+      <button class="vbtn" id="lookupBtn" onclick="lookupPhone()" id="r-search-btn">Rechercher</button>
+    </div>
+
+    <!-- PROFILE FOUND -->
+    <div class="profile-found" id="profileFound">
+      <div class="pf-label" id="pf-label">C'est vous ?</div>
+      <div class="pf-name" id="pfName">—</div>
+      <div class="pf-details" id="pfDetails">—</div>
+      <div class="pf-actions">
+        <button class="submit-btn" style="width:auto;padding:10px 20px" onclick="confirmProfile()" id="pf-yes">✅ Oui, c'est moi</button>
+        <button class="btn-outline" onclick="editProfile()" id="pf-fix">✏️ Corriger</button>
+      </div>
+    </div>
+
+    <!-- EDIT FIELDS (shown if they want to fix) -->
+    <div class="hidden" id="editFields">
+      <div style="margin-bottom:14px;font-size:0.83rem;color:var(--text2)" id="e-sub">Corrigez les informations incorrectes :</div>
+      <div class="field"><label id="el-name">Nom complet</label><input type="text" class="fi" id="eName" placeholder="Nom complet"/></div>
+      <div class="field"><label id="el-uni">Université</label><input type="text" class="fi" id="eUni" placeholder="Université..."/></div>
+      <div class="field"><label id="el-year">Année d'études</label>
+        <select class="fi" id="eYear">
+          <option value="1">1ère année</option><option value="2">2ème année</option><option value="3">3ème année</option>
+          <option value="4">4ème année</option><option value="5">5ème année</option><option value="6">6ème année</option>
+          <option value="7">7ème année / Master</option><option value="other">Autre</option>
+        </select>
+      </div>
+      <div class="field"><label id="el-country">Pays d'origine / Country</label><input type="text" class="fi" id="eCountry" placeholder="Maroc / Morocco..."/></div>
+      <div class="field"><label id="el-city">Ville actuelle / City</label><input type="text" class="fi" id="eCity" placeholder="Casablanca..."/></div>
+      <div class="fast-toggle" id="eFastToggle" onclick="toggleEditFast()">
+        <div><div class="fast-toggle-info" id="el-fast">🌙 Je jeûne (Ramadan)</div></div>
+        <div class="sw" id="eFastSw"></div>
+      </div>
+      <button class="submit-btn" onclick="submitEdit()" id="e-save">💾 Sauvegarder les modifications</button>
+    </div>
+
+    <div style="margin-top:12px;text-align:center">
+      <button class="btn-outline" onclick="resetPath()" id="back-btn2">← Retour</button>
+    </div>
+  </div>
+
+  <!-- SUCCESS SCREEN -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">🎉</div>
+    <div class="success-title" id="s-title">Demande envoyée !</div>
+    <div class="success-sub" id="s-body">Votre demande a été reçue et sera vérifiée par notre équipe. Vous serez ajouté à la liste dès validation. Merci pour votre patience ! 🌙</div>
+    <div class="pending-badge" id="s-badge">⏳ En attente de validation</div>
+  </div>
+
+  <div class="footer">رمضان كريم ✦ Ramadan Kareem ✦ Ramadan Moubarak</div>
+</div>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import{getAuth,signInAnonymously}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+import{getFirestore,collection,addDoc,query,where,getDocs,doc,serverTimestamp}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+const FC={apiKey:"AIzaSyB_SeMMk-2mL_XYTKEemoIeh_j2odQ6LNk",authDomain:"ramadan-food-aid.firebaseapp.com",projectId:"ramadan-food-aid",storageBucket:"ramadan-food-aid.firebasestorage.app",messagingSenderId:"836613630009",appId:"1:836613630009:web:c5b3047298224ec82f05e8"};
+const app=initializeApp(FC);const auth=getAuth(app);const db=getFirestore(app);
+
+// Phone normalizer — strips spaces, fixes +212 prefix variants
+function normPhone(p){
+  let n=String(p||'').replace(/[\s\-\.\(\)]/g,'');
+  if(n.startsWith('00212'))n='+212'+n.slice(5);
+  if(n.startsWith('212')&&!n.startsWith('+'))n='+212'+n.slice(3);
+  if(n.startsWith('0')&&n.length===10)n='+212'+n.slice(1);
+  // 9-digit number without any prefix → assume Moroccan (+212)
+  // Moroccan mobiles start with 6, 7 or 5
+  if(/^[6-7]\d{8}$/.test(n))n='+212'+n;
+  return n;
+}
+
+// Auth state — wait for anonymous sign-in before enabling buttons
+let authReady=false;
+function enableButtons(){
+  authReady=true;
+  document.querySelectorAll('.submit-btn,.vbtn,.path-card').forEach(b=>{
+    b.style.opacity='1';b.style.pointerEvents='auto';
+  });
+}
+function disableButtons(){
+  document.querySelectorAll('.submit-btn,.vbtn').forEach(b=>{
+    b.style.opacity='0.5';b.style.pointerEvents='none';
+  });
+}
+
+// Sign in anonymously — required for Firestore writes
+disableButtons();
+signInAnonymously(auth).then(()=>{
+  enableButtons();
+}).catch(e=>{
+  console.warn('Anon auth failed:',e);
+  // Still enable buttons — show clear error when they try to submit
+  enableButtons();
+});
+
+let lang='fr';let fastOn=false;let eFastOn=false;let foundPerson=null;
+
+// ── TRANSLATIONS ──
+const T={
+  fr:{
+    'w-title':'🌙 Un mot avant de commencer',
+    'w-body':"Nous savons que votre temps est précieux et nous vous remercions de votre patience. Nous travaillons sur un système permanent pour que vous n'ayez plus jamais à faire cela. Pour l'instant, cette inscription unique nous aide à garantir que chacun reçoit ce qu'il mérite — rapidement et équitablement. Merci de faire partie de cette communauté. 🌙",
+    'p-new-title':'Nouveau','p-new-sub':"Je n'ai jamais rempli ce formulaire",
+    'p-ret-title':'Déjà inscrit','p-ret-sub':"J'ai déjà donné mes informations",
+    'f-title':'📝 Inscription',
+    'l-name':'Nom complet','l-phone':'Numéro de téléphone','l-uni':'Université / École',
+    'l-year':"Année d'études",'l-city':"Ville / Pays d'origine",
+    'l-fast':'🌙 Je suis en train de jeûner (Ramadan)','l-fast-sub':'Cochez si vous êtes musulman et que vous jeûnez',
+    'submit-label':'Envoyer ma demande →','back-btn':'← Retour','back-btn2':'← Retour',
+    'r-title':'🔄 Vérification','r-sub':'Entrez votre numéro de téléphone pour retrouver votre profil.',
+    'r-search-btn':'Rechercher','pf-label':"C'est vous ?",
+    'pf-yes':'✅ Oui, c\'est moi','pf-fix':'✏️ Corriger',
+    'e-sub':'Corrigez les informations incorrectes :',
+    'el-name':'Nom complet','el-uni':'Université','el-year':"Année d'études",'el-country':"Pays d'origine",'el-city':'Ville actuelle','el-fast':'🌙 Je jeûne (Ramadan)',
+    'e-save':'💾 Sauvegarder les modifications',
+    's-title':'Demande envoyée !','s-body':"Votre demande a été reçue et sera vérifiée par notre équipe. Vous serez ajouté à la liste dès validation. Merci pour votre patience ! 🌙",
+    's-badge':'⏳ En attente de validation',
+    'err-required':'Veuillez remplir tous les champs obligatoires.',
+    'err-phone':'Numéro de téléphone invalide.',
+    'err-notfound':'Numéro non trouvé. Êtes-vous nouveau ? Choisissez "Nouveau" pour vous inscrire.',
+    'err-duplicate':'Ce numéro est déjà inscrit.',
+    'ok-verified':'Profil vérifié avec succès ! 🎉',
+    'ok-updated':'Informations mises à jour ! Elles seront vérifiées par notre équipe.',
+  },
+  ar:{
+    'w-title':'🌙 كلمة قبل البداية',
+    'w-body':'نعلم أن وقتكم ثمين ونشكركم على صبركم. نحن نعمل على نظام دائم حتى لا تضطروا لفعل هذا مرة أخرى. في الوقت الحالي، يساعدنا هذا التسجيل على ضمان حصول الجميع على ما يستحق — بسرعة وبعدالة. شكراً لكونكم جزءاً من هذا المجتمع. 🌙',
+    'p-new-title':'جديد','p-new-sub':'لم أسجل من قبل',
+    'p-ret-title':'مسجل مسبقاً','p-ret-sub':'قدمت معلوماتي من قبل',
+    'f-title':'📝 التسجيل',
+    'l-name':'الاسم الكامل','l-phone':'رقم الهاتف','l-uni':'الجامعة / المدرسة',
+    'l-year':'سنة الدراسة','l-city':'المدينة / البلد الأصلي',
+    'l-fast':'🌙 أنا صائم (رمضان)','l-fast-sub':'ضع علامة إذا كنت مسلماً وصائماً',
+    'submit-label':'إرسال الطلب ←','back-btn':'→ رجوع','back-btn2':'→ رجوع',
+    'r-title':'🔄 التحقق','r-sub':'أدخل رقم هاتفك للعثور على ملفك الشخصي.',
+    'r-search-btn':'بحث','pf-label':'هل هذا أنت؟',
+    'pf-yes':'✅ نعم، هذا أنا','pf-fix':'✏️ تصحيح',
+    'e-sub':'صحح المعلومات الخاطئة:',
+    'el-name':'الاسم الكامل','el-uni':'الجامعة','el-year':'سنة الدراسة','el-country':'بلد الأصل','el-city':'المدينة الحالية','el-fast':'🌙 أنا صائم (رمضان)',
+    'e-save':'💾 حفظ التعديلات',
+    's-title':'تم إرسال الطلب!','s-body':'تم استلام طلبك وسيتم التحقق منه من قبل فريقنا. سيتم إضافتك إلى القائمة بعد التحقق. شكراً على صبرك! 🌙',
+    's-badge':'⏳ في انتظار التحقق',
+    'err-required':'يرجى ملء جميع الحقول المطلوبة.','err-phone':'رقم الهاتف غير صالح.',
+    'err-notfound':'الرقم غير موجود. هل أنت جديد؟ اختر "جديد" للتسجيل.','err-duplicate':'هذا الرقم مسجل بالفعل.',
+    'ok-verified':'تم التحقق من الملف الشخصي بنجاح! 🎉','ok-updated':'تم تحديث المعلومات! سيتم مراجعتها من قبل فريقنا.',
+  },
+  en:{
+    'w-title':'🌙 A word before we start',
+    'w-body':"We know your time is valuable and we appreciate your patience. We're working on a permanent system so you never have to do this again. For now, this one-time registration helps us ensure everyone gets what they deserve — quickly and fairly. Thank you for being part of this community. 🌙",
+    'p-new-title':'New Student','p-new-sub':"I've never filled this form before",
+    'p-ret-title':'Already Registered','p-ret-sub':"I've already given my information",
+    'f-title':'📝 Registration',
+    'l-name':'Full Name','l-phone':'Phone Number','l-uni':'University / School',
+    'l-year':'Year of Study','l-city':'City / Country of Origin',
+    'l-fast':'🌙 I am fasting (Ramadan)','l-fast-sub':'Check if you are Muslim and fasting',
+    'submit-label':'Submit my request →','back-btn':'← Back','back-btn2':'← Back',
+    'r-title':'🔄 Verification','r-sub':'Enter your phone number to find your profile.',
+    'r-search-btn':'Search','pf-label':'Is this you?',
+    'pf-yes':"✅ Yes, that's me",'pf-fix':'✏️ Fix info',
+    'e-sub':'Correct the wrong information:',
+    'el-name':'Full Name','el-uni':'University','el-year':'Year of Study','el-country':'Country of Origin','el-city':'Current City','el-fast':'🌙 I am fasting (Ramadan)',
+    'e-save':'💾 Save Changes',
+    's-title':'Request Submitted!','s-body':"Your request has been received and will be verified by our team. You'll be added to the list once approved. Thank you for your patience! 🌙",
+    's-badge':'⏳ Pending verification',
+    'err-required':'Please fill in all required fields.','err-phone':'Invalid phone number.',
+    'err-notfound':'Number not found. Are you new? Choose "New Student" to register.','err-duplicate':'This number is already registered.',
+    'ok-verified':'Profile verified successfully! 🎉','ok-updated':'Information updated! It will be reviewed by our team.',
+  }
+};
+
+function t(key){return(T[lang]&&T[lang][key])||T['fr'][key]||key;}
+
+window.setLang=l=>{
+  lang=l;
+  document.querySelectorAll('.lang-btn').forEach((b,i)=>{b.classList.toggle('active',['fr','ar','en'][i]===l);});
+  document.documentElement.dir=l==='ar'?'rtl':'ltr';
+  // Update all text
+  Object.keys(T.fr).forEach(key=>{
+    const el=document.getElementById(key);
+    if(el)el.textContent=t(key);
+  });
+  // Update year select placeholder
+  const yp=document.getElementById('y-placeholder');
+  if(yp)yp.textContent=l==='ar'?'اختر...':l==='en'?'Select...':'Sélectionner...';
+};
+
+window.selectPath=path=>{
+  document.getElementById('newForm').classList.toggle('hidden',path!=='new');
+  document.getElementById('returnForm').classList.toggle('hidden',path!=='return');
+  document.getElementById('pathNew').classList.toggle('selected',path==='new');
+  document.getElementById('pathReturn').classList.toggle('selected',path==='return');
+};
+
+window.resetPath=()=>{
+  document.getElementById('newForm').classList.add('hidden');
+  document.getElementById('returnForm').classList.add('hidden');
+  document.getElementById('pathNew').classList.remove('selected');
+  document.getElementById('pathReturn').classList.remove('selected');
+  document.getElementById('profileFound').classList.remove('show');
+  document.getElementById('editFields').classList.add('hidden');
+  document.getElementById('rPhone').value='';
+  foundPerson=null;
+};
+
+// FASTING TOGGLE
+window.toggleFast=()=>{fastOn=!fastOn;document.getElementById('fastSw').classList.toggle('on',fastOn);document.getElementById('nFastToggle').classList.toggle('on',fastOn)};
+window.toggleEditFast=()=>{eFastOn=!eFastOn;document.getElementById('eFastSw').classList.toggle('on',eFastOn);document.getElementById('eFastToggle').classList.toggle('on',eFastOn);};
+
+// SUBMIT NEW
+window.submitNew=async()=>{
+  if(!authReady){showMsg('newError','Please wait a moment and try again.');return;}
+
+  // Declare btn at the TOP so it's available everywhere in this function
+  const btn=document.getElementById('submitNewBtn');
+  const resetBtn=()=>{btn.disabled=false;document.getElementById('submit-label').textContent=t('submit-label');};
+
+  const name=document.getElementById('nName').value.trim();
+  const phone=normPhone(document.getElementById('nPhone').value.trim());
+  const uni=document.getElementById('nUni').value.trim();
+  const year=document.getElementById('nYear').value;
+  const city=document.getElementById('nCity').value.trim();
+  hideMsg('newError');hideMsg('newSuccess');
+
+  const country=document.getElementById('nCountry').value.trim();
+  if(!name||!phone||!uni||!year||!city){showMsg('newError',t('err-required'));return;}
+  if(phone.replace(/[\s\+\-\(\)]/g,'').length<7){showMsg('newError',t('err-phone'));return;}
+
+  // Disable button before any async work
+  btn.disabled=true;
+  document.getElementById('submit-label').textContent='...';
+
+  // Check for duplicate using normalized phone comparison
+  let allPeopleSnap, allPendingSnap;
+  try {
+    allPeopleSnap=await getDocs(collection(db,'people'));
+    allPendingSnap=await getDocs(collection(db,'pending'));
+  } catch(err) {
+    console.error('Read error:',err);
+    showMsg('newError','⚠️ Could not connect to database: '+err.message);
+    resetBtn();
+    return;
+  }
+
+  const dupPerson=allPeopleSnap.docs.find(d=>normPhone(d.data().phone||'')===phone);
+  if(dupPerson){
+    const msg = lang==='ar'
+      ? 'هذا الرقم مسجل بالفعل. إذا كنت بحاجة لتعديل معلوماتك، اختر "مسجل مسبقاً".'
+      : lang==='en'
+      ? 'This number is already registered. To update your info, choose "Already Registered".'
+      : 'Ce numéro est déjà inscrit. Pour modifier vos infos, choisissez "Déjà inscrit".';
+    showMsg('newError', msg);
+    resetBtn();
+    return;
+  }
+
+  const dupPending=allPendingSnap.docs.find(d=>normPhone(d.data().phone||'')===phone&&d.data().status==='pending');
+  if(dupPending){
+    const msg = lang==='ar'
+      ? 'طلبك قيد المراجعة بالفعل. يرجى الانتظار.'
+      : lang==='en'
+      ? 'Your request is already pending review. Please wait.'
+      : 'Votre demande est déjà en attente de validation. Veuillez patienter.';
+    showMsg('newError', msg);
+    resetBtn();
+    return;
+  }
+
+  try {
+    await addDoc(collection(db,'pending'),{
+      name,phone,university:uni,yearOfStudy:year,city,country,
+      fasting:fastOn,lang,
+      status:'pending',
+      submittedAt:serverTimestamp(),submittedAtMs:Date.now(),
+      verified:false,source:'self-registration'
+    });
+    document.getElementById('newForm').classList.add('hidden');
+    document.getElementById('pathSelector').classList.add('hidden');
+    document.getElementById('successScreen').classList.add('show');
+  } catch(err) {
+    console.error('Submit error:',err);
+    resetBtn();
+    if(err.code==='permission-denied'){
+      showMsg('newError','⚠️ Connection error — please try again or contact the admin.');
+    } else {
+      showMsg('newError','⚠️ Something went wrong: '+err.message+'. Please try again.');
+    }
+  }
+};
+
+// LOOKUP PHONE (returning student)
+window.lookupPhone=async()=>{
+  if(!authReady){showMsg('retError','Please wait, loading...');return;}
+  const phone=normPhone(document.getElementById('rPhone').value.trim());
+  if(!phone||phone.replace(/[^\d]/g,'').length<7){showMsg('retError',t('err-phone'));return;}
+  const btn=document.getElementById('lookupBtn');btn.disabled=true;btn.textContent='...';
+  hideMsg('retError');
+  document.getElementById('profileFound').classList.remove('show');
+  document.getElementById('editFields').classList.add('hidden');
+
+  // Search all people and compare normalized phones
+  const allSnap=await getDocs(collection(db,'people'));
+  const match=allSnap.docs.find(d=>{
+    const dp=d.data().phone||'';
+    return normPhone(dp)===phone;
+  });
+
+  btn.disabled=false;btn.textContent=t('r-search-btn');
+
+  if(!match){showMsg('retError',t('err-notfound'));return;}
+
+  foundPerson={id:match.id,...match.data()};
+  const p=foundPerson;
+
+  document.getElementById('pfName').textContent=p.name||'—';
+  document.getElementById('pfDetails').innerHTML=
+    `${p.university?'🎓 '+p.university+'<br>':''}${p.yearOfStudy?'📚 Year '+p.yearOfStudy+'<br>':''}${p.city?'📍 '+p.city+'<br>':''}${p.fasting?'🌙 Fasting':''}`;
+  document.getElementById('profileFound').classList.add('show');
+  // Pre-fill edit fields
+  document.getElementById('eName').value=p.name||'';
+  document.getElementById('eUni').value=p.university||'';
+  document.getElementById('eYear').value=p.yearOfStudy||'';
+  document.getElementById('eCountry').value=p.country||'';
+  document.getElementById('eCity').value=p.city||'';
+  eFastOn=p.fasting||false;
+  document.getElementById('eFastSw').classList.toggle('on',eFastOn);
+  document.getElementById('eFastToggle').classList.toggle('on',eFastOn);
+};
+
+window.confirmProfile=async()=>{
+  if(!foundPerson)return;
+  // Just show success — no DB write needed for simple confirmation
+  // Admin can see verified status in the app
+  document.getElementById('returnForm').classList.add('hidden');
+  document.getElementById('pathSelector').classList.add('hidden');
+  document.getElementById('successScreen').classList.add('show');
+  document.getElementById('s-title').textContent=t('ok-verified');
+  document.getElementById('s-body').textContent='';
+  document.getElementById('s-badge').textContent='✅ Confirmé';
+  document.getElementById('s-badge').style.background='var(--green-dim)';
+  document.getElementById('s-badge').style.color='var(--green)';
+  document.getElementById('successScreen').querySelector('.success-icon').textContent='✅';
+};
+
+window.editProfile=()=>{document.getElementById('editFields').classList.toggle('hidden');};
+
+window.submitEdit=async()=>{
+  if(!foundPerson)return;
+  if(!authReady){showMsg('retError','Please wait a moment and try again.');return;}
+  const name=document.getElementById('eName').value.trim();
+  const uni=document.getElementById('eUni').value.trim();
+  const year=document.getElementById('eYear').value;
+  const country=document.getElementById('eCountry').value.trim();
+  const city=document.getElementById('eCity').value.trim();
+  if(!name){showMsg('retError',t('err-required'));return;}
+  const btn=document.getElementById('e-save');
+  btn.disabled=true;btn.textContent='...';
+  try {
+    await addDoc(collection(db,'pending'),{
+      name, university:uni, yearOfStudy:year, country, city,
+      phone:foundPerson.phone||'',
+      fasting:eFastOn,
+      status:'pending',
+      type:'edit-request',
+      targetPersonId:foundPerson.id,
+      originalName:foundPerson.name||'',
+      submittedAt:serverTimestamp(),
+      submittedAtMs:Date.now(),
+      source:'self-edit'
+    });
+    btn.disabled=false;btn.textContent=t('e-save');
+    document.getElementById('returnForm').classList.add('hidden');
+    document.getElementById('pathSelector').classList.add('hidden');
+    document.getElementById('successScreen').classList.add('show');
+    document.getElementById('s-title').textContent=t('ok-updated');
+  } catch(err) {
+    console.error('Edit submit error:',err);
+    btn.disabled=false;btn.textContent=t('e-save');
+    showMsg('retError','⚠️ Something went wrong: '+err.message+'. Please try again.');
+  }
+};
+
+function showMsg(id,msg){const el=document.getElementById(id);el.textContent=msg;el.style.display='block';}
+function hideMsg(id){document.getElementById(id).style.display='none';}
+</script>
+</body>
+</html>
