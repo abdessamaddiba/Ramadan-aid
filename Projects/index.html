@@ -815,22 +815,71 @@ window.addPerson=async()=>{
   const no=document.getElementById('addNote').value.trim();
   if(!n){toast('⚠️ Please enter a name');return;}
   const btn=document.getElementById('addBtn');btn.disabled=true;
+  btn.textContent='Checking...';
+  // Duplicate check
+  if(ph){
+    const dup=people.find(p=>normPhone(p.phone||'')===ph);
+    if(dup){toast(`⚠️ ${ph} already registered as "${dup.name}"`);btn.disabled=false;btn.textContent='➕ Add to List';return;}
+    const dupPending=pending.find(p=>normPhone(p.phone||'')===ph&&p.status!=='approved');
+    if(dupPending){toast(`⚠️ ${ph} already has a pending request for "${dupPending.name}"`);btn.disabled=false;btn.textContent='➕ Add to List';return;}
+  }
+  const dupName=people.find(p=>p.name.trim().toLowerCase()===n.toLowerCase());
+  if(dupName){if(!confirm(`⚠️ "${n}" already exists in the list. Add anyway?`)){btn.disabled=false;btn.textContent='➕ Add to List';return;}}
   btn.textContent=CR==='admin'?'Adding...':'Submitting...';
   const data={name:n,phone:ph,note:no,fasting:AF,served:false,servedAt:null,servedAtMs:null,servedBy:null,addedBy:CU.email,createdAt:serverTimestamp()};
-  if(CR==='admin'){
-    await addDoc(collection(db,'people'),data);
-    btn.textContent='➕ Add to List';
-    toast(`✅ ${n} added!`);
-  } else {
-    await addDoc(collection(db,'pending'),{...data,status:'pending',submittedBy:CU.email,submittedAt:serverTimestamp(),submittedAtMs:Date.now(),source:'volunteer-add'});
-    btn.textContent='📋 Submit for Approval';
-    toast(`📋 ${n} submitted — waiting for admin approval`);
-  }
-  document.getElementById('addName').value=document.getElementById('addPhone').value=document.getElementById('addNote').value='';
-  AF=false;document.getElementById('addFS').classList.remove('on');document.getElementById('addFR').classList.remove('on');
+  try {
+    if(CR==='admin'){
+      await addDoc(collection(db,'people'),data);
+      btn.textContent='➕ Add to List';
+      toast(`✅ ${n} added!`);
+    } else {
+      await addDoc(collection(db,'pending'),{...data,status:'pending',submittedBy:CU.email,submittedAt:serverTimestamp(),submittedAtMs:Date.now(),source:'volunteer-add'});
+      btn.textContent='📋 Submit for Approval';
+      toast(`📋 ${n} submitted — waiting for admin approval`);
+    }
+    document.getElementById('addName').value=document.getElementById('addPhone').value=document.getElementById('addNote').value='';
+    AF=false;document.getElementById('addFS').classList.remove('on');document.getElementById('addFR').classList.remove('on');
+  } catch(err){toast('⚠️ Failed: '+err.message);}
   btn.disabled=false;
 };
-window.bulkAdd=async()=>{const raw=document.getElementById('bulkIn').value.trim();if(!raw){toast('⚠️ Nothing to import');return;}const btn=document.getElementById('bulkBtn');btn.disabled=true;btn.textContent='Importing...';const lines=raw.split('\n').map(l=>l.trim()).filter(Boolean);const proms=[];let cnt=0;lines.forEach(line=>{const parts=line.split(/[,\t]/).map(p=>p.trim());let n='',ph='',no='',f=false;parts.forEach(part=>{if(part.toLowerCase()==='fasting'){f=true;return;}if(/^[\+\d][\d\s\-\(\)]{5,}$/.test(part))ph=part;else if(!n)n=part;else no=part;});if(!n&&ph)n=ph;if(!n)return;proms.push(addDoc(collection(db,'people'),{name:n,phone:ph,note:no,fasting:f,served:false,servedAt:null,servedAtMs:null,servedBy:null,addedBy:CU.email,createdAt:serverTimestamp()}));cnt++;});await Promise.all(proms);document.getElementById('bulkIn').value='';btn.disabled=false;btn.textContent='📥 Import List';toast(`✅ ${cnt} imported!`);};
+window.bulkAdd=async()=>{
+  const raw=document.getElementById('bulkIn').value.trim();
+  if(!raw){toast('⚠️ Nothing to import');return;}
+  const btn=document.getElementById('bulkBtn');btn.disabled=true;
+  btn.textContent=CR==='admin'?'Importing...':'Submitting...';
+  const lines=raw.split('\n').map(l=>l.trim()).filter(Boolean);
+  let added=0,skipped=0,skippedNames=[];
+  for(const line of lines){
+    const parts=line.split(/[,\t]/).map(p=>p.trim());
+    let n='',ph='',no='',f=false;
+    parts.forEach(part=>{
+      if(part.toLowerCase()==='fasting'){f=true;return;}
+      if(/^[\+\d][\d\s\-\(\)]{5,}$/.test(part))ph=part;
+      else if(!n)n=part;
+      else no=part;
+    });
+    if(!n&&ph)n=ph;
+    if(!n)continue;
+    const normPh=normPhone(ph);
+    // Duplicate check
+    const dupPhone=normPh&&people.find(p=>normPhone(p.phone||'')===normPh);
+    const dupName=people.find(p=>p.name.trim().toLowerCase()===n.toLowerCase());
+    const dupPending=normPh&&pending.find(p=>normPhone(p.phone||'')===normPh&&p.status!=='approved');
+    if(dupPhone||dupName||dupPending){skipped++;skippedNames.push(n);continue;}
+    const data={name:n,phone:normPh||ph,note:no,fasting:f,served:false,servedAt:null,servedAtMs:null,servedBy:null,addedBy:CU.email,createdAt:serverTimestamp()};
+    if(CR==='admin'){
+      await addDoc(collection(db,'people'),data);
+    } else {
+      await addDoc(collection(db,'pending'),{...data,status:'pending',submittedBy:CU.email,submittedAt:serverTimestamp(),submittedAtMs:Date.now(),source:'volunteer-bulk'});
+    }
+    added++;
+  }
+  document.getElementById('bulkIn').value='';
+  btn.disabled=false;btn.textContent=CR==='admin'?'📥 Import List':'📋 Submit for Approval';
+  let msg=CR==='admin'?`✅ ${added} imported!`:`📋 ${added} submitted for approval!`;
+  if(skipped>0)msg+=` | ⚠️ ${skipped} skipped (duplicates): ${skippedNames.slice(0,3).join(', ')}${skippedNames.length>3?'...':''}`;
+  toast(msg,4000);
+};
 window.delP=async id=>{const p=people.find(x=>x.id===id);if(!p||!confirm(`Delete ${p.name}?`))return;await deleteDoc(doc(db,'people',id));toast(`🗑 Removed`);};
 window.confirmReset=async()=>{if(!confirm('Reset ALL served statuses?\nBlacklist stays.'))return;await Promise.all(people.map(p=>updateDoc(doc(db,'people',p.id),{served:false,servedAt:null,servedAtMs:null,servedBy:null})));toast('🌙 Ready for new day!');};
 
