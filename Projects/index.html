@@ -112,6 +112,21 @@ textarea.fi{min-height:75px;resize:vertical}
 .tag-filter-row{display:flex;flex-wrap:wrap;gap:6px;padding:8px 16px 0;overflow-x:auto}
 .tpill{padding:5px 12px;border-radius:20px;border:1px solid var(--border2);font-size:0.75rem;font-weight:600;cursor:pointer;color:var(--text2);background:var(--surface);white-space:nowrap;transition:all 0.15s}
 .tpill.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.reg-toggle-box{background:var(--surface2);border:1px solid var(--border2);border-radius:14px;padding:16px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.reg-toggle-box.open{border-color:rgba(34,197,94,0.3);background:rgba(34,197,94,0.05)}
+.reg-toggle-box.closed{border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.05)}
+.reg-status-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.reg-status-dot.open{background:var(--green)}
+.reg-status-dot.closed{background:var(--danger)}
+.invite-card{background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.invite-phone-row{display:flex;gap:8px;margin-top:10px}
+.invite-list{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.invite-item{background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.invite-item .inv-phone{font-size:0.85rem;font-weight:600;color:var(--text1)}
+.invite-item .inv-status{font-size:0.72rem;padding:2px 8px;border-radius:20px;font-weight:600}
+.inv-pending{background:rgba(245,158,11,0.1);color:var(--gold);border:1px solid rgba(245,158,11,0.3)}
+.inv-used{background:rgba(34,197,94,0.1);color:var(--green);border:1px solid rgba(34,197,94,0.3)}
+.inv-expired{background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid rgba(239,68,68,0.3)}
 .pending-banner{background:var(--blue-dim);border:1px solid rgba(59,130,246,0.25);border-radius:12px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .pb-text{font-size:0.88rem;color:var(--blue)}.pb-count{font-size:1.4rem;font-weight:700;color:var(--blue)}
 /* EXPORT BUTTONS */
@@ -290,12 +305,39 @@ textarea.fi{min-height:75px;resize:vertical}
           <div class="field"><textarea class="fi" id="bulkIn" placeholder="Paste your list here..." style="min-height:140px"></textarea></div>
           <button class="btn btn-p" id="bulkBtn" onclick="bulkAdd()">📥 Import List</button>
           <div class="div"></div>
-          <div class="stitle">🔗 Registration Form Link</div>
-          <div class="reg-link-box">
-            <div class="reg-link-title">📋 Share with students</div>
-            <div class="reg-link-url" id="regLinkUrl">Loading...</div>
-            <button class="btn btn-g btn-sm" onclick="copyRegLink()">📋 Copy Link</button>
+          <div class="stitle">🔗 Registration Control</div>
+
+          <!-- Registration ON/OFF toggle -->
+          <div class="reg-toggle-box closed" id="regToggleBox">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="reg-status-dot closed" id="regStatusDot"></div>
+              <div>
+                <div style="font-size:0.9rem;font-weight:600" id="regStatusLabel">Registration Closed</div>
+                <div style="font-size:0.75rem;color:var(--text3);margin-top:2px" id="regStatusSub">Students cannot access the registration form</div>
+              </div>
+            </div>
+            <button class="btn btn-p btn-sm" id="regToggleBtn" onclick="window.toggleRegistration()">🔓 Open Registration</button>
           </div>
+
+          <!-- Invite link generator -->
+          <div class="invite-card" style="position:relative;z-index:2">
+            <div style="font-size:0.85rem;font-weight:600;margin-bottom:4px">📨 Generate Invite Link</div>
+            <div style="font-size:0.75rem;color:var(--text3);margin-bottom:10px">Enter the student's phone number → generate a unique one-time link → send via WhatsApp</div>
+            <input type="tel" id="invitePhone" placeholder="+212601234567" style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;color:var(--text1);font-size:0.92rem;padding:11px 14px;outline:none;margin-top:10px;margin-bottom:8px;box-sizing:border-box"/>
+            <button class="btn btn-p" onclick="window.generateInvite()" id="genInviteBtn" style="width:100%">Generate Link</button>
+            <div id="inviteLinkBox" style="display:none;margin-top:10px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:10px">
+              <div style="font-size:0.72rem;color:var(--text3);margin-bottom:4px">One-time link (expires in 24h):</div>
+              <div id="inviteLinkText" style="font-size:0.75rem;word-break:break-all;color:var(--accent);margin-bottom:8px"></div>
+              <div style="display:flex;gap:6px">
+                <button class="btn btn-g btn-sm" onclick="window.copyInviteLink()">📋 Copy</button>
+                <button class="btn btn-p btn-sm" onclick="window.shareWhatsApp()">📱 WhatsApp</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active invites list -->
+          <div style="font-size:0.82rem;font-weight:600;color:var(--text2);margin-bottom:8px">Active Invites</div>
+          <div id="inviteList"><div style="font-size:0.78rem;color:var(--text3)">No invites generated yet</div></div>
         </div>
       </div>
 
@@ -433,7 +475,9 @@ onAuthStateChanged(auth,async user=>{
     notice.style.cssText='background:var(--blue-dim);border:1px solid rgba(59,130,246,0.2);border-radius:10px;padding:12px 14px;font-size:0.82rem;color:var(--blue);margin-bottom:14px';
     notice.textContent='ℹ️ As a volunteer, your additions go to the pending queue for admin approval before appearing on the main list.';
     const pg=document.getElementById('pg-add');
-    if(pg)pg.insertBefore(notice,pg.firstChild);
+    const inner=pg?.querySelector('div[style]');
+    if(inner)inner.insertBefore(notice,inner.firstChild);
+    else if(pg)pg.insertBefore(notice,pg.firstChild);
   }
   showS('mainApp');startL();setInterval(refreshT,30000);
   // Set register link
@@ -457,7 +501,7 @@ function startL(){
 }
 
 const tTitles={search:'Check Person',list:'Full List',pending:'Pending Approvals',add:'Add People',export:'Export Data',blacklist:'Blacklist',users:'Volunteers'};
-window.sw=name=>{document.querySelectorAll('.ni').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.mt').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.pg').forEach(p=>p.classList.remove('active'));const n=document.getElementById('nav-'+name);const m=document.getElementById('mt-'+name);if(n)n.classList.add('active');if(m)m.classList.add('active');document.getElementById('pg-'+name).classList.add('active');document.getElementById('tbTitle').textContent=tTitles[name]||name;closeSB();if(name==='search')setTimeout(()=>document.getElementById('sInput').focus(),100);};
+window.sw=name=>{document.querySelectorAll('.ni').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.mt').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.pg').forEach(p=>p.classList.remove('active'));const n=document.getElementById('nav-'+name);const m=document.getElementById('mt-'+name);if(n)n.classList.add('active');if(m)m.classList.add('active');document.getElementById('pg-'+name).classList.add('active');document.getElementById('tbTitle').textContent=tTitles[name]||name;closeSB();if(name==='search')setTimeout(()=>document.getElementById('sInput').focus(),100);if(name==='add'){loadRegSettings();loadInviteList();}};
 window.openSB=()=>{document.getElementById('sb').classList.add('open');document.getElementById('sbo').classList.add('open');};
 window.closeSB=()=>{document.getElementById('sb').classList.remove('open');document.getElementById('sbo').classList.remove('open');};
 
@@ -832,7 +876,158 @@ function updateExportStats(){
   box.innerHTML=`<span style="color:var(--text)">👥 Total people:</span> <strong style="color:var(--green)">${t}</strong><br><span style="color:var(--text)">🌙 Fasting:</span> <strong style="color:var(--green)">${f}</strong> (${fs} served)<br><span style="color:var(--text)">✅ Served today:</span> <strong style="color:var(--gold)">${s}</strong> / ${t}<br><span style="color:var(--text)">⏳ Still waiting:</span> <strong style="color:var(--warn)">${t-s}</strong><br><span style="color:var(--text)">🚫 Blacklisted:</span> <strong style="color:var(--danger)">${bl}</strong><br><span style="color:var(--text)">📋 Pending approvals:</span> <strong style="color:var(--blue)">${pend}</strong>`;
 }
 
-window.copyRegLink=()=>{const url=document.getElementById('regLinkUrl').textContent;navigator.clipboard.writeText(url).then(()=>toast('📋 Link copied!'));};
+window.copyRegLink=()=>{const url=document.getElementById('regLinkUrl')?.textContent;if(url)navigator.clipboard.writeText(url).then(()=>toast('📋 Link copied!'));};
+
+// ── REGISTRATION CONTROL ──
+let regOpen=false;
+let lastInviteLink='';
+let lastInvitePhone='';
+
+async function loadRegSettings(){
+  try {
+    const snap=await getDoc(doc(db,'settings','registration'));
+    regOpen=snap.exists()?snap.data().open||false:false;
+  } catch(e){ regOpen=false; }
+  updateRegToggleUI();
+}
+
+function updateRegToggleUI(){
+  const box=document.getElementById('regToggleBox');
+  const dot=document.getElementById('regStatusDot');
+  const label=document.getElementById('regStatusLabel');
+  const sub=document.getElementById('regStatusSub');
+  const btn=document.getElementById('regToggleBtn');
+  if(!box)return;
+  if(regOpen){
+    box.className='reg-toggle-box open';
+    dot.className='reg-status-dot open';
+    label.textContent='Registration Open';
+    sub.textContent='Students can access the registration form';
+    btn.textContent='🔒 Close Registration';
+    btn.style.background='rgba(239,68,68,0.15)';
+    btn.style.color='var(--danger)';
+    btn.style.borderColor='rgba(239,68,68,0.3)';
+  } else {
+    box.className='reg-toggle-box closed';
+    dot.className='reg-status-dot closed';
+    label.textContent='Registration Closed';
+    sub.textContent='Students cannot access the registration form';
+    btn.textContent='🔓 Open Registration';
+    btn.style.background='';btn.style.color='';btn.style.borderColor='';
+  }
+}
+
+window.toggleRegistration=async()=>{
+  const btn=document.getElementById('regToggleBtn');
+  btn.disabled=true;btn.textContent='Saving...';
+  regOpen=!regOpen;
+  try {
+    await setDoc(doc(db,'settings','registration'),{
+      open:regOpen,
+      updatedAt:serverTimestamp(),
+      updatedBy:CU.email
+    });
+    updateRegToggleUI();
+    toast(regOpen?'🔓 Registration is now OPEN':'🔒 Registration is now CLOSED');
+  } catch(err){
+    regOpen=!regOpen;// revert
+    toast('⚠️ Failed: '+err.message);
+  }
+  btn.disabled=false;
+};
+
+// ── INVITE LINK GENERATOR ──
+window.generateInvite=async()=>{
+  const phone=normPhone(document.getElementById('invitePhone').value.trim());
+  if(!phone||phone.replace(/[^\d]/g,'').length<7){toast('⚠️ Enter a valid phone number');return;}
+  const btn=document.getElementById('genInviteBtn');
+  btn.disabled=true;btn.textContent='Generating...';
+  try {
+    // Check if person exists
+    const allSnap=await getDocs(collection(db,'people'));
+    const exists=allSnap.docs.find(d=>normPhone(d.data().phone||'')===phone);
+    if(exists){toast('⚠️ This number is already registered as '+exists.data().name);btn.disabled=false;btn.textContent='Generate Link';return;}
+    // Check for existing active invite
+    const invSnap=await getDocs(collection(db,'invites'));
+    const existing=invSnap.docs.find(d=>{
+      const inv=d.data();
+      return normPhone(inv.phone||'')===phone && inv.status==='pending' && inv.expiresAtMs>Date.now();
+    });
+    let inviteId;
+    if(existing){
+      inviteId=existing.id;
+    } else {
+      const token=Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2);
+      const ref=await addDoc(collection(db,'invites'),{
+        phone,token,
+        status:'pending',
+        createdAt:serverTimestamp(),
+        createdAtMs:Date.now(),
+        expiresAtMs:Date.now()+(24*60*60*1000),// 24 hours
+        createdBy:CU.email
+      });
+      inviteId=ref.id;
+    }
+    const baseUrl=window.location.href.replace(/\/[^\/]*$/, '/');
+    const link=baseUrl+'register.html?invite='+inviteId;
+    lastInviteLink=link;
+    lastInvitePhone=phone;
+    document.getElementById('inviteLinkText').textContent=link;
+    document.getElementById('inviteLinkBox').style.display='block';
+    document.getElementById('invitePhone').value='';
+    loadInviteList();
+    toast('✅ Invite link generated!');
+  } catch(err){
+    toast('⚠️ Failed: '+err.message);
+  }
+  btn.disabled=false;btn.textContent='Generate Link';
+};
+
+window.copyInviteLink=()=>{
+  navigator.clipboard.writeText(lastInviteLink).then(()=>toast('📋 Link copied!'));
+};
+
+window.shareWhatsApp=()=>{
+  const msg=encodeURIComponent('🌙 Ramadan Mubarak!\n\nYour registration link (valid 24h):\n'+lastInviteLink);
+  window.open('https://wa.me/'+lastInvitePhone.replace('+','')+`?text=${msg}`,'_blank');
+};
+
+window.revokeInvite=async(id)=>{
+  await updateDoc(doc(db,'invites',id),{status:'revoked',revokedAt:serverTimestamp()});
+  loadInviteList();
+  toast('🗑️ Invite revoked');
+};
+
+async function loadInviteList(){
+  const box=document.getElementById('inviteList');
+  if(!box)return;
+  try {
+    const snap=await getDocs(collection(db,'invites'));
+    const now=Date.now();
+    const invites=snap.docs
+      .map(d=>({id:d.id,...d.data()}))
+      .filter(i=>i.status!=='revoked')
+      .sort((a,b)=>(b.createdAtMs||0)-(a.createdAtMs||0))
+      .slice(0,10);
+    if(!invites.length){box.innerHTML='<div style="font-size:0.78rem;color:var(--text3)">No active invites</div>';return;}
+    box.innerHTML=invites.map(inv=>{
+      const expired=inv.expiresAtMs<now;
+      const statusClass=inv.status==='used'?'inv-used':expired?'inv-expired':'inv-pending';
+      const statusLabel=inv.status==='used'?'✅ Used':expired?'⏰ Expired':'⏳ Pending';
+      const expTime=new Date(inv.expiresAtMs).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      return`<div class="invite-item">
+        <div>
+          <div class="inv-phone">${esc(inv.phone||'')}</div>
+          <div style="font-size:0.7rem;color:var(--text3)">Expires ${expTime} · by ${esc(inv.createdBy||'')}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="inv-status ${statusClass}">${statusLabel}</span>
+          ${inv.status==='pending'&&!expired?`<button class="btn btn-g btn-sm" style="font-size:0.7rem;padding:2px 8px;color:var(--danger)" onclick="window.revokeInvite('${inv.id}')">Revoke</button>`:''}
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e){box.innerHTML='<div style="font-size:0.78rem;color:var(--text3)">Failed to load invites</div>';}
+}
 
 window.addVolunteer=async()=>{const n=document.getElementById('volName').value.trim();const e=document.getElementById('volEmail').value.trim();const p=document.getElementById('volPass').value;if(!n||!e||!p){sErr('volError','Please fill in all fields');return;}if(p.length<6){sErr('volError','Min 6 chars');return;}const btn=document.getElementById('addVolBtn');btn.disabled=true;btn.textContent='Creating...';hErr('volError');try{const sa=initializeApp(FC,'s_'+Date.now());const sa2=getAuth(sa);const c=await createUserWithEmailAndPassword(sa2,e,p);await setDoc(doc(db,'users',c.user.uid),{email:e,name:n,role:'volunteer',createdAt:serverTimestamp(),createdBy:CU.email});await c.user.sendEmailVerification();await signOut(sa2);document.getElementById('volName').value=document.getElementById('volEmail').value=document.getElementById('volPass').value='';btn.disabled=false;btn.textContent='➕ Add Volunteer';toast(`✅ ${n} added! Verification email sent to ${e}`);}catch(err){sErr('volError',fe(err.code));btn.disabled=false;btn.textContent='➕ Add Volunteer';}};
 

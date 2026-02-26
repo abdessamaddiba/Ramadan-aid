@@ -264,7 +264,7 @@ select.fi option{background:var(--surface)}
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import{getAuth,signInAnonymously}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
-import{getFirestore,collection,addDoc,query,where,getDocs,doc,serverTimestamp}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+import{getFirestore,collection,addDoc,query,where,getDocs,getDoc,doc,updateDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 const FC={apiKey:"AIzaSyB_SeMMk-2mL_XYTKEemoIeh_j2odQ6LNk",authDomain:"ramadan-food-aid.firebaseapp.com",projectId:"ramadan-food-aid",storageBucket:"ramadan-food-aid.firebasestorage.app",messagingSenderId:"836613630009",appId:"1:836613630009:web:c5b3047298224ec82f05e8"};
 const app=initializeApp(FC);const auth=getAuth(app);const db=getFirestore(app);
@@ -289,6 +289,82 @@ function enableButtons(){
     b.style.opacity='1';b.style.pointerEvents='auto';
   });
 }
+
+// Check registration status and invite token
+let inviteId=null;
+let invitePhone=null;
+
+async function checkRegistrationAccess(){
+  const params=new URLSearchParams(window.location.search);
+  const invId=params.get('invite');
+
+  // Check if registration is open
+  let regOpen=false;
+  try {
+    const snap=await getDoc(doc(db,'settings','registration'));
+    regOpen=snap.exists()?snap.data().open||false:false;
+  } catch(e){ regOpen=false; }
+
+  if(invId){
+    // Invite link — validate it regardless of reg open/closed
+    try {
+      const invSnap=await getDoc(doc(db,'invites',invId));
+      if(!invSnap.exists()){
+        showClosedScreen('❌ Invalid Link', 'This invitation link is not valid.');
+        return;
+      }
+      const inv=invSnap.data();
+      if(inv.status==='used'){
+        showClosedScreen('✅ Already Registered', 'This invitation link has already been used to complete a registration.');
+        return;
+      }
+      if(inv.status==='revoked'){
+        showClosedScreen('❌ Link Revoked', 'This invitation link has been revoked. Please contact the admin.');
+        return;
+      }
+      if(inv.expiresAtMs<Date.now()){
+        showClosedScreen('⏰ Link Expired', 'This invitation link has expired (valid for 24 hours). Please ask for a new one.');
+        return;
+      }
+      // Valid invite — pre-fill phone and lock it
+      inviteId=invId;
+      invitePhone=inv.phone||'';
+      const phoneInput=document.getElementById('nPhone');
+      if(phoneInput){
+        phoneInput.value=invitePhone;
+        phoneInput.readOnly=true;
+        phoneInput.style.opacity='0.7';
+        phoneInput.style.cursor='not-allowed';
+      }
+      // Show a welcome banner
+      const banner=document.createElement('div');
+      banner.style.cssText='background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:0.82rem;color:var(--green)';
+      banner.innerHTML='✅ <strong>Personal invitation</strong> — your phone number is pre-filled and verified.';
+      const form=document.getElementById('newForm');
+      if(form)form.insertBefore(banner,form.firstChild);
+    } catch(e){
+      showClosedScreen('❌ Error', 'Could not validate your invitation link. Please try again.');
+    }
+    return;
+  }
+
+  // No invite — check if registration is open
+  if(!regOpen){
+    showClosedScreen('🔒 Registration Closed', 'Registration is currently closed. If you received a personal invitation link, please use that link instead.');
+  }
+}
+
+function showClosedScreen(title, message){
+  document.getElementById('pathSelector').classList.add('hidden');
+  const closed=document.createElement('div');
+  closed.style.cssText='text-align:center;padding:40px 20px';
+  closed.innerHTML=`
+    <div style="font-size:3rem;margin-bottom:16px">${title.split(' ')[0]}</div>
+    <div style="font-size:1.2rem;font-weight:700;color:var(--text1);margin-bottom:8px">${title.split(' ').slice(1).join(' ')}</div>
+    <div style="font-size:0.9rem;color:var(--text3);max-width:320px;margin:0 auto;line-height:1.6">${message}</div>
+  `;
+  document.querySelector('.welcome-card')?.after(closed);
+}
 function disableButtons(){
   document.querySelectorAll('.submit-btn,.vbtn').forEach(b=>{
     b.style.opacity='0.5';b.style.pointerEvents='none';
@@ -299,10 +375,11 @@ function disableButtons(){
 disableButtons();
 signInAnonymously(auth).then(()=>{
   enableButtons();
+  checkRegistrationAccess();
 }).catch(e=>{
   console.warn('Anon auth failed:',e);
-  // Still enable buttons — show clear error when they try to submit
   enableButtons();
+  checkRegistrationAccess();
 });
 
 let lang='fr';let fastOn=false;let eFastOn=false;let foundPerson=null;
@@ -427,7 +504,7 @@ window.submitNew=async()=>{
   const resetBtn=()=>{btn.disabled=false;document.getElementById('submit-label').textContent=t('submit-label');};
 
   const name=document.getElementById('nName').value.trim();
-  const phone=normPhone(document.getElementById('nPhone').value.trim());
+  const phone=invitePhone?normPhone(invitePhone):normPhone(document.getElementById('nPhone').value.trim());
   const uni=document.getElementById('nUni').value.trim();
   const year=document.getElementById('nYear').value;
   const city=document.getElementById('nCity').value.trim();
@@ -485,6 +562,10 @@ window.submitNew=async()=>{
       submittedAt:serverTimestamp(),submittedAtMs:Date.now(),
       verified:false,source:'self-registration'
     });
+    // Mark invite as used if came from invite link
+    if(inviteId){
+      try { await updateDoc(doc(db,'invites',inviteId),{status:'used',usedAt:serverTimestamp()}); } catch(e){}
+    }
     document.getElementById('newForm').classList.add('hidden');
     document.getElementById('pathSelector').classList.add('hidden');
     document.getElementById('successScreen').classList.add('show');
