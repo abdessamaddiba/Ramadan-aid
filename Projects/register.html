@@ -193,28 +193,10 @@ select.fi option{background:var(--surface)}
       <div class="sw" id="fastSw"></div>
     </div>
 
-    <button class="submit-btn" id="submitNewBtn" onclick="sendVerifyCode()">
-      <span id="submit-label">Envoyer le code de vérification →</span>
+    <button class="submit-btn" id="submitNewBtn" onclick="submitNew()">
+      <span id="submit-label">✅ Soumettre mon inscription</span>
     </button>
 
-    <!-- EMAIL VERIFICATION PANEL (shown after link is sent) -->
-    <div class="verify-card" id="verifyPanel">
-      <div style="text-align:center;padding:24px 16px">
-        <div style="font-size:3rem;margin-bottom:12px">📬</div>
-        <div style="font-size:1rem;font-weight:700;color:var(--text);margin-bottom:8px" id="vcode-sent-msg">Vérifiez votre boîte mail</div>
-        <div style="font-size:0.82rem;color:var(--text2);line-height:1.6" id="vcode-sent-sub">
-          Nous vous avons envoyé un lien de vérification.<br/>
-          Cliquez sur le lien dans l'email pour confirmer votre inscription.
-        </div>
-        <div style="margin-top:16px;padding:10px 14px;background:var(--bg2);border-radius:8px;font-size:0.75rem;color:var(--text3)">
-          💡 Vérifiez aussi vos spams si vous ne voyez pas l'email
-        </div>
-      </div>
-      <div class="ebox" id="verifyError"></div>
-      <div style="margin-top:4px;text-align:center">
-        <button class="btn-outline" id="resendBtn" onclick="resendCode()" style="font-size:0.78rem"><span id="resend-btn">🔄 Renvoyer le lien</span></button>
-      </div>
-    </div>
 
     <div style="margin-top:12px;text-align:center">
       <button class="btn-outline" onclick="resetPath()" id="back-btn">← Retour</button>
@@ -282,342 +264,240 @@ select.fi option{background:var(--surface)}
 </div>
 <div class="toast" id="regToast" style="position:fixed;bottom:28px;right:28px;background:#1e2d42;color:#f1f5f9;padding:12px 20px;border-radius:12px;font-size:0.86rem;font-weight:600;border:1px solid rgba(255,255,255,0.12);box-shadow:0 8px 30px rgba(0,0,0,0.4);opacity:0;transform:translateY(10px);transition:all 0.3s;pointer-events:none;z-index:9999;max-width:320px"></div>
 
-<script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import{getAuth,sendSignInLinkToEmail,isSignInWithEmailLink,signInWithEmailLink}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
-import{getFirestore,collection,addDoc,getDocs,getDoc,doc,updateDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
-const FC={apiKey:"AIzaSyB_SeMMk-2mL_XYTKEemoIeh_j2odQ6LNk",authDomain:"ramadan-food-aid.firebaseapp.com",projectId:"ramadan-food-aid",storageBucket:"ramadan-food-aid.firebasestorage.app",messagingSenderId:"836613630009",appId:"1:836613630009:web:c5b3047298224ec82f05e8"};
-const app=initializeApp(FC);const auth=getAuth(app);const db=getFirestore(app);
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyB_SeMMk-2mL_XYTKEemoIeh_j2odQ6LNk",
+  authDomain:"ramadan-food-aid.firebaseapp.com",
+  projectId:"ramadan-food-aid",
+  storageBucket:"ramadan-food-aid.firebasestorage.app",
+  messagingSenderId:"836613630009",
+  appId:"1:836613630009:web:c5b3047298224ec82f05e8"
+});
+const db = firebase.firestore();
+const ST = firebase.firestore.FieldValue.serverTimestamp;
 
-// Phone normalizer — strips spaces, fixes +212 prefix variants
+// ── HELPERS ──
 function normPhone(p){
   let n=String(p||'').replace(/[\s\-\.\(\)]/g,'');
   if(n.startsWith('00212'))n='+212'+n.slice(5);
   if(n.startsWith('212')&&!n.startsWith('+'))n='+212'+n.slice(3);
   if(n.startsWith('0')&&n.length===10)n='+212'+n.slice(1);
-  // 9-digit number without any prefix → assume Moroccan (+212)
-  // Moroccan mobiles start with 6, 7 or 5
   if(/^[6-7]\d{8}$/.test(n))n='+212'+n;
   return n;
 }
+function showMsg(id,msg){const el=document.getElementById(id);if(el){el.textContent=msg;el.style.display='block';}}
+function hideMsg(id){const el=document.getElementById(id);if(el){el.textContent='';el.style.display='none';}}
+function toast(msg,dur=3500){const el=document.getElementById('regToast');el.textContent=msg;el.style.opacity='1';el.style.transform='translateY(0)';clearTimeout(el._t);el._t=setTimeout(()=>{el.style.opacity='0';el.style.transform='translateY(10px)';},dur);}
 
-// Auth ready — always true now (no anon sign-in needed)
-let authReady=false;
-function enableButtons(){
-  authReady=true;
-  document.querySelectorAll('.submit-btn,.vbtn,.path-card').forEach(b=>{
-    b.style.opacity='1';b.style.pointerEvents='auto';
-  });
-}
-
-// ── HANDLE EMAIL LINK RETURN ──
-// When student clicks the Firebase email link, they land back here
-(async()=>{
-  if(isSignInWithEmailLink(auth, window.location.href)){
-    const savedEmail = localStorage.getItem('sofra_verify_email');
-    const savedData  = localStorage.getItem('sofra_form_data');
-    const savedInvite= localStorage.getItem('sofra_invite_id');
-    if(!savedEmail || !savedData){
-      // Missing saved data - show error
-      document.body.innerHTML=`<div style="text-align:center;padding:60px 20px;font-family:sans-serif;color:#f1f5f9;background:#080c14;min-height:100vh">
-        <div style="font-size:3rem;margin-bottom:16px">⚠️</div>
-        <div style="font-size:1.2rem;margin-bottom:8px">Lien expiré ou invalide</div>
-        <div style="color:#64748b;margin-bottom:24px">Veuillez recommencer l'inscription.</div>
-        <a href="register.html" style="color:#c9a84c">← Réessayer</a>
-      </div>`;
-      return;
-    }
-    try {
-      // Complete sign-in with the email link
-      await signInWithEmailLink(auth, savedEmail, window.location.href);
-      // Clean URL (remove Firebase oob params)
-      window.history.replaceState({},'',window.location.pathname+(savedInvite?'?invite='+savedInvite:''));
-      // Get saved form data
-      const fd = JSON.parse(savedData);
-      // Submit to pending
-      await addDoc(collection(db,'pending'),{
-        name:fd.name, email:fd.email, phone:fd.phone,
-        university:fd.uni, yearOfStudy:fd.year, city:fd.city, country:fd.country,
-        fasting:fd.fasting, lang:fd.lang,
-        status:'pending',
-        submittedAt:serverTimestamp(), submittedAtMs:Date.now(),
-        verified:true, emailVerified:true,
-        source:'self-registration'
-      });
-      // Mark invite used
-      if(savedInvite){
-        try{ await updateDoc(doc(db,'invites',savedInvite),{status:'used',usedAt:serverTimestamp()}); }catch(e){}
-      }
-      // Clear storage
-      localStorage.removeItem('sofra_verify_email');
-      localStorage.removeItem('sofra_form_data');
-      localStorage.removeItem('sofra_invite_id');
-      // Show success screen
-      document.querySelector('.wrap').innerHTML=`<div style="text-align:center;padding:60px 20px">
-        <div style="font-size:3.5rem;margin-bottom:16px;animation:pop 0.4s ease">🎉</div>
-        <div style="font-family:'Amiri',serif;font-size:1.5rem;color:#22c55e;margin-bottom:8px">Inscription confirmée !</div>
-        <div style="color:#94a3b8;font-size:0.92rem;line-height:1.7;margin-bottom:24px">
-          Votre email a été vérifié et votre inscription a été soumise.<br/>
-          Notre équipe va examiner votre dossier. Ramadan Mubarak 🌙
-        </div>
-        <a href="landing.html" style="color:#c9a84c;font-weight:600;font-size:0.9rem">← Retour à l'accueil</a>
-      </div>`;
-    } catch(err) {
-      console.error('Email link sign-in error:', err);
-      document.body.innerHTML=`<div style="text-align:center;padding:60px 20px;font-family:sans-serif;color:#f1f5f9;background:#080c14;min-height:100vh">
-        <div style="font-size:3rem;margin-bottom:16px">❌</div>
-        <div style="font-size:1.2rem;margin-bottom:8px">Erreur de vérification</div>
-        <div style="color:#64748b;margin-bottom:24px">${err.message}</div>
-        <a href="register.html" style="color:#c9a84c">← Réessayer</a>
-      </div>`;
-    }
-    return; // Stop normal page init
-  }
-  // Normal page load
-  enableButtons();
-  checkRegistrationAccess().then(()=>{ window.selectPath('new'); }).catch(()=>{ window.selectPath('new'); });
-})();
-
-// Check registration status and invite token
+// ── STATE ──
+let lang='fr';
+let fastOn=false;
 let inviteId=null;
 let invitePhone=null;
-
-async function checkRegistrationAccess(){
-  const params=new URLSearchParams(window.location.search);
-  const invId=params.get('invite');
-
-  // ALWAYS require a valid invite link — no open registration
-  if(!invId){
-    showClosedScreen('🔒 Lien requis', 'Cette page est uniquement accessible via un lien d'invitation personnel. Veuillez contacter l'administration pour en obtenir un.');
-    return;
-  }
-
-  if(invId){
-    // Invite link — validate it regardless of reg open/closed
-    try {
-      const invSnap=await getDoc(doc(db,'invites',invId));
-      if(!invSnap.exists()){
-        showClosedScreen('❌ Invalid Link', 'This invitation link is not valid.');
-        return;
-      }
-      const inv=invSnap.data();
-      if(inv.status==='used'){
-        showClosedScreen('✅ Already Registered', 'This invitation link has already been used to complete a registration.');
-        return;
-      }
-      if(inv.status==='revoked'){
-        showClosedScreen('❌ Link Revoked', 'This invitation link has been revoked. Please contact the admin.');
-        return;
-      }
-      if(inv.expiresAtMs<Date.now()){
-        showClosedScreen('⏰ Link Expired', 'This invitation link has expired (valid for 24 hours). Please ask for a new one.');
-        return;
-      }
-      // Valid invite — pre-fill phone and lock it
-      inviteId=invId;
-      invitePhone=inv.phone||'';
-      const phoneInput=document.getElementById('nPhone');
-      if(phoneInput){
-        phoneInput.value=invitePhone;
-        phoneInput.readOnly=true;
-        phoneInput.style.opacity='0.7';
-        phoneInput.style.cursor='not-allowed';
-      }
-      // Auto-open the new student form
-      window.selectPath('new');
-      // Show a welcome banner
-      const banner=document.createElement('div');
-      banner.style.cssText='background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:0.82rem;color:var(--green)';
-      banner.innerHTML='✅ <strong>Personal invitation</strong> — your phone number is pre-filled and verified.';
-      const form=document.getElementById('newForm');
-      if(form)form.insertBefore(banner,form.firstChild);
-    } catch(e){
-      showClosedScreen('❌ Error', 'Could not validate your invitation link. Please try again.');
-    }
-    return;
-  }
-
-  // No invite — check if registration is open
-  // Registration always invite-only
-}
-
-function showClosedScreen(title, message){
-  document.getElementById('pathSelector').classList.add('hidden');
-  const closed=document.createElement('div');
-  closed.style.cssText='text-align:center;padding:40px 20px';
-  closed.innerHTML=`
-    <div style="font-size:3rem;margin-bottom:16px">${title.split(' ')[0]}</div>
-    <div style="font-size:1.2rem;font-weight:700;color:var(--text1);margin-bottom:8px">${title.split(' ').slice(1).join(' ')}</div>
-    <div style="font-size:0.9rem;color:var(--text3);max-width:320px;margin:0 auto;line-height:1.6">${message}</div>
-  `;
-  document.querySelector('.welcome-card')?.after(closed);
-}
-function disableButtons(){
-  document.querySelectorAll('.submit-btn,.vbtn').forEach(b=>{
-    b.style.opacity='0.5';b.style.pointerEvents='none';
-  });
-}
-
-// No auth needed - Firestore rules handle access
-enableButtons();
-checkRegistrationAccess().then(()=>{ window.selectPath('new'); }).catch(()=>{ window.selectPath('new'); });
-
-let lang='fr';let fastOn=false;let eFastOn=false;let foundPerson=null;
 
 // ── TRANSLATIONS ──
 const T={
   fr:{
     'w-title':'🌙 Un mot avant de commencer',
-    'w-body':"Nous savons que votre temps est précieux et nous vous remercions de votre patience. Nous travaillons sur un système permanent pour que vous n'ayez plus jamais à faire cela. Pour l'instant, cette inscription unique nous aide à garantir que chacun reçoit ce qu'il mérite — rapidement et équitablement. Merci de faire partie de cette communauté. 🌙",
+    'w-body':"Nous savons que votre temps est précieux et nous vous remercions de votre patience. Cette inscription unique nous aide à garantir que chacun reçoit ce qu'il mérite — rapidement et équitablement. Merci de faire partie de cette communauté. 🌙",
     'p-new-title':'Nouveau','p-new-sub':"Je n'ai jamais rempli ce formulaire",
     'p-ret-title':'Déjà inscrit','p-ret-sub':"J'ai déjà donné mes informations",
     'f-title':'📝 Inscription',
-    'l-name':'Nom complet','l-email':'Adresse e-mail','l-phone':'Numéro de téléphone','l-uni':'Université / École',
-    'l-year':"Année d'études",'l-city':"Ville / Pays d'origine",
-    'l-fast':'🌙 Je suis en train de jeûner (Ramadan)','l-fast-sub':'Cochez si vous êtes musulman et que vous jeûnez',
-    'submit-label':'Envoyer le code de vérification →',
-    'verify-submit-label':'✅ Vérifier et envoyer',
-    'l-vcode':'Code de vérification',
-    'vcode-sent-msg':'📧 Code envoyé !',
-    'vcode-sent-sub':'Entrez le code à 6 chiffres reçu par e-mail.',
-    'resend-btn':'🔄 Renvoyer le code',
-    'back-btn':'← Retour','back-btn2':'← Retour',
-    'r-title':'🔄 Vérification','r-sub':'Entrez votre numéro de téléphone pour retrouver votre profil.',
-    'r-search-btn':'Rechercher','pf-label':"C'est vous ?",
-    'pf-yes':'✅ Oui, c\'est moi','pf-fix':'✏️ Corriger',
-    'e-sub':'Corrigez les informations incorrectes :',
-    'el-name':'Nom complet','el-uni':'Université','el-year':"Année d'études",'el-country':"Pays d'origine",'el-city':'Ville actuelle','el-fast':'🌙 Je jeûne (Ramadan)',
-    'e-save':'💾 Sauvegarder les modifications',
-    's-title':'Demande envoyée !','s-body':"Votre demande a été reçue et sera vérifiée par notre équipe. Vous serez ajouté à la liste dès validation. Merci pour votre patience ! 🌙",
-    's-badge':'⏳ En attente de validation',
+    'l-name':'Nom complet','l-email':'Adresse e-mail','l-phone':'Numéro de téléphone',
+    'l-uni':'Université / École','l-year':"Année d'études",
+    'l-country':'Pays','l-city':'Ville actuelle',
+    'l-fast':'🌙 Je jeûne (Ramadan)',
+    'submit-label':'✅ Soumettre mon inscription',
     'err-required':'Veuillez remplir tous les champs obligatoires.',
     'err-phone':'Numéro de téléphone invalide.',
     'err-email':'Adresse e-mail invalide.',
-    'err-code':'Code incorrect ou expiré. Veuillez réessayer.',
-    'err-notfound':'Numéro non trouvé. Êtes-vous nouveau ? Choisissez "Nouveau" pour vous inscrire.',
-    'err-duplicate':'Ce numéro est déjà inscrit.',
-    'ok-verified':'Profil vérifié avec succès ! 🎉',
-    'ok-updated':'Informations mises à jour ! Elles seront vérifiées par notre équipe.',
+    'err-duplicate-phone':'Ce numéro est déjà inscrit.',
+    'err-duplicate-email':'Cet e-mail est déjà inscrit.',
+    'err-pending':'Votre demande est déjà en attente de validation.',
+    'success-title':'Inscription soumise !',
+    'success-body':"Votre inscription a été soumise avec succès. Notre équipe va examiner votre dossier sous peu. Ramadan Mubarak 🌙",
+    'back-home':'← Retour à l\'accueil'
   },
   ar:{
-    'w-title':'🌙 كلمة قبل البداية',
-    'w-body':'نعلم أن وقتكم ثمين ونشكركم على صبركم. نحن نعمل على نظام دائم حتى لا تضطروا لفعل هذا مرة أخرى. في الوقت الحالي، يساعدنا هذا التسجيل على ضمان حصول الجميع على ما يستحق — بسرعة وبعدالة. شكراً لكونكم جزءاً من هذا المجتمع. 🌙',
+    'w-title':'🌙 كلمة قبل البدء',
+    'w-body':'نعلم أن وقتك ثمين ونشكرك على صبرك. هذا التسجيل الفريد يساعدنا على ضمان حصول الجميع على ما يستحقه. شكراً لكونك جزءاً من هذا المجتمع. 🌙',
     'p-new-title':'جديد','p-new-sub':'لم أسجل من قبل',
     'p-ret-title':'مسجل مسبقاً','p-ret-sub':'قدمت معلوماتي من قبل',
     'f-title':'📝 التسجيل',
-    'l-name':'الاسم الكامل','l-email':'البريد الإلكتروني','l-phone':'رقم الهاتف','l-uni':'الجامعة / المدرسة',
-    'l-year':'سنة الدراسة','l-city':'المدينة / البلد الأصلي',
-    'l-fast':'🌙 أنا صائم (رمضان)','l-fast-sub':'ضع علامة إذا كنت مسلماً وصائماً',
-    'submit-label':'إرسال رمز التحقق ←',
-    'verify-submit-label':'✅ تحقق وأرسل',
-    'l-vcode':'رمز التحقق',
-    'vcode-sent-msg':'📧 تم إرسال الرمز!',
-    'vcode-sent-sub':'أدخل الرمز المكون من 6 أرقام المُرسل إلى بريدك الإلكتروني.',
-    'resend-btn':'🔄 إعادة الإرسال',
-    'back-btn':'→ رجوع','back-btn2':'→ رجوع',
-    'r-title':'🔄 التحقق','r-sub':'أدخل رقم هاتفك للعثور على ملفك الشخصي.',
-    'r-search-btn':'بحث','pf-label':'هل هذا أنت؟',
-    'pf-yes':'✅ نعم، هذا أنا','pf-fix':'✏️ تصحيح',
-    'e-sub':'صحح المعلومات الخاطئة:',
-    'el-name':'الاسم الكامل','el-uni':'الجامعة','el-year':'سنة الدراسة','el-country':'بلد الأصل','el-city':'المدينة الحالية','el-fast':'🌙 أنا صائم (رمضان)',
-    'e-save':'💾 حفظ التعديلات',
-    's-title':'تم إرسال الطلب!','s-body':'تم استلام طلبك وسيتم التحقق منه من قبل فريقنا. سيتم إضافتك إلى القائمة بعد التحقق. شكراً على صبرك! 🌙',
-    's-badge':'⏳ في انتظار التحقق',
-    'err-required':'يرجى ملء جميع الحقول المطلوبة.','err-phone':'رقم الهاتف غير صالح.',
-    'err-email':'عنوان البريد الإلكتروني غير صالح.',
-    'err-code':'الرمز غير صحيح أو منتهي الصلاحية. يرجى المحاولة مجدداً.',
-    'err-notfound':'الرقم غير موجود. هل أنت جديد؟ اختر "جديد" للتسجيل.','err-duplicate':'هذا الرقم مسجل بالفعل.',
-    'ok-verified':'تم التحقق من الملف الشخصي بنجاح! 🎉','ok-updated':'تم تحديث المعلومات! سيتم مراجعتها من قبل فريقنا.',
+    'l-name':'الاسم الكامل','l-email':'البريد الإلكتروني','l-phone':'رقم الهاتف',
+    'l-uni':'الجامعة / المعهد','l-year':'سنة الدراسة',
+    'l-country':'البلد','l-city':'المدينة الحالية',
+    'l-fast':'🌙 أنا صائم (رمضان)',
+    'submit-label':'✅ إرسال طلب التسجيل',
+    'err-required':'يرجى ملء جميع الحقول المطلوبة.',
+    'err-phone':'رقم الهاتف غير صالح.',
+    'err-email':'البريد الإلكتروني غير صالح.',
+    'err-duplicate-phone':'هذا الرقم مسجل بالفعل.',
+    'err-duplicate-email':'هذا البريد الإلكتروني مسجل بالفعل.',
+    'err-pending':'طلبك قيد المراجعة بالفعل.',
+    'success-title':'تم إرسال الطلب!',
+    'success-body':'تم إرسال طلب تسجيلك بنجاح. سيقوم فريقنا بمراجعة ملفك قريباً. رمضان مبارك 🌙',
+    'back-home':'← العودة للرئيسية'
   },
   en:{
-    'w-title':'🌙 A word before we start',
-    'w-body':"We know your time is valuable and we appreciate your patience. We're working on a permanent system so you never have to do this again. For now, this one-time registration helps us ensure everyone gets what they deserve — quickly and fairly. Thank you for being part of this community. 🌙",
+    'w-title':'🌙 A word before we begin',
+    'w-body':"We know your time is precious and we thank you for your patience. This one-time registration helps us ensure everyone receives what they deserve — quickly and fairly. Thank you for being part of this community. 🌙",
     'p-new-title':'New Student','p-new-sub':"I've never filled this form before",
     'p-ret-title':'Already Registered','p-ret-sub':"I've already given my information",
     'f-title':'📝 Registration',
-    'l-name':'Full Name','l-email':'Email Address','l-phone':'Phone Number','l-uni':'University / School',
-    'l-year':'Year of Study','l-city':'City / Country of Origin',
-    'l-fast':'🌙 I am fasting (Ramadan)','l-fast-sub':'Check if you are Muslim and fasting',
-    'submit-label':'Send Verification Code →',
-    'verify-submit-label':'✅ Verify & Submit',
-    'l-vcode':'Verification Code',
-    'vcode-sent-msg':'📧 Code sent!',
-    'vcode-sent-sub':'Enter the 6-digit code sent to your email.',
-    'resend-btn':'🔄 Resend code',
-    'back-btn':'← Back','back-btn2':'← Back',
-    'r-title':'🔄 Verification','r-sub':'Enter your phone number to find your profile.',
-    'r-search-btn':'Search','pf-label':'Is this you?',
-    'pf-yes':"✅ Yes, that's me",'pf-fix':'✏️ Fix info',
-    'e-sub':'Correct the wrong information:',
-    'el-name':'Full Name','el-uni':'University','el-year':'Year of Study','el-country':'Country of Origin','el-city':'Current City','el-fast':'🌙 I am fasting (Ramadan)',
-    'e-save':'💾 Save Changes',
-    's-title':'Request Submitted!','s-body':"Your request has been received and will be verified by our team. You'll be added to the list once approved. Thank you for your patience! 🌙",
-    's-badge':'⏳ Pending verification',
-    'err-required':'Please fill in all required fields.','err-phone':'Invalid phone number.',
+    'l-name':'Full name','l-email':'Email address','l-phone':'Phone number',
+    'l-uni':'University / School','l-year':'Year of study',
+    'l-country':'Country','l-city':'Current city',
+    'l-fast':'🌙 I am fasting (Ramadan)',
+    'submit-label':'✅ Submit my registration',
+    'err-required':'Please fill in all required fields.',
+    'err-phone':'Invalid phone number.',
     'err-email':'Invalid email address.',
-    'err-code':'Incorrect or expired code. Please try again.',
-    'err-notfound':'Number not found. Are you new? Choose "New Student" to register.','err-duplicate':'This number is already registered.',
-    'ok-verified':'Profile verified successfully! 🎉','ok-updated':'Information updated! It will be reviewed by our team.',
+    'err-duplicate-phone':'This number is already registered.',
+    'err-duplicate-email':'This email is already registered.',
+    'err-pending':'Your request is already pending review.',
+    'success-title':'Registration submitted!',
+    'success-body':'Your registration has been submitted successfully. Our team will review your file shortly. Ramadan Mubarak 🌙',
+    'back-home':'← Back to home'
   }
 };
 
-function t(key){return(T[lang]&&T[lang][key])||T['fr'][key]||key;}
+function t(k){return (T[lang]||T['fr'])[k]||k;}
 
-window.setLang=l=>{
+window.setLang=function(l){
   lang=l;
-  document.querySelectorAll('.lang-btn').forEach((b,i)=>{b.classList.toggle('active',['fr','ar','en'][i]===l);});
+  document.documentElement.lang=l;
   document.documentElement.dir=l==='ar'?'rtl':'ltr';
-  // Update all text
-  Object.keys(T.fr).forEach(key=>{
-    const el=document.getElementById(key);
-    if(el)el.textContent=t(key);
+  document.querySelectorAll('.lang-btn').forEach(b=>{
+    b.classList.toggle('active',
+      (l==='fr'&&b.textContent.includes('Français'))||
+      (l==='ar'&&b.textContent.includes('العربية'))||
+      (l==='en'&&b.textContent.includes('English'))
+    );
   });
-  // Update year select placeholder
-  const yp=document.getElementById('y-placeholder');
-  if(yp)yp.textContent=l==='ar'?'اختر...':l==='en'?'Select...':'Sélectionner...';
+  // Update all translated elements
+  const ids=['w-title','w-body','p-new-title','p-new-sub','p-ret-title','p-ret-sub',
+             'f-title','l-name','l-email','l-phone','l-uni','l-year','l-country','l-city',
+             'l-fast','submit-label'];
+  ids.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.textContent=t(id);
+  });
 };
 
-window.selectPath=path=>{
-  document.getElementById('newForm').classList.toggle('hidden',path!=='new');
-  document.getElementById('returnForm').classList.toggle('hidden',path!=='return');
+window.selectPath=function(path){
   document.getElementById('pathNew').classList.toggle('selected',path==='new');
   document.getElementById('pathReturn').classList.toggle('selected',path==='return');
+  document.getElementById('newForm').classList.toggle('hidden',path!=='new');
+  document.getElementById('returnForm').classList.toggle('hidden',path!=='return');
+  hideMsg('newError');hideMsg('newSuccess');hideMsg('retError');
 };
 
-window.resetPath=()=>{
-  document.getElementById('newForm').classList.add('hidden');
-  document.getElementById('returnForm').classList.add('hidden');
-  document.getElementById('pathNew').classList.remove('selected');
-  document.getElementById('pathReturn').classList.remove('selected');
-  document.getElementById('profileFound').classList.remove('show');
-  document.getElementById('editFields').classList.add('hidden');
-  document.getElementById('rPhone').value='';
-  foundPerson=null;
-  // Reset verification panel
-  document.getElementById('verifyPanel').classList.remove('show');
-  document.getElementById('submitNewBtn').classList.remove('hidden');
-  document.getElementById('nVerifyCode').value='';
-  hideMsg('verifyError');
-  pendingVerifyId=null; pendingVerifyCode=null; pendingVerifyEmail=null; pendingFormData=null;
+window.toggleFast=function(){
+  fastOn=!fastOn;
+  document.getElementById('fastSw').classList.toggle('on',fastOn);
+  document.getElementById('nFastToggle').classList.toggle('on',fastOn);
 };
 
-// FASTING TOGGLE
-window.toggleFast=()=>{fastOn=!fastOn;document.getElementById('fastSw').classList.toggle('on',fastOn);document.getElementById('nFastToggle').classList.toggle('on',fastOn)};
-window.toggleEditFast=()=>{eFastOn=!eFastOn;document.getElementById('eFastSw').classList.toggle('on',eFastOn);document.getElementById('eFastToggle').classList.toggle('on',eFastOn);};
+// ── REGISTRATION ACCESS CHECK ──
+async function checkRegistrationAccess(){
+  const params=new URLSearchParams(window.location.search);
+  const invId=params.get('invite');
 
-// ── EMAIL VERIFICATION STATE ──
-let pendingVerifyId = null;
-let pendingVerifyCode = null;
-let pendingVerifyEmail = null;
-let pendingFormData = null;
+  // 1. Check if registration is globally open
+  let regOpen=false;
+  try{
+    const snap=await db.doc('settings/registration').get();
+    regOpen=snap.exists?snap.data().open===true:false;
+  }catch(e){regOpen=false;}
 
-// STEP 1: Validate form, save to localStorage, send Firebase email link
-window.sendVerifyCode = async () => {
-  if(!authReady){showMsg('newError','Please wait a moment and try again.');return;}
+  // 2. If invite link provided — validate it
+  if(invId){
+    try{
+      const invSnap=await db.doc('invites/'+invId).get();
+      if(!invSnap.exists){showClosedScreen('invalid');return;}
+      const inv=invSnap.data();
+      if(inv.status==='used'){showClosedScreen('used');return;}
+      if(inv.status==='revoked'){showClosedScreen('revoked');return;}
+      if(inv.expiresAtMs&&inv.expiresAtMs<Date.now()){showClosedScreen('expired');return;}
+      inviteId=invId;
+      if(inv.phone)invitePhone=inv.phone;
+      // Pre-fill phone if invite has one
+      if(invitePhone){
+        const phoneEl=document.getElementById('nPhone');
+        if(phoneEl){phoneEl.value=invitePhone;phoneEl.readOnly=true;phoneEl.style.opacity='0.7';}
+      }
+    }catch(e){showClosedScreen('error');}
+    return;
+  }
 
-  const btn = document.getElementById('submitNewBtn');
-  const resetBtn = () => { btn.disabled=false; document.getElementById('submit-label').textContent=t('submit-label'); };
+  // 3. No invite — check if open registration
+  if(!regOpen){
+    showClosedScreen('closed');
+  }
+}
+
+function showClosedScreen(key){
+  // Hide all form sections so nothing is accessible
+  ['pathSelector','newForm','returnForm'].forEach(id=>{
+    const el=document.getElementById(id);if(el){el.style.display='none';}
+  });
+  document.querySelectorAll('.submit-btn,.vbtn,.path-card').forEach(b=>{b.style.opacity='0.4';b.style.pointerEvents='none';});
+
+  // Translated messages
+  const msgs={
+    'closed':{
+      fr:['🔒','Inscription fermée',"L'inscription est actuellement fermée. Si vous avez reçu un lien personnel, utilisez-le."],
+      ar:['🔒','التسجيل مغلق','التسجيل مغلق حالياً. إذا تلقيت رابطاً شخصياً، يرجى استخدامه.'],
+      en:['🔒','Registration Closed','Registration is currently closed. If you received a personal invitation link, please use it.']
+    },
+    'invalid':{
+      fr:['❌','Lien invalide',"Ce lien d'invitation n'est pas valide."],
+      ar:['❌','رابط غير صالح','رابط الدعوة هذا غير صالح.'],
+      en:['❌','Invalid Link','This invitation link is not valid.']
+    },
+    'used':{
+      fr:['✅','Déjà inscrit','Ce lien a déjà été utilisé pour compléter une inscription.'],
+      ar:['✅','مسجل مسبقاً','تم استخدام هذا الرابط بالفعل لإتمام تسجيل.'],
+      en:['✅','Already Registered','This invitation link has already been used to complete a registration.']
+    },
+    'revoked':{
+      fr:['❌','Lien révoqué','Ce lien a été révoqué. Contactez l\'administration.'],
+      ar:['❌','تم إلغاء الرابط','تم إلغاء هذا الرابط. اتصل بالإدارة.'],
+      en:['❌','Link Revoked','This invitation link has been revoked. Please contact the admin.']
+    },
+    'expired':{
+      fr:['⏰','Lien expiré','Ce lien a expiré. Demandez-en un nouveau.'],
+      ar:['⏰','انتهت صلاحية الرابط','انتهت صلاحية هذا الرابط. اطلب رابطاً جديداً.'],
+      en:['⏰','Link Expired','This invitation link has expired. Please ask for a new one.']
+    },
+    'error':{
+      fr:['⚠️','Erreur','Impossible de valider votre lien. Réessayez.'],
+      ar:['⚠️','خطأ','تعذّر التحقق من الرابط. حاول مجدداً.'],
+      en:['⚠️','Error','Could not validate your link. Please try again.']
+    }
+  };
+  const l=lang||'fr';
+  const m=(msgs[key]||msgs['error'])[l]||msgs[key]['fr'];
+  const closed=document.createElement('div');
+  closed.className='closed-screen';
+  closed.style.cssText='text-align:center;padding:32px 20px;background:var(--surface);border:1px solid var(--border2);border-radius:16px;margin-bottom:16px';
+  closed.innerHTML=`<div style="font-size:2.5rem;margin-bottom:10px">${m[0]}</div>`
+    +`<div style="font-weight:700;font-size:1rem;margin-bottom:8px;color:var(--text)">${m[1]}</div>`
+    +`<div style="font-size:0.85rem;color:var(--text2);line-height:1.6">${m[2]}</div>`;
+  const wc=document.querySelector('.welcome');
+  if(wc)wc.after(closed);else document.querySelector('.wrap').prepend(closed);
+}
+
+// ── SUBMIT NEW STUDENT (no email verification) ──
+window.submitNew=async function(){
+  const btn=document.getElementById('submitNewBtn');
+  const lbl=document.getElementById('submit-label');
+  const reset=()=>{btn.disabled=false;lbl.textContent=t('submit-label');};
 
   const name    = document.getElementById('nName').value.trim();
   const email   = document.getElementById('nEmail').value.trim().toLowerCase();
@@ -626,191 +506,155 @@ window.sendVerifyCode = async () => {
   const year    = document.getElementById('nYear').value;
   const city    = document.getElementById('nCity').value.trim();
   const country = document.getElementById('nCountry').value.trim();
-  hideMsg('newError'); hideMsg('newSuccess');
+  hideMsg('newError');hideMsg('newSuccess');
 
-  // Validate
-  if(!name || !email || !phone || !uni || !year || !city){ showMsg('newError', t('err-required')); return; }
-  if(phone.replace(/[\s\+\-\(\)]/g,'').length < 7){ showMsg('newError', t('err-phone')); return; }
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showMsg('newError', t('err-email')); return; }
+  if(!name||!email||!phone||!uni||!year||!city){showMsg('newError',t('err-required'));return;}
+  if(phone.replace(/[\s\+\-\(\)]/g,'').length<7){showMsg('newError',t('err-phone'));return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showMsg('newError',t('err-email'));return;}
 
-  btn.disabled = true;
-  document.getElementById('submit-label').textContent = '...';
+  btn.disabled=true;lbl.textContent='...';
 
   // Duplicate check
-  let allPeopleSnap, allPendingSnap;
-  try {
-    allPeopleSnap = await getDocs(collection(db,'people'));
-    allPendingSnap = await getDocs(collection(db,'pending'));
-  } catch(err) {
-    showMsg('newError','⚠️ Could not connect to database: '+err.message);
-    resetBtn(); return;
+  try{
+    const peopleSnap=await db.collection('people').get();
+    const pendingSnap=await db.collection('pending').get();
+
+    if(peopleSnap.docs.find(d=>normPhone(d.data().phone||'')===phone)){
+      showMsg('newError',t('err-duplicate-phone'));reset();return;
+    }
+    if(peopleSnap.docs.find(d=>(d.data().email||'').toLowerCase()===email)){
+      showMsg('newError',t('err-duplicate-email'));reset();return;
+    }
+    if(pendingSnap.docs.find(d=>normPhone(d.data().phone||'')===phone&&d.data().status==='pending')){
+      showMsg('newError',t('err-pending'));reset();return;
+    }
+  }catch(e){
+    showMsg('newError','⚠️ Erreur de connexion: '+e.message);reset();return;
   }
 
-  const dupPerson = allPeopleSnap.docs.find(d => normPhone(d.data().phone||'') === phone);
-  if(dupPerson){
-    showMsg('newError', lang==='ar'
-      ? 'هذا الرقم مسجل بالفعل.'
-      : lang==='en' ? 'This number is already registered.' : 'Ce numéro est déjà inscrit.');
-    resetBtn(); return;
-  }
-  const dupEmail = allPeopleSnap.docs.find(d => (d.data().email||'').toLowerCase() === email);
-  if(dupEmail){
-    showMsg('newError', lang==='ar'
-      ? 'هذا البريد الإلكتروني مسجل بالفعل.'
-      : lang==='en' ? 'This email is already registered.' : 'Cet e-mail est déjà inscrit.');
-    resetBtn(); return;
-  }
-  const dupPending = allPendingSnap.docs.find(d => normPhone(d.data().phone||'')===phone && d.data().status==='pending');
-  if(dupPending){
-    showMsg('newError', lang==='ar'
-      ? 'طلبك قيد المراجعة بالفعل.'
-      : lang==='en' ? 'Your request is already pending review.' : 'Votre demande est déjà en attente.');
-    resetBtn(); return;
-  }
-
-  // Save form data to localStorage (survives the redirect)
-  localStorage.setItem('sofra_verify_email', email);
-  localStorage.setItem('sofra_form_data', JSON.stringify({name,email,phone,uni,year,city,country,fasting:fastOn,lang}));
-  if(inviteId) localStorage.setItem('sofra_invite_id', inviteId);
-
-  // Send Firebase email link
-  const currentUrl = window.location.href.split('?')[0] + (inviteId ? '?invite='+inviteId : '');
-  try {
-    await sendSignInLinkToEmail(auth, email, {
-      url: currentUrl,
-      handleCodeInApp: true
+  // Submit directly to pending
+  try{
+    await db.collection('pending').add({
+      name,email,phone,
+      university:uni,yearOfStudy:year,city,country,
+      fasting:fastOn,lang,
+      status:'pending',
+      submittedAt:ST(),submittedAtMs:Date.now(),
+      source:'self-registration'
     });
-  } catch(err) {
-    showMsg('newError','⚠️ Impossible d'envoyer l'email: '+err.message);
-    resetBtn(); return;
+    if(inviteId){
+      try{await db.doc('invites/'+inviteId).update({status:'used',usedAt:ST()});}catch(e){}
+    }
+    // Show success
+    document.getElementById('newForm').classList.add('hidden');
+    document.getElementById('pathSelector').classList.add('hidden');
+    document.getElementById('successScreen').classList.remove('hidden');
+    document.getElementById('successScreen').classList.add('show');
+  }catch(e){
+    if(e.code==='permission-denied'){
+      showMsg('newError','⚠️ Erreur de permission. Contactez l\'administrateur.');
+    }else{
+      showMsg('newError','⚠️ Erreur: '+e.message);
+    }
+    reset();
   }
-
-  // Show "check your email" screen
-  document.getElementById('submitNewBtn').classList.add('hidden');
-  document.getElementById('verifyPanel').classList.add('show');
-  const sentMsg = lang==='ar'
-    ? `📧 تم إرسال رابط التحقق إلى ${email} — تحقق من بريدك وانقر على الرابط`
-    : lang==='en' ? `📧 Verification link sent to ${email} — check your inbox and click the link`
-    : `📧 Lien envoyé à ${email} — vérifiez votre boîte mail et cliquez sur le lien`;
-  document.getElementById('vcode-sent-msg').textContent = sentMsg;
-  btn.disabled = false;
-  document.getElementById('submit-label').textContent = t('submit-label');
 };
 
-window.resendCode = async () => {
-  const email = localStorage.getItem('sofra_verify_email');
-  if(!email){ return; }
-  const btn = document.getElementById('resendBtn');
-  btn.disabled = true;
-  try {
-    const currentUrl = window.location.href.split('?')[0] + (inviteId ? '?invite='+inviteId : '');
-    await sendSignInLinkToEmail(auth, email, { url: currentUrl, handleCodeInApp: true });
-    toast('📧 Nouveau lien envoyé !');
-    hideMsg('verifyError');
-  } catch(e){ showMsg('verifyError','⚠️ Échec: '+e.message); }
-  btn.disabled = false;
-};
-
-// Email verification handled by Firebase email link — see top of file
-// SUBMIT NEW (legacy — now replaced by two-step flow above)
-window.submitNew=async()=>{window.sendVerifyCode();};
-
-
-// LOOKUP PHONE (returning student)
-window.lookupPhone=async()=>{
-  if(!authReady){showMsg('retError','Please wait, loading...');return;}
+// ── RETURNING STUDENT (phone lookup) ──
+window.lookupPhone=async function(){
   const phone=normPhone(document.getElementById('rPhone').value.trim());
   if(!phone||phone.replace(/[^\d]/g,'').length<7){showMsg('retError',t('err-phone'));return;}
-  const btn=document.getElementById('lookupBtn');btn.disabled=true;btn.querySelector('span').textContent='...';
+  const btn=document.getElementById('lookupBtn');
+  btn.disabled=true;btn.querySelector('span').textContent='...';
   hideMsg('retError');
-  document.getElementById('profileFound').classList.remove('show');
-  document.getElementById('editFields').classList.add('hidden');
-
-  // Search all people and compare normalized phones
-  const allSnap=await getDocs(collection(db,'people'));
-  const match=allSnap.docs.find(d=>{
-    const dp=d.data().phone||'';
-    return normPhone(dp)===phone;
-  });
-
+  try{
+    const snap=await db.collection('people').get();
+    const match=snap.docs.find(d=>normPhone(d.data().phone||'')===phone);
+    if(match){
+      const p=match.data();
+      document.getElementById('pfName').textContent=p.name||'—';
+      document.getElementById('pfDetails').textContent=(p.university||'')+(p.yearOfStudy?' · Année '+p.yearOfStudy:'');
+      document.getElementById('profileFound').style.display='block';
+      document.getElementById('profileFound').dataset.id=match.id;
+      document.querySelectorAll('[id^="pf-"]:not(#profileFound)').forEach(el=>el.dataset.pid=match.id);
+      // Pre-fill edit fields
+      document.getElementById('eName').value=p.name||'';
+      document.getElementById('eUni').value=p.university||'';
+      document.getElementById('eYear').value=p.yearOfStudy||'1';
+      document.getElementById('eCountry').value=p.country||'';
+      document.getElementById('eCity').value=p.city||'';
+      eFastOn=p.fasting||false;
+      document.getElementById('eFastSw').classList.toggle('on',eFastOn);
+      document.getElementById('eFastToggle').classList.toggle('on',eFastOn);
+    }else{
+      showMsg('retError',lang==='ar'?'لم يتم العثور على هذا الرقم.':lang==='en'?'This number was not found in our list.':'Ce numéro n\'est pas dans notre liste.');
+    }
+  }catch(e){showMsg('retError','⚠️ Erreur: '+e.message);}
   btn.disabled=false;btn.querySelector('span').textContent=t('r-search-btn');
+};
 
-  if(!match){showMsg('retError',t('err-notfound'));return;}
+window.confirmProfile=function(){
+  const pf=document.getElementById('profileFound');
+  const pid=pf.dataset.id;
+  // Mark as confirmed — for now just show success
+  document.getElementById('returnForm').classList.add('hidden');
+  document.getElementById('pathSelector').classList.add('hidden');
+  document.getElementById('successScreen').classList.remove('hidden');
+  document.getElementById('successScreen').classList.add('show');
+};
 
-  foundPerson={id:match.id,...match.data()};
-  const p=foundPerson;
-
-  document.getElementById('pfName').textContent=p.name||'—';
-  document.getElementById('pfDetails').innerHTML=
-    `${p.university?'🎓 '+p.university+'<br>':''}${p.yearOfStudy?'📚 Year '+p.yearOfStudy+'<br>':''}${p.city?'📍 '+p.city+'<br>':''}${p.fasting?'🌙 Fasting':''}`;
-  document.getElementById('profileFound').classList.add('show');
-  // Pre-fill edit fields
-  document.getElementById('eName').value=p.name||'';
-  document.getElementById('eUni').value=p.university||'';
-  document.getElementById('eYear').value=p.yearOfStudy||'';
-  document.getElementById('eCountry').value=p.country||'';
-  document.getElementById('eCity').value=p.city||'';
-  eFastOn=p.fasting||false;
+let eFastOn=false;
+window.toggleEditFast=function(){
+  eFastOn=!eFastOn;
   document.getElementById('eFastSw').classList.toggle('on',eFastOn);
   document.getElementById('eFastToggle').classList.toggle('on',eFastOn);
 };
 
-window.confirmProfile=async()=>{
-  if(!foundPerson)return;
-  // Just show success — no DB write needed for simple confirmation
-  // Admin can see verified status in the app
-  document.getElementById('returnForm').classList.add('hidden');
-  document.getElementById('pathSelector').classList.add('hidden');
-  document.getElementById('successScreen').classList.add('show');
-  document.getElementById('s-title').textContent=t('ok-verified');
-  document.getElementById('s-body').textContent='';
-  document.getElementById('s-badge').textContent='✅ Confirmé';
-  document.getElementById('s-badge').style.background='var(--green-dim)';
-  document.getElementById('s-badge').style.color='var(--green)';
-  document.getElementById('successScreen').querySelector('.success-icon').textContent='✅';
+window.editProfile=function(){
+  document.getElementById('editFields').classList.remove('hidden');
 };
 
-window.editProfile=()=>{document.getElementById('editFields').classList.toggle('hidden');};
-
-window.submitEdit=async()=>{
-  if(!foundPerson)return;
-  if(!authReady){showMsg('retError','Please wait a moment and try again.');return;}
-  const name=document.getElementById('eName').value.trim();
-  const uni=document.getElementById('eUni').value.trim();
-  const year=document.getElementById('eYear').value;
-  const country=document.getElementById('eCountry').value.trim();
-  const city=document.getElementById('eCity').value.trim();
-  if(!name){showMsg('retError',t('err-required'));return;}
+window.submitEdit=async function(){
+  const pf=document.getElementById('profileFound');
+  const pid=pf.dataset.id;
+  if(!pid){showMsg('retError','Erreur: profil introuvable.');return;}
   const btn=document.getElementById('e-save');
-  btn.disabled=true;btn.textContent='...';
-  try {
-    await addDoc(collection(db,'pending'),{
-      name, university:uni, yearOfStudy:year, country, city,
-      phone:foundPerson.phone||'',
+  btn.disabled=true;
+  try{
+    await db.collection('pending').add({
+      type:'edit-request',
+      personId:pid,
+      name:document.getElementById('eName').value.trim(),
+      university:document.getElementById('eUni').value.trim(),
+      yearOfStudy:document.getElementById('eYear').value,
+      country:document.getElementById('eCountry').value.trim(),
+      city:document.getElementById('eCity').value.trim(),
       fasting:eFastOn,
       status:'pending',
-      type:'edit-request',
-      targetPersonId:foundPerson.id,
-      originalName:foundPerson.name||'',
-      submittedAt:serverTimestamp(),
-      submittedAtMs:Date.now(),
-      source:'self-edit'
+      submittedAt:ST(),submittedAtMs:Date.now()
     });
-    btn.disabled=false;btn.textContent=t('e-save');
     document.getElementById('returnForm').classList.add('hidden');
     document.getElementById('pathSelector').classList.add('hidden');
+    document.getElementById('successScreen').classList.remove('hidden');
     document.getElementById('successScreen').classList.add('show');
-    document.getElementById('s-title').textContent=t('ok-updated');
-  } catch(err) {
-    console.error('Edit submit error:',err);
-    btn.disabled=false;btn.textContent=t('e-save');
-    showMsg('retError','⚠️ Something went wrong: '+err.message+'. Please try again.');
-  }
+  }catch(e){showMsg('retError','⚠️ Erreur: '+e.message);}
+  btn.disabled=false;
 };
 
-function toast(msg, dur=3000){const el=document.getElementById('regToast');el.textContent=msg;el.style.opacity='1';el.style.transform='translateY(0)';clearTimeout(el._t);el._t=setTimeout(()=>{el.style.opacity='0';el.style.transform='translateY(10px)'},dur);}
-function showMsg(id,msg){const el=document.getElementById(id);el.textContent=msg;el.style.display='block';}
-function hideMsg(id){document.getElementById(id).style.display='none';}
+window.resetPath=function(){
+  window.selectPath(null);
+  document.getElementById('profileFound').style.display='none';
+  document.getElementById('editFields').classList.add('hidden');
+  hideMsg('newError');hideMsg('newSuccess');hideMsg('retError');
+};
+
+// ── INIT ──
+checkRegistrationAccess().then(()=>{
+  // Only show form if no closed screen was injected
+  if(!document.querySelector('.closed-screen')){
+    window.selectPath('new');
+  }
+}).catch(()=>{ window.selectPath('new'); });
 </script>
 </body>
 </html>
