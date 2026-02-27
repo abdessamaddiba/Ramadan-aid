@@ -59,7 +59,7 @@ textarea.fi{min-height:75px;resize:vertical}
 .upill{display:flex;align-items:center;gap:8px;min-width:0}
 .uav{width:30px;height:30px;border-radius:50%;background:var(--green-dim);border:1px solid rgba(34,197,94,0.3);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--green);flex-shrink:0}
 .rtag{font-size:0.6rem;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px}
-.rtag.admin{background:var(--green-dim);color:var(--green);border:1px solid rgba(34,197,94,0.3)}.rtag.volunteer{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(245,158,11,0.3)}
+.rtag.admin{background:var(--green-dim);color:var(--green);border:1px solid rgba(34,197,94,0.3)}.rtag.volunteer{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(245,158,11,0.3)}.rtag.staff{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(245,158,11,0.3)}
 .mc{margin-left:var(--sw);flex:1;min-height:100vh;display:flex;flex-direction:column}
 .tb{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:99}
 .tbtitle{font-size:1.1rem;font-weight:700;letter-spacing:-0.3px}
@@ -241,7 +241,7 @@ textarea.fi{min-height:75px;resize:vertical}
         <div class="ni hidden" id="nav-add" onclick="sw('add')"><span class="nicon">➕</span>Add People</div>
         <div class="ni hidden" id="nav-export" onclick="sw('export')"><span class="nicon">📤</span>Export</div>
         <div class="ni hidden" id="nav-blacklist" onclick="sw('blacklist')"><span class="nicon">🚫</span>Blacklist</div>
-        <div class="ni hidden" id="nav-users" onclick="sw('users')"><span class="nicon">👥</span>Volunteers</div>
+        <div class="ni hidden" id="nav-users" onclick="sw('users')"><span class="nicon">👥</span>Staff</div>
       </div>
       <div class="sb-foot">
         <div class="upill">
@@ -297,6 +297,7 @@ textarea.fi{min-height:75px;resize:vertical}
           </div>
           <div class="field"><label>Full Name *</label><input type="text" class="fi" id="addName" placeholder="Ahmed Benali"/></div>
           <div class="field"><label>Phone Number</label><input type="tel" class="fi" id="addPhone" placeholder="+212601234567"/></div>
+          <div class="field"><label>Email (optional)</label><input type="email" class="fi" id="addEmail" placeholder="ahmed@email.com"/></div>
           <div class="field"><label>Notes (optional)</label><textarea class="fi" id="addNote" placeholder="family of 4..."></textarea></div>
           <button class="btn btn-p" id="addBtn" onclick="addPerson()">➕ Add to List</button>
           <div class="div"></div>
@@ -320,6 +321,12 @@ textarea.fi{min-height:75px;resize:vertical}
           </div>
 
           <!-- Invite link generator -->
+          <div class="reg-link-box" style="margin-bottom:14px">
+            <div class="reg-link-title">🔗 Public Registration Link</div>
+            <div class="reg-link-url" id="regLinkUrl">Loading...</div>
+            <button class="btn btn-g btn-sm" onclick="window.copyRegLink()">📋 Copy Link</button>
+          </div>
+
           <div class="invite-card" style="position:relative;z-index:2">
             <div style="font-size:0.85rem;font-weight:600;margin-bottom:4px">📨 Generate Invite Link</div>
             <div style="font-size:0.75rem;color:var(--text3);margin-bottom:10px">Enter the student's phone number → generate a unique one-time link → send via WhatsApp</div>
@@ -385,16 +392,41 @@ textarea.fi{min-height:75px;resize:vertical}
         <div class="cgrid" id="blResults"><div class="empty"><div class="ei2">🚫</div><div class="et">Blacklist is empty</div></div></div>
       </div>
 
-      <!-- VOLUNTEERS -->
+      <!-- STAFF -->
       <div class="pg" id="pg-users">
-        <div style="max-width:500px">
-          <div class="stitle">Add Volunteer</div>
+        <div style="max-width:600px">
+          <div class="stitle">Add Staff Member</div>
           <div class="ebox" id="volError"></div>
           <div class="field"><label>Name</label><input type="text" class="fi" id="volName" placeholder="Fatima"/></div>
-          <div class="field"><label>Email</label><input type="email" class="fi" id="volEmail" placeholder="volunteer@email.com"/></div>
+          <div class="field"><label>Email</label><input type="email" class="fi" id="volEmail" placeholder="staff@email.com"/></div>
           <div class="field"><label>Temporary Password</label><input type="text" class="fi" id="volPass" placeholder="Give them a password"/></div>
-          <button class="btn btn-p" id="addVolBtn" onclick="addVolunteer()">➕ Add Volunteer</button>
+          <button class="btn btn-p" id="addVolBtn" onclick="addVolunteer()">➕ Add Staff Member</button>
           <div class="div"></div>
+
+          <!-- STAFF ACCESS MONITORING -->
+          <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:14px;padding:16px;margin-bottom:18px">
+            <div style="font-size:0.75rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:12px">📊 Access Overview</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center">
+              <div style="background:var(--surface);border-radius:10px;padding:10px"><div id="monTotal" style="font-size:1.4rem;font-weight:700;color:var(--text)">—</div><div style="font-size:0.6rem;color:var(--text3);text-transform:uppercase">Total</div></div>
+              <div style="background:var(--green-dim);border:1px solid rgba(34,197,94,0.2);border-radius:10px;padding:10px"><div id="monAdmins" style="font-size:1.4rem;font-weight:700;color:var(--green)">—</div><div style="font-size:0.6rem;color:var(--text3);text-transform:uppercase">Admins</div></div>
+              <div style="background:var(--gold-dim);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:10px"><div id="monTimed" style="font-size:1.4rem;font-weight:700;color:var(--gold)">—</div><div style="font-size:0.6rem;color:var(--text3);text-transform:uppercase">Timed Access</div></div>
+            </div>
+          </div>
+
+          <!-- GRANT TIMED ACCESS FORM -->
+          <div class="stitle">⏱ Grant Timed Access</div>
+          <div style="background:var(--surface2);border:1px solid rgba(245,158,11,0.2);border-radius:14px;padding:16px;margin-bottom:18px">
+            <div style="font-size:0.8rem;color:var(--text2);margin-bottom:12px">Give a staff member temporary admin-level access for a specific time window (e.g. during distribution hours).</div>
+            <div class="field"><label>Staff Member</label>
+              <select class="fi" id="timedStaffSelect"><option value="">Select staff member...</option></select>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div class="field" style="margin-bottom:0"><label>Access From</label><input type="datetime-local" class="fi" id="timedFrom"/></div>
+              <div class="field" style="margin-bottom:0"><label>Access Until</label><input type="datetime-local" class="fi" id="timedUntil"/></div>
+            </div>
+            <button class="btn btn-p" style="margin-top:12px;width:100%" onclick="window.grantTimedAccess()">⏱ Grant Timed Access</button>
+          </div>
+
           <div class="stitle">Current Team</div>
           <div id="volList"><div class="loading"><div class="spinner"></div><br>Loading...</div></div>
         </div>
@@ -410,7 +442,7 @@ textarea.fi{min-height:75px;resize:vertical}
     <div class="mt hidden" id="mt-add" onclick="sw('add')"><span class="mi">➕</span>Add</div>
     <div class="mt hidden" id="mt-export" onclick="sw('export')"><span class="mi">📤</span>Export</div>
     <div class="mt hidden" id="mt-blacklist" onclick="sw('blacklist')"><span class="mi">🚫</span>Blacklist</div>
-    <div class="mt hidden" id="mt-users" onclick="sw('users')"><span class="mi">👥</span>Team</div>
+    <div class="mt hidden" id="mt-users" onclick="sw('users')"><span class="mi">👥</span>Staff</div>
   </div>
 </div>
 
@@ -438,32 +470,52 @@ const FC={apiKey:"AIzaSyB_SeMMk-2mL_XYTKEemoIeh_j2odQ6LNk",authDomain:"ramadan-f
 const app=initializeApp(FC);const auth=getAuth(app);const db=getFirestore(app);
 
 let CU=null,CR=null,people=[],BL=[],pending=[],CF='all',exportScope='all',AF=false;
-let uP=null,uB=null,uPend=null,uV=null,aM='signin',bT=null;
+let uP=null,uB=null,uPend=null,uV=null,uInv=null,aM='signin',bT=null;
 
 async function checkFR(){const s=await getDocs(collection(db,'users'));showS(s.empty?'setupScreen':'authScreen');}
 
 window.toggleAuthMode=()=>{aM=aM==='signin'?'signup':'signin';document.getElementById('authTitle').textContent=aM==='signin'?'Sign In':'Create Account';document.getElementById('authBtn').textContent=aM==='signin'?'Sign In':'Create Account';document.getElementById('authSwitchText').textContent=aM==='signin'?"Don't have an account?":"Already have an account?";document.getElementById('authSwitchLink').textContent=aM==='signin'?'Create Account':'Sign In';hErr('authError');};
 
-window.handleAuth=async()=>{const e=document.getElementById('authEmail').value.trim();const p=document.getElementById('authPassword').value;if(!e||!p){sErr('authError','Please fill in all fields');return;}const btn=document.getElementById('authBtn');btn.disabled=true;btn.textContent='Please wait...';hErr('authError');try{if(aM==='signin')await signInWithEmailAndPassword(auth,e,p);else{const c=await createUserWithEmailAndPassword(auth,e,p);await setDoc(doc(db,'users',c.user.uid),{email:e,role:'volunteer',name:e.split('@')[0],createdAt:serverTimestamp()});}}catch(err){sErr('authError',fe(err.code));btn.disabled=false;btn.textContent=aM==='signin'?'Sign In':'Create Account';}};
+window.handleAuth=async()=>{const e=document.getElementById('authEmail').value.trim();const p=document.getElementById('authPassword').value;if(!e||!p){sErr('authError','Please fill in all fields');return;}const btn=document.getElementById('authBtn');btn.disabled=true;btn.textContent='Please wait...';hErr('authError');try{if(aM==='signin')await signInWithEmailAndPassword(auth,e,p);else{const c=await createUserWithEmailAndPassword(auth,e,p);await setDoc(doc(db,'users',c.user.uid),{email:e,role:'staff',name:e.split('@')[0],createdAt:serverTimestamp()});}}catch(err){sErr('authError',fe(err.code));btn.disabled=false;btn.textContent=aM==='signin'?'Sign In':'Create Account';}};
 
 window.createAdminAccount=async()=>{const n=document.getElementById('setupName').value.trim();const e=document.getElementById('setupEmail').value.trim();const p=document.getElementById('setupPassword').value;if(!n||!e||!p){sErr('setupError','Please fill in all fields');return;}if(p.length<6){sErr('setupError','Password must be at least 6 chars');return;}const btn=document.getElementById('setupBtn');btn.disabled=true;btn.textContent='Creating...';try{const c=await createUserWithEmailAndPassword(auth,e,p);await setDoc(doc(db,'users',c.user.uid),{email:e,name:n,role:'admin',createdAt:serverTimestamp()});}catch(err){sErr('setupError',fe(err.code));btn.disabled=false;btn.textContent='Create Admin Account';}};
 
-window.doLogout=async()=>{[uP,uB,uPend,uV].forEach(u=>{if(u)u();});uP=uB=uPend=uV=null;await signOut(auth);};
+window.doLogout=async()=>{[uP,uB,uPend,uV,uInv].forEach(u=>{if(u)u();});uP=uB=uPend=uV=uInv=null;await signOut(auth);};
 
 onAuthStateChanged(auth,async user=>{
   if(!user){CU=null;CR=null;people=[];await checkFR();return;}
   const ud=await getDoc(doc(db,'users',user.uid));if(!ud.exists()){await signOut(auth);return;}
-  CU={uid:user.uid,...ud.data()};CR=CU.role;
+  CU={uid:user.uid,...ud.data()};
+  // Check timed access: if staff has an active access window, elevate to admin for this session
+  const now=Date.now();
+  if((CU.role==='volunteer'||CU.role==='staff')&&CU.accessFrom&&CU.accessUntil&&CU.accessFrom<=now&&now<=CU.accessUntil){
+    CR='admin';
+    CU._timedAccess=true; // flag: real admin=false, so no staff management
+  } else {
+    CR=CU.role==='admin'?'admin':'staff';
+    CU._timedAccess=false;
+  }
+  // Update last seen
+  try{ await updateDoc(doc(db,'users',user.uid),{lastSeenAt:serverTimestamp(),lastSeenAtMs:Date.now()}); }catch(e){}
   const ini=(CU.name||CU.email||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
   document.getElementById('uIni').textContent=ini;
   document.getElementById('uName').textContent=CU.name||CU.email;
-  document.getElementById('rBadge').textContent=CR==='admin'?'Admin':'Volunteer';
-  document.getElementById('rBadge').className='rtag '+CR;
-  const adminEls=['nav-export','nav-users','mt-export','mt-users'];
+  document.getElementById('rBadge').textContent=CR==='admin'?'Admin':'Staff';
+  document.getElementById('rBadge').className='rtag '+(CR==='admin'?'admin':'staff');
   const adminOnlyEls=['nav-export','nav-users','mt-export','mt-users','nav-pending','mt-pending'];
+  const timedAdminEls=['nav-export','mt-export','nav-pending','mt-pending']; // no staff tab for timed
   const volEls=['nav-add','nav-blacklist','mt-add','mt-blacklist'];
-  if(CR==='admin'){[...adminOnlyEls,...volEls].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('hidden');});document.getElementById('resetBtn').classList.remove('hidden');}
-  else{volEls.forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('hidden');});}
+  if(CR==='admin' && !CU._timedAccess){
+    // Real admin: gets everything including staff management
+    [...adminOnlyEls,...volEls].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('hidden');});
+    document.getElementById('resetBtn').classList.remove('hidden');
+  } else if(CR==='admin' && CU._timedAccess){
+    // Timed promoted staff: gets most things but NOT the staff management tab
+    [...timedAdminEls,...volEls].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('hidden');});
+    document.getElementById('resetBtn').classList.remove('hidden');
+  } else {
+    volEls.forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('hidden');});
+  }
   // Update add button label for volunteers
   if(CR!=='admin'){
     const btn=document.getElementById('addBtn');
@@ -473,7 +525,7 @@ onAuthStateChanged(auth,async user=>{
     // Add volunteer notice
     const notice=document.createElement('div');
     notice.style.cssText='background:var(--blue-dim);border:1px solid rgba(59,130,246,0.2);border-radius:10px;padding:12px 14px;font-size:0.82rem;color:var(--blue);margin-bottom:14px';
-    notice.textContent='ℹ️ As a volunteer, your additions go to the pending queue for admin approval before appearing on the main list.';
+    notice.textContent='ℹ️ As a staff member, your additions go to the pending queue for admin approval before appearing on the main list.';
     const pg=document.getElementById('pg-add');
     const inner=pg?.querySelector('div[style]');
     if(inner)inner.insertBefore(notice,inner.firstChild);
@@ -497,10 +549,16 @@ function startL(){
     badge.textContent=cnt;badge.classList.toggle('hidden',cnt===0);
     document.getElementById('pendingCount').textContent=cnt;
   });
-  if(CR==='admin')uV=onSnapshot(collection(db,'users'),snap=>{renderVols(snap.docs.map(d=>({id:d.id,...d.data()})));});
+  if(CR==='admin'){
+    uV=onSnapshot(collection(db,'users'),snap=>{renderVols(snap.docs.map(d=>({id:d.id,...d.data()})));});
+    // Live invite list
+    uInv=onSnapshot(collection(db,'invites'),snap=>{
+      renderInviteList(snap.docs.map(d=>({id:d.id,...d.data()})));
+    });
+  }
 }
 
-const tTitles={search:'Check Person',list:'Full List',pending:'Pending Approvals',add:'Add People',export:'Export Data',blacklist:'Blacklist',users:'Volunteers'};
+const tTitles={search:'Check Person',list:'Full List',pending:'Pending Approvals',add:'Add People',export:'Export Data',blacklist:'Blacklist',users:'Staff'};
 window.sw=name=>{document.querySelectorAll('.ni').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.mt').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.pg').forEach(p=>p.classList.remove('active'));const n=document.getElementById('nav-'+name);const m=document.getElementById('mt-'+name);if(n)n.classList.add('active');if(m)m.classList.add('active');document.getElementById('pg-'+name).classList.add('active');document.getElementById('tbTitle').textContent=tTitles[name]||name;closeSB();if(name==='search')setTimeout(()=>document.getElementById('sInput').focus(),100);if(name==='add'){loadRegSettings();loadInviteList();}};
 window.openSB=()=>{document.getElementById('sb').classList.add('open');document.getElementById('sbo').classList.add('open');};
 window.closeSB=()=>{document.getElementById('sb').classList.remove('open');document.getElementById('sbo').classList.remove('open');};
@@ -517,7 +575,7 @@ function cHTML(p,ctx){
   const tH=p.served?`<div class="cst">✓ ${p.servedAt} · ⏱ ${ts(p.servedAtMs)}</div>`:'';
   const spH=isSusp?`<div class="csp">⚠️ Already received food ${ts(p.servedAtMs)} — verify first</div>`:'';
   const nH=p.note?`<div class="cno">📌 ${esc(p.note)}</div>`:'';
-  const detH=(p.university||p.yearOfStudy||p.city||p.country)?`<div class="cdet">${p.university?'🎓 '+esc(p.university)+'  ':''}${p.yearOfStudy?'📚 Y'+esc(p.yearOfStudy)+'  ':''}${p.city?'📍 '+esc(p.city):''}${p.country?' 🌍 '+esc(p.country):''}</div>`:'';
+  const detH=(p.university||p.yearOfStudy||p.city||p.country||p.email)?`<div class="cdet">${p.university?'🎓 '+esc(p.university)+'  ':''}${p.yearOfStudy?'📚 Y'+esc(p.yearOfStudy)+'  ':''}${p.city?'📍 '+esc(p.city)+'  ':''}${p.country?'🌍 '+esc(p.country)+'  ':''}${p.email?'✉️ '+esc(p.email):''}</div>`:'';
   const tagsH=(p.tags&&p.tags.length)?`<div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:3px">${p.tags.map(t=>`<span class="tag-badge">${esc(t)}</span>`).join('')}</div>`:'';
   let acts='';
   if(!bl){
@@ -528,7 +586,7 @@ function cHTML(p,ctx){
     if(CR==='admin'){acts+=`<button class="btn btn-g btn-sm" style="color:var(--text3)" onclick="window.delP('${p.id}')">✕</button>`;if(!isSusp)acts+=`<button class="btn btn-g btn-sm" style="color:var(--text3);font-size:0.72rem" onclick="window.openBLM('${p.id}')">🚫</button>`;}
   }else{if(CR==='admin')acts+=`<button class="btn btn-g btn-sm" onclick="window.remBL('${p.id}')">✓ Remove from Blacklist</button>`;}
   const tagBadges=(p.tags||[]).map(t=>`<span class="tag-badge removable" onclick="window.removeTag('${p.id}','${t}')">${esc(t)} ✕</span>`).join('');
-  const eH=`<div class="ef" id="ef-${p.id}"><div class="er"><div><div class="el">Name</div><input class="ei" id="en-${p.id}" value="${esc(p.name)}"/></div><div><div class="el">Phone</div><input class="ei" id="ep-${p.id}" value="${esc(p.phone||'')}"/></div></div><div class="er"><div><div class="el">University</div><input class="ei" id="eu-${p.id}" value="${esc(p.university||'')}"/></div><div><div class="el">Year</div><input class="ei" id="ey-${p.id}" value="${esc(p.yearOfStudy||'')}"/></div></div><div class="er"><div><div class="el">Country</div><input class="ei" id="eco-${p.id}" value="${esc(p.country||'')}"/></div><div><div class="el">City</div><input class="ei" id="ec-${p.id}" value="${esc(p.city||'')}"/></div></div><div class="er full"><div><div class="el">Notes</div><input class="ei" id="eno-${p.id}" value="${esc(p.note||'')}"/></div></div><div class="etr" onclick="window.tEF('${p.id}')"><div style="font-size:0.85rem;font-weight:600">🌙 Fasting (Muslim)</div><div class="esw ${p.fasting?'on':''}" id="esw-${p.id}"></div></div><div style="padding:8px 12px"><div class="el" style="margin-bottom:4px">🏷️ Tags</div><div id="etags-${p.id}" style="display:flex;flex-wrap:wrap;gap:4px;min-height:20px;margin-bottom:6px">${tagBadges}</div><div class="tag-input-row"><input id="etagin-${p.id}" class="ei" placeholder="Add tag e.g. Moroccan, VIP..." onkeydown="if(event.key==='Enter'){event.preventDefault();window.addTag('${p.id}')}"/><button class="btn btn-g btn-sm" onclick="window.addTag('${p.id}')">+ Tag</button></div></div><div class="eact"><button class="btn btn-p btn-sm" onclick="window.saveE('${p.id}')">Save</button><button class="btn btn-g btn-sm" onclick="window.tEdit('${p.id}')">Cancel</button></div></div>`;
+  const eH=`<div class="ef" id="ef-${p.id}"><div class="er"><div><div class="el">Name</div><input class="ei" id="en-${p.id}" value="${esc(p.name)}"/></div><div><div class="el">Phone</div><input class="ei" id="ep-${p.id}" value="${esc(p.phone||'')}"/></div></div><div class="er full"><div><div class="el">Email</div><input class="ei" type="email" id="ee-${p.id}" value="${esc(p.email||'')}" placeholder="email@example.com"/></div></div><div class="er"><div><div class="el">University</div><input class="ei" id="eu-${p.id}" value="${esc(p.university||'')}"/></div><div><div class="el">Year</div><input class="ei" id="ey-${p.id}" value="${esc(p.yearOfStudy||'')}"/></div></div><div class="er"><div><div class="el">Country</div><input class="ei" id="eco-${p.id}" value="${esc(p.country||'')}"/></div><div><div class="el">City</div><input class="ei" id="ec-${p.id}" value="${esc(p.city||'')}"/></div></div><div class="er full"><div><div class="el">Notes</div><input class="ei" id="eno-${p.id}" value="${esc(p.note||'')}"/></div></div><div class="etr" onclick="window.tEF('${p.id}')"><div style="font-size:0.85rem;font-weight:600">🌙 Fasting (Muslim)</div><div class="esw ${p.fasting?'on':''}" id="esw-${p.id}"></div></div><div style="padding:8px 12px"><div class="el" style="margin-bottom:4px">🏷️ Tags</div><div id="etags-${p.id}" style="display:flex;flex-wrap:wrap;gap:4px;min-height:20px;margin-bottom:6px">${tagBadges}</div><div class="tag-input-row"><input id="etagin-${p.id}" class="ei" placeholder="Add tag e.g. Moroccan, VIP..." onkeydown="if(event.key==='Enter'){event.preventDefault();window.addTag('${p.id}')}"/><button class="btn btn-g btn-sm" onclick="window.addTag('${p.id}')">+ Tag</button></div></div><div class="eact"><button class="btn btn-p btn-sm" onclick="window.saveE('${p.id}')">Save</button><button class="btn btn-g btn-sm" onclick="window.tEdit('${p.id}')">Cancel</button></div></div>`;
   // Proxy list display on card
   const proxyList = p.proxyFor && p.proxyFor.length > 0
     ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
@@ -637,6 +695,7 @@ function getOpenEdits(){
       type:'edit',
       name: document.getElementById('en-'+id)?.value,
       phone: document.getElementById('ep-'+id)?.value,
+      email: document.getElementById('ee-'+id)?.value,
       university: document.getElementById('eu-'+id)?.value,
       yearOfStudy: document.getElementById('ey-'+id)?.value,
       country: document.getElementById('eco-'+id)?.value,
@@ -665,6 +724,8 @@ function restoreOpenEdits(states){
         document.getElementById('en-'+s.id).value=s.name;
       if(s.phone!==undefined&&document.getElementById('ep-'+s.id))
         document.getElementById('ep-'+s.id).value=s.phone;
+      if(s.email!==undefined&&document.getElementById('ee-'+s.id))
+        document.getElementById('ee-'+s.id).value=s.email;
       if(s.university!==undefined&&document.getElementById('eu-'+s.id))
         document.getElementById('eu-'+s.id).value=s.university;
       if(s.yearOfStudy!==undefined&&document.getElementById('ey-'+s.id))
@@ -725,7 +786,7 @@ window.approvePending=async id=>{
     if(p.type==='edit-request'){
       if(!p.targetPersonId){toast('⚠️ Cannot find original person — targetPersonId missing');if(btn){btn.disabled=false;btn.textContent='✅ Approve';}return;}
       await updateDoc(doc(db,'people',p.targetPersonId),{
-        name:p.name,phone:p.phone||'',university:p.university||'',
+        name:p.name,phone:p.phone||'',email:p.email||'',university:p.university||'',
         yearOfStudy:p.yearOfStudy||'',country:p.country||'',city:p.city||'',
         note:p.note||'',fasting:p.fasting||false,
         lastEditedBy:p.submittedBy||'student-form',lastEditedAt:serverTimestamp()
@@ -734,7 +795,7 @@ window.approvePending=async id=>{
       toast(`✅ Edit for ${p.name} approved and applied!`);
     } else {
       await addDoc(collection(db,'people'),{
-        name:p.name,phone:p.phone||'',note:p.note||'',
+        name:p.name,phone:p.phone||'',email:p.email||'',note:p.note||'',
         university:p.university||'',yearOfStudy:p.yearOfStudy||'',
         country:p.country||'',city:p.city||'',fasting:p.fasting||false,
         served:false,servedAt:null,servedAtMs:null,servedBy:null,
@@ -773,6 +834,7 @@ window.saveE=async id=>{
   const updates={
     name:n,
     phone:normPhone(document.getElementById('ep-'+id).value.trim()),
+    email:(document.getElementById('ee-'+id)?.value.trim()||'').toLowerCase(),
     university:document.getElementById('eu-'+id).value.trim(),
     yearOfStudy:document.getElementById('ey-'+id).value.trim(),
     country:document.getElementById('eco-'+id)?.value.trim()||'',
@@ -812,6 +874,7 @@ window.toggleAF=()=>{AF=!AF;document.getElementById('addFS').classList.toggle('o
 window.addPerson=async()=>{
   const n=document.getElementById('addName').value.trim();
   const ph=normPhone(document.getElementById('addPhone').value.trim());
+  const em=(document.getElementById('addEmail').value.trim()||'').toLowerCase();
   const no=document.getElementById('addNote').value.trim();
   if(!n){toast('⚠️ Please enter a name');return;}
   const btn=document.getElementById('addBtn');btn.disabled=true;
@@ -826,7 +889,7 @@ window.addPerson=async()=>{
   const dupName=people.find(p=>p.name.trim().toLowerCase()===n.toLowerCase());
   if(dupName){if(!confirm(`⚠️ "${n}" already exists in the list. Add anyway?`)){btn.disabled=false;btn.textContent='➕ Add to List';return;}}
   btn.textContent=CR==='admin'?'Adding...':'Submitting...';
-  const data={name:n,phone:ph,note:no,fasting:AF,served:false,servedAt:null,servedAtMs:null,servedBy:null,addedBy:CU.email,createdAt:serverTimestamp()};
+  const data={name:n,phone:ph,email:em,note:no,fasting:AF,served:false,servedAt:null,servedAtMs:null,servedBy:null,addedBy:CU.email,createdAt:serverTimestamp()};
   try {
     if(CR==='admin'){
       await addDoc(collection(db,'people'),data);
@@ -837,7 +900,7 @@ window.addPerson=async()=>{
       btn.textContent='📋 Submit for Approval';
       toast(`📋 ${n} submitted — waiting for admin approval`);
     }
-    document.getElementById('addName').value=document.getElementById('addPhone').value=document.getElementById('addNote').value='';
+    document.getElementById('addName').value=document.getElementById('addPhone').value=document.getElementById('addEmail').value=document.getElementById('addNote').value='';
     AF=false;document.getElementById('addFS').classList.remove('on');document.getElementById('addFR').classList.remove('on');
   } catch(err){toast('⚠️ Failed: '+err.message);}
   btn.disabled=false;
@@ -875,7 +938,7 @@ window.bulkAdd=async()=>{
     added++;
   }
   document.getElementById('bulkIn').value='';
-  btn.disabled=false;btn.textContent=CR==='admin'?'📥 Import List':'📋 Submit for Approval';
+  btn.disabled=false;btn.textContent=CR==='admin'?'📥 Import List':'📋 Submit Bulk for Approval';
   let msg=CR==='admin'?`✅ ${added} imported!`:`📋 ${added} submitted for approval!`;
   if(skipped>0)msg+=` | ⚠️ ${skipped} skipped (duplicates): ${skippedNames.slice(0,3).join(', ')}${skippedNames.length>3?'...':''}`;
   toast(msg,4000);
@@ -895,8 +958,8 @@ function getScopedData(){
 
 window.exportCSV=()=>{
   const data=getScopedData();
-  const headers=['Name','Phone','University','Year','City','Fasting','Served','Served At','Notes'];
-  const rows=data.map(p=>[p.name,p.phone||'',p.university||'',p.yearOfStudy||'',p.city||'',p.fasting?'Yes':'No',p.served?'Yes':'No',p.servedAt||'',p.note||'']);
+  const headers=['Name','Phone','Email','University','Year','City','Country','Fasting','Served','Served At','Notes'];
+  const rows=data.map(p=>[p.name,p.phone||'',p.email||'',p.university||'',p.yearOfStudy||'',p.city||'',p.country||'',p.fasting?'Yes':'No',p.served?'Yes':'No',p.servedAt||'',p.note||'']);
   const csv=[headers,...rows].map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
   dl('\uFEFF'+csv,'ramadan-aid-'+exportScope+'.csv','text/csv');
   toast('📊 CSV exported!');
@@ -1024,7 +1087,6 @@ window.generateInvite=async()=>{
     document.getElementById('inviteLinkText').textContent=link;
     document.getElementById('inviteLinkBox').style.display='block';
     document.getElementById('invitePhone').value='';
-    loadInviteList();
     toast('✅ Invite link generated!');
   } catch(err){
     toast('⚠️ Failed: '+err.message);
@@ -1043,44 +1105,141 @@ window.shareWhatsApp=()=>{
 
 window.revokeInvite=async(id)=>{
   await updateDoc(doc(db,'invites',id),{status:'revoked',revokedAt:serverTimestamp()});
-  loadInviteList();
   toast('🗑️ Invite revoked');
 };
 
-async function loadInviteList(){
+window.copyInviteByPhone=(phone,id)=>{
+  const baseUrl=window.location.href.replace(/\/[^\/]*$/, '/');
+  const link=baseUrl+'register.html?invite='+id;
+  navigator.clipboard.writeText(link).then(()=>toast('📋 Invite link copied!'));
+  // Also update lastInviteLink for WhatsApp button
+  lastInviteLink=link; lastInvitePhone=phone;
+};
+
+// Render invite list from live snapshot data (called by onSnapshot)
+function renderInviteList(allInvites){
   const box=document.getElementById('inviteList');
   if(!box)return;
-  try {
-    const snap=await getDocs(collection(db,'invites'));
-    const now=Date.now();
-    const invites=snap.docs
-      .map(d=>({id:d.id,...d.data()}))
-      .filter(i=>i.status!=='revoked')
-      .sort((a,b)=>(b.createdAtMs||0)-(a.createdAtMs||0))
-      .slice(0,10);
-    if(!invites.length){box.innerHTML='<div style="font-size:0.78rem;color:var(--text3)">No active invites</div>';return;}
-    box.innerHTML=invites.map(inv=>{
-      const expired=inv.expiresAtMs<now;
-      const statusClass=inv.status==='used'?'inv-used':expired?'inv-expired':'inv-pending';
-      const statusLabel=inv.status==='used'?'✅ Used':expired?'⏰ Expired':'⏳ Pending';
-      const expTime=new Date(inv.expiresAtMs).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-      return`<div class="invite-item">
-        <div>
-          <div class="inv-phone">${esc(inv.phone||'')}</div>
-          <div style="font-size:0.7rem;color:var(--text3)">Expires ${expTime} · by ${esc(inv.createdBy||'')}</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px">
-          <span class="inv-status ${statusClass}">${statusLabel}</span>
-          ${inv.status==='pending'&&!expired?`<button class="btn btn-g btn-sm" style="font-size:0.7rem;padding:2px 8px;color:var(--danger)" onclick="window.revokeInvite('${inv.id}')">Revoke</button>`:''}
-        </div>
-      </div>`;
-    }).join('');
-  } catch(e){box.innerHTML='<div style="font-size:0.78rem;color:var(--text3)">Failed to load invites</div>';}
+  const now=Date.now();
+  const invites=allInvites
+    .filter(i=>i.status!=='revoked')
+    .sort((a,b)=>(b.createdAtMs||0)-(a.createdAtMs||0));
+  if(!invites.length){box.innerHTML='<div style="font-size:0.78rem;color:var(--text3)">No invites generated yet</div>';return;}
+  box.innerHTML=invites.map(inv=>{
+    const expired=inv.expiresAtMs<now;
+    const statusClass=inv.status==='used'?'inv-used':expired?'inv-expired':'inv-pending';
+    const statusLabel=inv.status==='used'?'✅ Used':expired?'⏰ Expired':'⏳ Pending';
+    const expDate=new Date(inv.expiresAtMs).toLocaleDateString([],{month:'short',day:'numeric'});
+    const expTime=new Date(inv.expiresAtMs).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    return`<div class="invite-item">
+      <div>
+        <div class="inv-phone">${esc(inv.phone||'')}</div>
+        <div style="font-size:0.7rem;color:var(--text3)">Expires ${expDate} ${expTime} · by ${esc(inv.createdBy||'')}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span class="inv-status ${statusClass}">${statusLabel}</span>
+        ${inv.status==='pending'&&!expired?`<button class="btn btn-g btn-sm" style="font-size:0.7rem;padding:2px 8px;color:var(--danger)" onclick="window.revokeInvite('${inv.id}')">Revoke</button><button class="btn btn-g btn-sm" style="font-size:0.7rem;padding:2px 8px" onclick="window.copyInviteByPhone('${esc(inv.phone||'')}','${inv.id}')">📋 Copy</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
 }
 
-window.addVolunteer=async()=>{const n=document.getElementById('volName').value.trim();const e=document.getElementById('volEmail').value.trim();const p=document.getElementById('volPass').value;if(!n||!e||!p){sErr('volError','Please fill in all fields');return;}if(p.length<6){sErr('volError','Min 6 chars');return;}const btn=document.getElementById('addVolBtn');btn.disabled=true;btn.textContent='Creating...';hErr('volError');try{const sa=initializeApp(FC,'s_'+Date.now());const sa2=getAuth(sa);const c=await createUserWithEmailAndPassword(sa2,e,p);await setDoc(doc(db,'users',c.user.uid),{email:e,name:n,role:'volunteer',createdAt:serverTimestamp(),createdBy:CU.email});await c.user.sendEmailVerification();await signOut(sa2);document.getElementById('volName').value=document.getElementById('volEmail').value=document.getElementById('volPass').value='';btn.disabled=false;btn.textContent='➕ Add Volunteer';toast(`✅ ${n} added! Verification email sent to ${e}`);}catch(err){sErr('volError',fe(err.code));btn.disabled=false;btn.textContent='➕ Add Volunteer';}};
+// Keep loadInviteList as a no-op fallback (live listener handles everything now)
+async function loadInviteList(){ /* handled by onSnapshot */ }
 
-function renderVols(users){const box=document.getElementById('volList');if(!box)return;const vols=users.filter(u=>u.id!==CU.uid);if(vols.length===0){box.innerHTML='<div class="empty"><div class="ei2">👤</div><div class="et">No volunteers yet</div></div>';return;}box.innerHTML=vols.map(v=>`<div class="vc"><div><div class="vn">${esc(v.name||v.email)}</div><div class="ve">${esc(v.email)} · ${v.role}</div></div>${v.role!=='admin'?`<button class="btn btn-g btn-sm" style="color:var(--danger)" onclick="window.remVol('${v.id}','${esc(v.name||v.email)}')">Remove</button>`:'<span style="color:var(--green);font-size:0.75rem;font-weight:700">Admin</span>'}</div>`).join('');}
+
+window.addVolunteer=async()=>{const n=document.getElementById('volName').value.trim();const e=document.getElementById('volEmail').value.trim();const p=document.getElementById('volPass').value;if(!n||!e||!p){sErr('volError','Please fill in all fields');return;}if(p.length<6){sErr('volError','Min 6 chars');return;}const btn=document.getElementById('addVolBtn');btn.disabled=true;btn.textContent='Creating...';hErr('volError');try{const sa=initializeApp(FC,'s_'+Date.now());const sa2=getAuth(sa);const c=await createUserWithEmailAndPassword(sa2,e,p);await setDoc(doc(db,'users',c.user.uid),{email:e,name:n,role:'staff',createdAt:serverTimestamp(),createdBy:CU.email});await c.user.sendEmailVerification();await signOut(sa2);document.getElementById('volName').value=document.getElementById('volEmail').value=document.getElementById('volPass').value='';btn.disabled=false;btn.textContent='➕ Add Staff Member';toast(`✅ ${n} added! Verification email sent to ${e}`);}catch(err){sErr('volError',fe(err.code));btn.disabled=false;btn.textContent='➕ Add Staff Member';}};
+
+function renderVols(users){
+  const box=document.getElementById('volList');if(!box)return;
+  const others=users.filter(u=>u.id!==CU.uid);
+  const now=Date.now();
+  // Update monitoring stats
+  const allUsers=users;
+  const admins=allUsers.filter(u=>u.role==='admin').length;
+  const timedActive=allUsers.filter(u=>(u.role==='volunteer'||u.role==='staff')&&u.accessFrom&&u.accessUntil&&u.accessFrom<=now&&now<=u.accessUntil).length;
+  const monTotal=document.getElementById('monTotal');const monAdmins=document.getElementById('monAdmins');const monTimed=document.getElementById('monTimed');
+  if(monTotal)monTotal.textContent=allUsers.length;
+  if(monAdmins)monAdmins.textContent=admins;
+  if(monTimed)monTimed.textContent=timedActive;
+  // Populate timed access dropdown
+  const sel=document.getElementById('timedStaffSelect');
+  if(sel){
+    const curr=sel.value;
+    sel.innerHTML='<option value="">Select staff member...</option>'+others.filter(u=>u.role!=='admin').map(v=>`<option value="${v.id}">${esc(v.name||v.email)}</option>`).join('');
+    if(curr)sel.value=curr;
+  }
+  if(others.length===0){box.innerHTML='<div class="empty"><div class="ei2">👤</div><div class="et">No staff yet</div></div>';return;}
+  box.innerHTML=others.map(v=>{
+    const isAdmin=v.role==='admin';
+    const hasTimed=v.accessFrom&&v.accessUntil;
+    const timedOn=hasTimed&&v.accessFrom<=now&&now<=v.accessUntil;
+    const timedExp=hasTimed&&now>v.accessUntil;
+    const lastSeen=v.lastSeenAtMs?ts(v.lastSeenAtMs):'Never';
+    let statusBadge='';
+    if(isAdmin)statusBadge=`<span class="rtag admin">Admin</span>`;
+    else if(timedOn)statusBadge=`<span class="rtag" style="background:var(--gold-dim);color:var(--gold);border:1px solid rgba(245,158,11,0.3)">⏱ Timed Admin</span>`;
+    else statusBadge=`<span class="rtag staff">Staff</span>`;
+    let timedInfo='';
+    if(hasTimed){
+      const fromStr=new Date(v.accessFrom).toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+      const untilStr=new Date(v.accessUntil).toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+      timedInfo=`<div style="font-size:0.7rem;color:${timedOn?'var(--gold)':timedExp?'var(--text3)':'var(--blue)'};margin-top:2px">⏱ ${fromStr} → ${untilStr}${timedExp?' (expired)':timedOn?' (active)':''}</div>`;
+    }
+    let actions='';
+    if(!isAdmin){
+      actions+=`<button class="btn btn-p btn-sm" onclick="window.promoteStaff('${v.id}','${esc(v.name||v.email)}')">⬆ Promote</button>`;
+    } else if(v.id!==CU.uid){
+      actions+=`<button class="btn btn-g btn-sm" style="color:var(--warn)" onclick="window.demoteStaff('${v.id}','${esc(v.name||v.email)}')">⬇ Demote</button>`;
+    }
+    if(hasTimed&&!isAdmin)actions+=`<button class="btn btn-g btn-sm" style="color:var(--text3);font-size:0.72rem" onclick="window.clearTimedAccess('${v.id}')">✕ Clear Timer</button>`;
+    if(v.id!==CU.uid)actions+=`<button class="btn btn-g btn-sm" style="color:var(--danger)" onclick="window.remVol('${v.id}','${esc(v.name||v.email)}')">Remove</button>`;
+    return`<div class="vc" style="flex-wrap:wrap;gap:10px">
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:2px">
+          <div class="vn">${esc(v.name||v.email)}</div>${statusBadge}
+        </div>
+        <div class="ve">${esc(v.email)}</div>
+        ${timedInfo}
+        <div style="font-size:0.68rem;color:var(--text3);margin-top:2px">Last seen: ${lastSeen}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">${actions}</div>
+    </div>`;
+  }).join('');
+}
+
+window.promoteStaff=async(id,name)=>{
+  if(!confirm(`Promote ${name} to Admin? They will have full access.`))return;
+  await updateDoc(doc(db,'users',id),{role:'admin'});
+  toast(`✅ ${name} promoted to Admin`);
+};
+
+window.demoteStaff=async(id,name)=>{
+  if(!confirm(`Demote ${name} to Staff? They will lose admin access.`))return;
+  await updateDoc(doc(db,'users',id),{role:'staff',accessFrom:null,accessUntil:null});
+  toast(`↩ ${name} demoted to Staff`);
+};
+
+window.clearTimedAccess=async(id)=>{
+  await updateDoc(doc(db,'users',id),{accessFrom:null,accessUntil:null});
+  toast('✕ Timed access cleared');
+};
+
+window.grantTimedAccess=async()=>{
+  const staffId=document.getElementById('timedStaffSelect').value;
+  const fromVal=document.getElementById('timedFrom').value;
+  const untilVal=document.getElementById('timedUntil').value;
+  if(!staffId){toast('⚠️ Select a staff member');return;}
+  if(!fromVal||!untilVal){toast('⚠️ Set both From and Until times');return;}
+  const fromMs=new Date(fromVal).getTime();
+  const untilMs=new Date(untilVal).getTime();
+  if(untilMs<=fromMs){toast('⚠️ Until must be after From');return;}
+  await updateDoc(doc(db,'users',staffId),{accessFrom:fromMs,accessUntil:untilMs,accessGrantedBy:CU.email,accessGrantedAt:serverTimestamp()});
+  toast(`✅ Timed access granted!`);
+  document.getElementById('timedStaffSelect').value='';
+  document.getElementById('timedFrom').value='';
+  document.getElementById('timedUntil').value='';
+};
 window.remVol=async(id,n)=>{if(!confirm(`Remove ${n}?`))return;await deleteDoc(doc(db,'users',id));toast(`🗑 Removed`);};
 
 function normPhone(p){

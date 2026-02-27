@@ -129,18 +129,14 @@ select.fi option{background:var(--surface)}
     <span id="w-body">Nous savons que votre temps est précieux et nous vous remercions de votre patience. Nous travaillons sur un système permanent pour que vous n'ayez plus jamais à faire cela. Pour l'instant, cette inscription unique nous aide à garantir que chacun reçoit ce qu'il mérite — rapidement et équitablement. Merci de faire partie de cette communauté. 🌙</span>
   </div>
 
-  <!-- PATH SELECTOR -->
-  <div class="path-row" id="pathSelector">
-    <div class="path-card" id="pathNew" onclick="selectPath('new')">
+  <!-- PATH SELECTOR hidden - auto new student -->
+  <div class="path-row" id="pathSelector" style="display:none">
+    <div class="path-card selected" id="pathNew">
       <span class="path-icon">✨</span>
       <div class="path-title" id="p-new-title">Nouveau</div>
       <div class="path-sub" id="p-new-sub">Je n'ai jamais rempli ce formulaire</div>
     </div>
-    <div class="path-card" id="pathReturn" onclick="selectPath('return')">
-      <span class="path-icon">🔄</span>
-      <div class="path-title" id="p-ret-title">Déjà inscrit</div>
-      <div class="path-sub" id="p-ret-sub">J'ai déjà donné mes informations</div>
-    </div>
+    <div class="path-card" id="pathReturn" style="display:none"></div>
   </div>
 
   <!-- NEW STUDENT FORM -->
@@ -154,9 +150,14 @@ select.fi option{background:var(--surface)}
       <input type="text" class="fi" id="nName" placeholder="Ahmed Benali"/>
     </div>
     <div class="field">
+      <label id="l-email">Adresse e-mail</label>
+      <input type="email" class="fi" id="nEmail" placeholder="ahmed@email.com"/>
+    </div>
+    <div class="field">
       <label id="l-phone">Numéro de téléphone</label>
       <input type="tel" class="fi" id="nPhone" placeholder="+212601234567"/>
     </div>
+
     <div class="field">
       <label id="l-uni">Université / École</label>
       <input type="text" class="fi" id="nUni" placeholder="Faculté de Médecine..."/>
@@ -192,9 +193,28 @@ select.fi option{background:var(--surface)}
       <div class="sw" id="fastSw"></div>
     </div>
 
-    <button class="submit-btn" id="submitNewBtn" onclick="submitNew()">
-      <span id="submit-label">Envoyer ma demande →</span>
+    <button class="submit-btn" id="submitNewBtn" onclick="sendVerifyCode()">
+      <span id="submit-label">Envoyer le code de vérification →</span>
     </button>
+
+    <!-- EMAIL VERIFICATION PANEL (shown after link is sent) -->
+    <div class="verify-card" id="verifyPanel">
+      <div style="text-align:center;padding:24px 16px">
+        <div style="font-size:3rem;margin-bottom:12px">📬</div>
+        <div style="font-size:1rem;font-weight:700;color:var(--text);margin-bottom:8px" id="vcode-sent-msg">Vérifiez votre boîte mail</div>
+        <div style="font-size:0.82rem;color:var(--text2);line-height:1.6" id="vcode-sent-sub">
+          Nous vous avons envoyé un lien de vérification.<br/>
+          Cliquez sur le lien dans l'email pour confirmer votre inscription.
+        </div>
+        <div style="margin-top:16px;padding:10px 14px;background:var(--bg2);border-radius:8px;font-size:0.75rem;color:var(--text3)">
+          💡 Vérifiez aussi vos spams si vous ne voyez pas l'email
+        </div>
+      </div>
+      <div class="ebox" id="verifyError"></div>
+      <div style="margin-top:4px;text-align:center">
+        <button class="btn-outline" id="resendBtn" onclick="resendCode()" style="font-size:0.78rem"><span id="resend-btn">🔄 Renvoyer le lien</span></button>
+      </div>
+    </div>
 
     <div style="margin-top:12px;text-align:center">
       <button class="btn-outline" onclick="resetPath()" id="back-btn">← Retour</button>
@@ -210,7 +230,7 @@ select.fi option{background:var(--surface)}
 
     <div class="vphone-row">
       <input type="tel" class="fi" id="rPhone" placeholder="+212601234567" onkeydown="if(event.key==='Enter')lookupPhone()"/>
-      <button class="vbtn" id="lookupBtn" onclick="lookupPhone()" id="r-search-btn">Rechercher</button>
+      <button class="vbtn" id="lookupBtn" onclick="lookupPhone()"><span id="r-search-btn">Rechercher</span></button>
     </div>
 
     <!-- PROFILE FOUND -->
@@ -260,11 +280,12 @@ select.fi option{background:var(--surface)}
 
   <div class="footer">رمضان كريم ✦ Ramadan Kareem ✦ Ramadan Moubarak</div>
 </div>
+<div class="toast" id="regToast" style="position:fixed;bottom:28px;right:28px;background:#1e2d42;color:#f1f5f9;padding:12px 20px;border-radius:12px;font-size:0.86rem;font-weight:600;border:1px solid rgba(255,255,255,0.12);box-shadow:0 8px 30px rgba(0,0,0,0.4);opacity:0;transform:translateY(10px);transition:all 0.3s;pointer-events:none;z-index:9999;max-width:320px"></div>
 
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import{getAuth,signInAnonymously}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
-import{getFirestore,collection,addDoc,query,where,getDocs,getDoc,doc,updateDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+import{getAuth,sendSignInLinkToEmail,isSignInWithEmailLink,signInWithEmailLink}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+import{getFirestore,collection,addDoc,getDocs,getDoc,doc,updateDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 const FC={apiKey:"AIzaSyB_SeMMk-2mL_XYTKEemoIeh_j2odQ6LNk",authDomain:"ramadan-food-aid.firebaseapp.com",projectId:"ramadan-food-aid",storageBucket:"ramadan-food-aid.firebasestorage.app",messagingSenderId:"836613630009",appId:"1:836613630009:web:c5b3047298224ec82f05e8"};
 const app=initializeApp(FC);const auth=getAuth(app);const db=getFirestore(app);
@@ -281,7 +302,7 @@ function normPhone(p){
   return n;
 }
 
-// Auth state — wait for anonymous sign-in before enabling buttons
+// Auth ready — always true now (no anon sign-in needed)
 let authReady=false;
 function enableButtons(){
   authReady=true;
@@ -289,6 +310,74 @@ function enableButtons(){
     b.style.opacity='1';b.style.pointerEvents='auto';
   });
 }
+
+// ── HANDLE EMAIL LINK RETURN ──
+// When student clicks the Firebase email link, they land back here
+(async()=>{
+  if(isSignInWithEmailLink(auth, window.location.href)){
+    const savedEmail = localStorage.getItem('sofra_verify_email');
+    const savedData  = localStorage.getItem('sofra_form_data');
+    const savedInvite= localStorage.getItem('sofra_invite_id');
+    if(!savedEmail || !savedData){
+      // Missing saved data - show error
+      document.body.innerHTML=`<div style="text-align:center;padding:60px 20px;font-family:sans-serif;color:#f1f5f9;background:#080c14;min-height:100vh">
+        <div style="font-size:3rem;margin-bottom:16px">⚠️</div>
+        <div style="font-size:1.2rem;margin-bottom:8px">Lien expiré ou invalide</div>
+        <div style="color:#64748b;margin-bottom:24px">Veuillez recommencer l'inscription.</div>
+        <a href="register.html" style="color:#c9a84c">← Réessayer</a>
+      </div>`;
+      return;
+    }
+    try {
+      // Complete sign-in with the email link
+      await signInWithEmailLink(auth, savedEmail, window.location.href);
+      // Clean URL (remove Firebase oob params)
+      window.history.replaceState({},'',window.location.pathname+(savedInvite?'?invite='+savedInvite:''));
+      // Get saved form data
+      const fd = JSON.parse(savedData);
+      // Submit to pending
+      await addDoc(collection(db,'pending'),{
+        name:fd.name, email:fd.email, phone:fd.phone,
+        university:fd.uni, yearOfStudy:fd.year, city:fd.city, country:fd.country,
+        fasting:fd.fasting, lang:fd.lang,
+        status:'pending',
+        submittedAt:serverTimestamp(), submittedAtMs:Date.now(),
+        verified:true, emailVerified:true,
+        source:'self-registration'
+      });
+      // Mark invite used
+      if(savedInvite){
+        try{ await updateDoc(doc(db,'invites',savedInvite),{status:'used',usedAt:serverTimestamp()}); }catch(e){}
+      }
+      // Clear storage
+      localStorage.removeItem('sofra_verify_email');
+      localStorage.removeItem('sofra_form_data');
+      localStorage.removeItem('sofra_invite_id');
+      // Show success screen
+      document.querySelector('.wrap').innerHTML=`<div style="text-align:center;padding:60px 20px">
+        <div style="font-size:3.5rem;margin-bottom:16px;animation:pop 0.4s ease">🎉</div>
+        <div style="font-family:'Amiri',serif;font-size:1.5rem;color:#22c55e;margin-bottom:8px">Inscription confirmée !</div>
+        <div style="color:#94a3b8;font-size:0.92rem;line-height:1.7;margin-bottom:24px">
+          Votre email a été vérifié et votre inscription a été soumise.<br/>
+          Notre équipe va examiner votre dossier. Ramadan Mubarak 🌙
+        </div>
+        <a href="landing.html" style="color:#c9a84c;font-weight:600;font-size:0.9rem">← Retour à l'accueil</a>
+      </div>`;
+    } catch(err) {
+      console.error('Email link sign-in error:', err);
+      document.body.innerHTML=`<div style="text-align:center;padding:60px 20px;font-family:sans-serif;color:#f1f5f9;background:#080c14;min-height:100vh">
+        <div style="font-size:3rem;margin-bottom:16px">❌</div>
+        <div style="font-size:1.2rem;margin-bottom:8px">Erreur de vérification</div>
+        <div style="color:#64748b;margin-bottom:24px">${err.message}</div>
+        <a href="register.html" style="color:#c9a84c">← Réessayer</a>
+      </div>`;
+    }
+    return; // Stop normal page init
+  }
+  // Normal page load
+  enableButtons();
+  checkRegistrationAccess().then(()=>{ window.selectPath('new'); }).catch(()=>{ window.selectPath('new'); });
+})();
 
 // Check registration status and invite token
 let inviteId=null;
@@ -298,12 +387,11 @@ async function checkRegistrationAccess(){
   const params=new URLSearchParams(window.location.search);
   const invId=params.get('invite');
 
-  // Check if registration is open
-  let regOpen=false;
-  try {
-    const snap=await getDoc(doc(db,'settings','registration'));
-    regOpen=snap.exists()?snap.data().open||false:false;
-  } catch(e){ regOpen=false; }
+  // ALWAYS require a valid invite link — no open registration
+  if(!invId){
+    showClosedScreen('🔒 Lien requis', 'Cette page est uniquement accessible via un lien d'invitation personnel. Veuillez contacter l'administration pour en obtenir un.');
+    return;
+  }
 
   if(invId){
     // Invite link — validate it regardless of reg open/closed
@@ -336,6 +424,8 @@ async function checkRegistrationAccess(){
         phoneInput.style.opacity='0.7';
         phoneInput.style.cursor='not-allowed';
       }
+      // Auto-open the new student form
+      window.selectPath('new');
       // Show a welcome banner
       const banner=document.createElement('div');
       banner.style.cssText='background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:0.82rem;color:var(--green)';
@@ -349,9 +439,7 @@ async function checkRegistrationAccess(){
   }
 
   // No invite — check if registration is open
-  if(!regOpen){
-    showClosedScreen('🔒 Registration Closed', 'Registration is currently closed. If you received a personal invitation link, please use that link instead.');
-  }
+  // Registration always invite-only
 }
 
 function showClosedScreen(title, message){
@@ -371,16 +459,9 @@ function disableButtons(){
   });
 }
 
-// Sign in anonymously — required for Firestore writes
-disableButtons();
-signInAnonymously(auth).then(()=>{
-  enableButtons();
-  checkRegistrationAccess();
-}).catch(e=>{
-  console.warn('Anon auth failed:',e);
-  enableButtons();
-  checkRegistrationAccess();
-});
+// No auth needed - Firestore rules handle access
+enableButtons();
+checkRegistrationAccess().then(()=>{ window.selectPath('new'); }).catch(()=>{ window.selectPath('new'); });
 
 let lang='fr';let fastOn=false;let eFastOn=false;let foundPerson=null;
 
@@ -392,10 +473,16 @@ const T={
     'p-new-title':'Nouveau','p-new-sub':"Je n'ai jamais rempli ce formulaire",
     'p-ret-title':'Déjà inscrit','p-ret-sub':"J'ai déjà donné mes informations",
     'f-title':'📝 Inscription',
-    'l-name':'Nom complet','l-phone':'Numéro de téléphone','l-uni':'Université / École',
+    'l-name':'Nom complet','l-email':'Adresse e-mail','l-phone':'Numéro de téléphone','l-uni':'Université / École',
     'l-year':"Année d'études",'l-city':"Ville / Pays d'origine",
     'l-fast':'🌙 Je suis en train de jeûner (Ramadan)','l-fast-sub':'Cochez si vous êtes musulman et que vous jeûnez',
-    'submit-label':'Envoyer ma demande →','back-btn':'← Retour','back-btn2':'← Retour',
+    'submit-label':'Envoyer le code de vérification →',
+    'verify-submit-label':'✅ Vérifier et envoyer',
+    'l-vcode':'Code de vérification',
+    'vcode-sent-msg':'📧 Code envoyé !',
+    'vcode-sent-sub':'Entrez le code à 6 chiffres reçu par e-mail.',
+    'resend-btn':'🔄 Renvoyer le code',
+    'back-btn':'← Retour','back-btn2':'← Retour',
     'r-title':'🔄 Vérification','r-sub':'Entrez votre numéro de téléphone pour retrouver votre profil.',
     'r-search-btn':'Rechercher','pf-label':"C'est vous ?",
     'pf-yes':'✅ Oui, c\'est moi','pf-fix':'✏️ Corriger',
@@ -406,6 +493,8 @@ const T={
     's-badge':'⏳ En attente de validation',
     'err-required':'Veuillez remplir tous les champs obligatoires.',
     'err-phone':'Numéro de téléphone invalide.',
+    'err-email':'Adresse e-mail invalide.',
+    'err-code':'Code incorrect ou expiré. Veuillez réessayer.',
     'err-notfound':'Numéro non trouvé. Êtes-vous nouveau ? Choisissez "Nouveau" pour vous inscrire.',
     'err-duplicate':'Ce numéro est déjà inscrit.',
     'ok-verified':'Profil vérifié avec succès ! 🎉',
@@ -417,10 +506,16 @@ const T={
     'p-new-title':'جديد','p-new-sub':'لم أسجل من قبل',
     'p-ret-title':'مسجل مسبقاً','p-ret-sub':'قدمت معلوماتي من قبل',
     'f-title':'📝 التسجيل',
-    'l-name':'الاسم الكامل','l-phone':'رقم الهاتف','l-uni':'الجامعة / المدرسة',
+    'l-name':'الاسم الكامل','l-email':'البريد الإلكتروني','l-phone':'رقم الهاتف','l-uni':'الجامعة / المدرسة',
     'l-year':'سنة الدراسة','l-city':'المدينة / البلد الأصلي',
     'l-fast':'🌙 أنا صائم (رمضان)','l-fast-sub':'ضع علامة إذا كنت مسلماً وصائماً',
-    'submit-label':'إرسال الطلب ←','back-btn':'→ رجوع','back-btn2':'→ رجوع',
+    'submit-label':'إرسال رمز التحقق ←',
+    'verify-submit-label':'✅ تحقق وأرسل',
+    'l-vcode':'رمز التحقق',
+    'vcode-sent-msg':'📧 تم إرسال الرمز!',
+    'vcode-sent-sub':'أدخل الرمز المكون من 6 أرقام المُرسل إلى بريدك الإلكتروني.',
+    'resend-btn':'🔄 إعادة الإرسال',
+    'back-btn':'→ رجوع','back-btn2':'→ رجوع',
     'r-title':'🔄 التحقق','r-sub':'أدخل رقم هاتفك للعثور على ملفك الشخصي.',
     'r-search-btn':'بحث','pf-label':'هل هذا أنت؟',
     'pf-yes':'✅ نعم، هذا أنا','pf-fix':'✏️ تصحيح',
@@ -430,6 +525,8 @@ const T={
     's-title':'تم إرسال الطلب!','s-body':'تم استلام طلبك وسيتم التحقق منه من قبل فريقنا. سيتم إضافتك إلى القائمة بعد التحقق. شكراً على صبرك! 🌙',
     's-badge':'⏳ في انتظار التحقق',
     'err-required':'يرجى ملء جميع الحقول المطلوبة.','err-phone':'رقم الهاتف غير صالح.',
+    'err-email':'عنوان البريد الإلكتروني غير صالح.',
+    'err-code':'الرمز غير صحيح أو منتهي الصلاحية. يرجى المحاولة مجدداً.',
     'err-notfound':'الرقم غير موجود. هل أنت جديد؟ اختر "جديد" للتسجيل.','err-duplicate':'هذا الرقم مسجل بالفعل.',
     'ok-verified':'تم التحقق من الملف الشخصي بنجاح! 🎉','ok-updated':'تم تحديث المعلومات! سيتم مراجعتها من قبل فريقنا.',
   },
@@ -439,10 +536,16 @@ const T={
     'p-new-title':'New Student','p-new-sub':"I've never filled this form before",
     'p-ret-title':'Already Registered','p-ret-sub':"I've already given my information",
     'f-title':'📝 Registration',
-    'l-name':'Full Name','l-phone':'Phone Number','l-uni':'University / School',
+    'l-name':'Full Name','l-email':'Email Address','l-phone':'Phone Number','l-uni':'University / School',
     'l-year':'Year of Study','l-city':'City / Country of Origin',
     'l-fast':'🌙 I am fasting (Ramadan)','l-fast-sub':'Check if you are Muslim and fasting',
-    'submit-label':'Submit my request →','back-btn':'← Back','back-btn2':'← Back',
+    'submit-label':'Send Verification Code →',
+    'verify-submit-label':'✅ Verify & Submit',
+    'l-vcode':'Verification Code',
+    'vcode-sent-msg':'📧 Code sent!',
+    'vcode-sent-sub':'Enter the 6-digit code sent to your email.',
+    'resend-btn':'🔄 Resend code',
+    'back-btn':'← Back','back-btn2':'← Back',
     'r-title':'🔄 Verification','r-sub':'Enter your phone number to find your profile.',
     'r-search-btn':'Search','pf-label':'Is this you?',
     'pf-yes':"✅ Yes, that's me",'pf-fix':'✏️ Fix info',
@@ -452,6 +555,8 @@ const T={
     's-title':'Request Submitted!','s-body':"Your request has been received and will be verified by our team. You'll be added to the list once approved. Thank you for your patience! 🌙",
     's-badge':'⏳ Pending verification',
     'err-required':'Please fill in all required fields.','err-phone':'Invalid phone number.',
+    'err-email':'Invalid email address.',
+    'err-code':'Incorrect or expired code. Please try again.',
     'err-notfound':'Number not found. Are you new? Choose "New Student" to register.','err-duplicate':'This number is already registered.',
     'ok-verified':'Profile verified successfully! 🎉','ok-updated':'Information updated! It will be reviewed by our team.',
   }
@@ -489,103 +594,134 @@ window.resetPath=()=>{
   document.getElementById('editFields').classList.add('hidden');
   document.getElementById('rPhone').value='';
   foundPerson=null;
+  // Reset verification panel
+  document.getElementById('verifyPanel').classList.remove('show');
+  document.getElementById('submitNewBtn').classList.remove('hidden');
+  document.getElementById('nVerifyCode').value='';
+  hideMsg('verifyError');
+  pendingVerifyId=null; pendingVerifyCode=null; pendingVerifyEmail=null; pendingFormData=null;
 };
 
 // FASTING TOGGLE
 window.toggleFast=()=>{fastOn=!fastOn;document.getElementById('fastSw').classList.toggle('on',fastOn);document.getElementById('nFastToggle').classList.toggle('on',fastOn)};
 window.toggleEditFast=()=>{eFastOn=!eFastOn;document.getElementById('eFastSw').classList.toggle('on',eFastOn);document.getElementById('eFastToggle').classList.toggle('on',eFastOn);};
 
-// SUBMIT NEW
-window.submitNew=async()=>{
+// ── EMAIL VERIFICATION STATE ──
+let pendingVerifyId = null;
+let pendingVerifyCode = null;
+let pendingVerifyEmail = null;
+let pendingFormData = null;
+
+// STEP 1: Validate form, save to localStorage, send Firebase email link
+window.sendVerifyCode = async () => {
   if(!authReady){showMsg('newError','Please wait a moment and try again.');return;}
 
-  // Declare btn at the TOP so it's available everywhere in this function
-  const btn=document.getElementById('submitNewBtn');
-  const resetBtn=()=>{btn.disabled=false;document.getElementById('submit-label').textContent=t('submit-label');};
+  const btn = document.getElementById('submitNewBtn');
+  const resetBtn = () => { btn.disabled=false; document.getElementById('submit-label').textContent=t('submit-label'); };
 
-  const name=document.getElementById('nName').value.trim();
-  const phone=invitePhone?normPhone(invitePhone):normPhone(document.getElementById('nPhone').value.trim());
-  const uni=document.getElementById('nUni').value.trim();
-  const year=document.getElementById('nYear').value;
-  const city=document.getElementById('nCity').value.trim();
-  hideMsg('newError');hideMsg('newSuccess');
+  const name    = document.getElementById('nName').value.trim();
+  const email   = document.getElementById('nEmail').value.trim().toLowerCase();
+  const phone   = invitePhone ? normPhone(invitePhone) : normPhone(document.getElementById('nPhone').value.trim());
+  const uni     = document.getElementById('nUni').value.trim();
+  const year    = document.getElementById('nYear').value;
+  const city    = document.getElementById('nCity').value.trim();
+  const country = document.getElementById('nCountry').value.trim();
+  hideMsg('newError'); hideMsg('newSuccess');
 
-  const country=document.getElementById('nCountry').value.trim();
-  if(!name||!phone||!uni||!year||!city){showMsg('newError',t('err-required'));return;}
-  if(phone.replace(/[\s\+\-\(\)]/g,'').length<7){showMsg('newError',t('err-phone'));return;}
+  // Validate
+  if(!name || !email || !phone || !uni || !year || !city){ showMsg('newError', t('err-required')); return; }
+  if(phone.replace(/[\s\+\-\(\)]/g,'').length < 7){ showMsg('newError', t('err-phone')); return; }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showMsg('newError', t('err-email')); return; }
 
-  // Disable button before any async work
-  btn.disabled=true;
-  document.getElementById('submit-label').textContent='...';
+  btn.disabled = true;
+  document.getElementById('submit-label').textContent = '...';
 
-  // Check for duplicate using normalized phone comparison
+  // Duplicate check
   let allPeopleSnap, allPendingSnap;
   try {
-    allPeopleSnap=await getDocs(collection(db,'people'));
-    allPendingSnap=await getDocs(collection(db,'pending'));
+    allPeopleSnap = await getDocs(collection(db,'people'));
+    allPendingSnap = await getDocs(collection(db,'pending'));
   } catch(err) {
-    console.error('Read error:',err);
     showMsg('newError','⚠️ Could not connect to database: '+err.message);
-    resetBtn();
-    return;
+    resetBtn(); return;
   }
 
-  const dupPerson=allPeopleSnap.docs.find(d=>normPhone(d.data().phone||'')===phone);
+  const dupPerson = allPeopleSnap.docs.find(d => normPhone(d.data().phone||'') === phone);
   if(dupPerson){
-    const msg = lang==='ar'
-      ? 'هذا الرقم مسجل بالفعل. إذا كنت بحاجة لتعديل معلوماتك، اختر "مسجل مسبقاً".'
-      : lang==='en'
-      ? 'This number is already registered. To update your info, choose "Already Registered".'
-      : 'Ce numéro est déjà inscrit. Pour modifier vos infos, choisissez "Déjà inscrit".';
-    showMsg('newError', msg);
-    resetBtn();
-    return;
+    showMsg('newError', lang==='ar'
+      ? 'هذا الرقم مسجل بالفعل.'
+      : lang==='en' ? 'This number is already registered.' : 'Ce numéro est déjà inscrit.');
+    resetBtn(); return;
   }
-
-  const dupPending=allPendingSnap.docs.find(d=>normPhone(d.data().phone||'')===phone&&d.data().status==='pending');
+  const dupEmail = allPeopleSnap.docs.find(d => (d.data().email||'').toLowerCase() === email);
+  if(dupEmail){
+    showMsg('newError', lang==='ar'
+      ? 'هذا البريد الإلكتروني مسجل بالفعل.'
+      : lang==='en' ? 'This email is already registered.' : 'Cet e-mail est déjà inscrit.');
+    resetBtn(); return;
+  }
+  const dupPending = allPendingSnap.docs.find(d => normPhone(d.data().phone||'')===phone && d.data().status==='pending');
   if(dupPending){
-    const msg = lang==='ar'
-      ? 'طلبك قيد المراجعة بالفعل. يرجى الانتظار.'
-      : lang==='en'
-      ? 'Your request is already pending review. Please wait.'
-      : 'Votre demande est déjà en attente de validation. Veuillez patienter.';
-    showMsg('newError', msg);
-    resetBtn();
-    return;
+    showMsg('newError', lang==='ar'
+      ? 'طلبك قيد المراجعة بالفعل.'
+      : lang==='en' ? 'Your request is already pending review.' : 'Votre demande est déjà en attente.');
+    resetBtn(); return;
   }
 
+  // Save form data to localStorage (survives the redirect)
+  localStorage.setItem('sofra_verify_email', email);
+  localStorage.setItem('sofra_form_data', JSON.stringify({name,email,phone,uni,year,city,country,fasting:fastOn,lang}));
+  if(inviteId) localStorage.setItem('sofra_invite_id', inviteId);
+
+  // Send Firebase email link
+  const currentUrl = window.location.href.split('?')[0] + (inviteId ? '?invite='+inviteId : '');
   try {
-    await addDoc(collection(db,'pending'),{
-      name,phone,university:uni,yearOfStudy:year,city,country,
-      fasting:fastOn,lang,
-      status:'pending',
-      submittedAt:serverTimestamp(),submittedAtMs:Date.now(),
-      verified:false,source:'self-registration'
+    await sendSignInLinkToEmail(auth, email, {
+      url: currentUrl,
+      handleCodeInApp: true
     });
-    // Mark invite as used if came from invite link
-    if(inviteId){
-      try { await updateDoc(doc(db,'invites',inviteId),{status:'used',usedAt:serverTimestamp()}); } catch(e){}
-    }
-    document.getElementById('newForm').classList.add('hidden');
-    document.getElementById('pathSelector').classList.add('hidden');
-    document.getElementById('successScreen').classList.add('show');
   } catch(err) {
-    console.error('Submit error:',err);
-    resetBtn();
-    if(err.code==='permission-denied'){
-      showMsg('newError','⚠️ Connection error — please try again or contact the admin.');
-    } else {
-      showMsg('newError','⚠️ Something went wrong: '+err.message+'. Please try again.');
-    }
+    showMsg('newError','⚠️ Impossible d'envoyer l'email: '+err.message);
+    resetBtn(); return;
   }
+
+  // Show "check your email" screen
+  document.getElementById('submitNewBtn').classList.add('hidden');
+  document.getElementById('verifyPanel').classList.add('show');
+  const sentMsg = lang==='ar'
+    ? `📧 تم إرسال رابط التحقق إلى ${email} — تحقق من بريدك وانقر على الرابط`
+    : lang==='en' ? `📧 Verification link sent to ${email} — check your inbox and click the link`
+    : `📧 Lien envoyé à ${email} — vérifiez votre boîte mail et cliquez sur le lien`;
+  document.getElementById('vcode-sent-msg').textContent = sentMsg;
+  btn.disabled = false;
+  document.getElementById('submit-label').textContent = t('submit-label');
 };
+
+window.resendCode = async () => {
+  const email = localStorage.getItem('sofra_verify_email');
+  if(!email){ return; }
+  const btn = document.getElementById('resendBtn');
+  btn.disabled = true;
+  try {
+    const currentUrl = window.location.href.split('?')[0] + (inviteId ? '?invite='+inviteId : '');
+    await sendSignInLinkToEmail(auth, email, { url: currentUrl, handleCodeInApp: true });
+    toast('📧 Nouveau lien envoyé !');
+    hideMsg('verifyError');
+  } catch(e){ showMsg('verifyError','⚠️ Échec: '+e.message); }
+  btn.disabled = false;
+};
+
+// Email verification handled by Firebase email link — see top of file
+// SUBMIT NEW (legacy — now replaced by two-step flow above)
+window.submitNew=async()=>{window.sendVerifyCode();};
+
 
 // LOOKUP PHONE (returning student)
 window.lookupPhone=async()=>{
   if(!authReady){showMsg('retError','Please wait, loading...');return;}
   const phone=normPhone(document.getElementById('rPhone').value.trim());
   if(!phone||phone.replace(/[^\d]/g,'').length<7){showMsg('retError',t('err-phone'));return;}
-  const btn=document.getElementById('lookupBtn');btn.disabled=true;btn.textContent='...';
+  const btn=document.getElementById('lookupBtn');btn.disabled=true;btn.querySelector('span').textContent='...';
   hideMsg('retError');
   document.getElementById('profileFound').classList.remove('show');
   document.getElementById('editFields').classList.add('hidden');
@@ -597,7 +733,7 @@ window.lookupPhone=async()=>{
     return normPhone(dp)===phone;
   });
 
-  btn.disabled=false;btn.textContent=t('r-search-btn');
+  btn.disabled=false;btn.querySelector('span').textContent=t('r-search-btn');
 
   if(!match){showMsg('retError',t('err-notfound'));return;}
 
@@ -672,6 +808,7 @@ window.submitEdit=async()=>{
   }
 };
 
+function toast(msg, dur=3000){const el=document.getElementById('regToast');el.textContent=msg;el.style.opacity='1';el.style.transform='translateY(0)';clearTimeout(el._t);el._t=setTimeout(()=>{el.style.opacity='0';el.style.transform='translateY(10px)'},dur);}
 function showMsg(id,msg){const el=document.getElementById(id);el.textContent=msg;el.style.display='block';}
 function hideMsg(id){document.getElementById(id).style.display='none';}
 </script>

@@ -1,115 +1,117 @@
 <!DOCTYPE html>
-<html lang="fr" dir="ltr">
+<html lang="fr">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="theme-color" content="#080c14"/>
-<title>Compléter mon profil — Sofra</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080c14">
+<title>Sofra — Compléter votre profil</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap');
 :root{
   --bg:#080c14;--bg2:#0d1220;--surface:#111827;--surface2:#1a2438;
   --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
-  --green:#22c55e;--green2:#16a34a;--green-dim:rgba(34,197,94,0.1);
+  --green:#22c55e;--green2:#16a34a;--green-dim:rgba(34,197,94,0.1);--accent:#c9a84c;--accent2:#a07830;--accent-dim:rgba(201,168,76,0.1);
   --gold:#f59e0b;--gold-dim:rgba(245,158,11,0.1);
   --danger:#ef4444;--danger-dim:rgba(239,68,68,0.1);
-  --text:#f1f5f9;--text2:#94a3b8;--text3:#64748b
+  --blue:#3b82f6;--blue-dim:rgba(59,130,246,0.1);
+  --text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px 16px 48px}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 30%,rgba(34,197,94,0.05) 0%,transparent 60%),radial-gradient(ellipse at 80% 70%,rgba(245,158,11,0.04) 0%,transparent 50%);pointer-events:none;z-index:0}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 30%,rgba(201,168,76,0.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 70%,rgba(245,158,11,0.03) 0%,transparent 50%);pointer-events:none;z-index:0}
 .wrap{max-width:520px;margin:0 auto;position:relative;z-index:1}
 
 /* HEADER */
-.hdr{text-align:center;margin-bottom:28px}
-.moon{font-size:2.5rem;display:block;filter:drop-shadow(0 0 16px rgba(245,158,11,0.5));animation:float 3s ease-in-out infinite;margin-bottom:8px}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-.hdr-title{font-family:'Amiri',serif;font-size:1.6rem;font-weight:700;color:#f1f5f9;margin-bottom:4px}
-.hdr-title span{color:var(--green)}
-.hdr-ar{font-family:'Amiri',serif;font-size:0.95rem;color:var(--text3);margin-bottom:16px}
-.back-btn{display:inline-flex;align-items:center;gap:6px;color:var(--text3);font-size:0.78rem;font-weight:600;text-decoration:none;margin-bottom:20px;transition:color 0.2s}
-.back-btn:hover{color:var(--green)}
+.hdr{text-align:center;margin-bottom:24px}
+.hdr-logo{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:300;letter-spacing:0.2em;color:var(--text);margin-bottom:4px}
+.hdr-logo span{color:var(--gold);font-weight:700}
+.hdr-sub{font-size:0.75rem;color:var(--text3)}
 
-/* LANG */
-.lang-row{display:flex;justify-content:center;gap:8px;margin-bottom:20px}
-.lang-btn{padding:6px 16px;border-radius:20px;border:1.5px solid var(--border2);background:var(--surface);color:var(--text2);font-family:'Space Grotesk',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.15s}
-.lang-btn:hover{border-color:var(--green);color:var(--green)}
-.lang-btn.active{background:var(--green);color:#fff;border-color:var(--green)}
+/* LANG SWITCHER */
+.lang-row{display:flex;gap:8px;justify-content:center;margin-bottom:22px}
+.lang-btn{padding:5px 14px;border-radius:20px;border:1.5px solid var(--border2);background:var(--surface);color:var(--text2);font-family:'Space Grotesk',sans-serif;font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.15s}
+.lang-btn.active{background:var(--gold);color:#0d0a02;border-color:var(--gold)}
 
-/* CARD */
-.fcard{background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:24px;position:relative;overflow:hidden;margin-bottom:16px}
-.fcard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green),transparent)}
-.fcard-title{font-size:1rem;font-weight:700;margin-bottom:18px;color:var(--text)}
+/* STEP INDICATOR */
+.steps{display:flex;align-items:center;gap:0;margin-bottom:24px}
+.step{flex:1;text-align:center;position:relative}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--surface2);border:2px solid var(--border2);color:var(--text3);font-size:0.78rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 4px}
+.step.active .step-num{background:var(--accent);border-color:var(--accent);color:#07080f}
+.step.done .step-num{background:var(--surface);border-color:var(--accent);color:var(--accent)}
+.step-label{font-size:0.62rem;color:var(--text3);font-weight:500;white-space:nowrap}
+.step.active .step-label{color:var(--accent)}
+.step-line{flex:1;height:1px;background:var(--border2);margin-top:-14px}
+.step.done+.step-line{background:var(--accent)}
 
-/* FIELD */
-.field{margin-bottom:16px}
+/* FORM CARD */
+.fcard{background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:24px;position:relative;overflow:hidden;margin-bottom:14px}
+.fcard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+.fcard-title{font-size:1rem;font-weight:700;margin-bottom:6px;color:var(--text)}
+.fcard-sub{font-size:0.8rem;color:var(--text3);margin-bottom:18px;line-height:1.5}
+
+.field{margin-bottom:14px}
 .field label{display:block;font-size:0.7rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px}
 .fi{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:0.92rem;padding:12px 14px;outline:none;transition:border-color 0.2s,box-shadow 0.2s}
-.fi:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(34,197,94,0.1)}
+.fi:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,168,76,0.1)}
 .fi::placeholder{color:var(--text3)}
-.fi:read-only{opacity:0.6;cursor:not-allowed}
+.fi:disabled{opacity:0.6;cursor:not-allowed}
+select.fi{cursor:pointer}
 select.fi option{background:var(--surface)}
+.fi-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
-/* PHONE SEARCH */
-.search-row{display:flex;gap:8px}
-.search-row .fi{flex:1}
-.search-btn{background:var(--green);color:#fff;border:none;border-radius:10px;padding:12px 18px;font-family:'Space Grotesk',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap}
-.search-btn:hover{background:var(--green2)}
-.search-btn:disabled{opacity:0.5;cursor:not-allowed}
+/* PHONE ROW */
+.phone-row{display:flex;gap:8px;margin-bottom:14px}
+.phone-row .fi{flex:1}
+.vbtn{padding:12px 18px;background:var(--accent);color:#07080f;border:none;border-radius:10px;font-family:'Space Grotesk',sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all 0.15s;flex-shrink:0}
+.vbtn:hover{background:var(--accent2)}
+.vbtn:disabled{background:var(--surface2);color:var(--text3);cursor:not-allowed}
 
-/* STATUS BOX */
-.status-box{border-radius:12px;padding:14px 16px;margin-bottom:16px;font-size:0.88rem;line-height:1.6;display:none}
-.status-box.found{background:var(--green-dim);border:1px solid rgba(34,197,94,0.2);color:var(--text2)}
-.status-box.found strong{color:var(--green)}
-.status-box.notfound{background:var(--danger-dim);border:1px solid rgba(239,68,68,0.2);color:var(--text2)}
-.status-box.notfound strong{color:var(--danger)}
+/* PROFILE FOUND */
+.profile-found{background:var(--accent-dim);border:1.5px solid rgba(201,168,76,0.3);border-radius:14px;padding:18px;margin-bottom:16px;display:none}
+.profile-found.show{display:block}
+.pf-label{font-size:0.68rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px}
+.pf-name{font-size:1.1rem;font-weight:700;margin-bottom:4px}
+.pf-details{font-size:0.82rem;color:var(--text2);line-height:1.6}
 
-/* EMAIL VERIFY */
-.verify-row{display:flex;gap:8px;align-items:flex-end}
-.verify-row .field{flex:1;margin-bottom:0}
-.send-code-btn{background:var(--surface2);color:var(--text2);border:1px solid var(--border2);border-radius:10px;padding:12px 14px;font-family:'Space Grotesk',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0}
-.send-code-btn:hover{border-color:var(--gold);color:var(--gold)}
-.send-code-btn:disabled{opacity:0.4;cursor:not-allowed}
+/* FASTING TOGGLE */
+.fast-toggle{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1.5px solid var(--border2);border-radius:12px;padding:13px 16px;cursor:pointer;transition:all 0.2s;margin-bottom:14px}
+.fast-toggle.on{border-color:rgba(201,168,76,0.4);background:var(--accent-dim)}
+.fast-toggle-info{font-size:0.9rem;font-weight:600}
+.fast-toggle-sub{font-size:0.72rem;color:var(--text3);margin-top:2px}
+.sw{width:40px;height:22px;background:var(--surface2);border-radius:11px;position:relative;transition:background 0.2s;flex-shrink:0}
+.sw.on{background:var(--accent)}
+.sw::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.3)}
+.sw.on::after{transform:translateX(18px)}
 
-.code-row{display:flex;gap:8px;margin-top:10px}
-.code-input{flex:1;letter-spacing:0.3em;text-align:center;font-size:1.1rem;font-weight:700}
-.verify-btn{background:var(--gold);color:#000;border:none;border-radius:10px;padding:12px 16px;font-family:'Space Grotesk',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all 0.2s}
-.verify-btn:hover{background:#e08c00}
-.verify-btn:disabled{opacity:0.4;cursor:not-allowed}
+/* VERIFY PANEL */
+.verify-panel{display:none;margin-top:14px}
+.verify-panel.show{display:block}
 
-.verified-badge{display:none;align-items:center;gap:6px;color:var(--green);font-size:0.82rem;font-weight:600;margin-top:8px}
-.verified-badge.show{display:flex}
+/* SUBMIT BTN */
+.submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,#c9a84c,#a07830);color:#07080f;border:none;border-radius:12px;font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:6px;letter-spacing:0.2px}
+.submit-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(201,168,76,0.25)}
+.submit-btn:active{transform:scale(0.98)}
+.submit-btn:disabled{background:var(--surface2);color:var(--text3);cursor:not-allowed;transform:none;box-shadow:none}
 
-/* SUBMIT */
-.submit-btn{width:100%;background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;border:none;border-radius:12px;padding:16px;font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:8px}
-.submit-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(34,197,94,0.3)}
-.submit-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none}
+/* ERROR / SUCCESS */
+.ebox{background:var(--danger-dim);border:1px solid var(--danger);border-radius:8px;padding:10px 14px;font-size:0.83rem;color:var(--danger);margin-bottom:14px;display:none}
+.sbox{background:var(--accent-dim);border:1px solid var(--accent);border-radius:8px;padding:10px 14px;font-size:0.83rem;color:var(--accent);margin-bottom:14px;display:none}
 
 /* SUCCESS */
-.success-screen{display:none;text-align:center;padding:48px 24px}
+.success-screen{display:none;text-align:center;padding:40px 20px}
+.success-screen.show{display:block}
 .success-icon{font-size:4rem;margin-bottom:16px;animation:pop 0.4s ease}
-@keyframes pop{0%{transform:scale(0)}80%{transform:scale(1.15)}100%{transform:scale(1)}}
-.success-title{font-size:1.4rem;font-weight:700;color:var(--green);margin-bottom:8px}
-.success-sub{color:var(--text2);font-size:0.92rem;line-height:1.6}
+@keyframes pop{0%{transform:scale(0)}80%{transform:scale(1.1)}100%{transform:scale(1)}}
+.success-title{font-family:'Amiri',serif;font-size:1.5rem;font-weight:700;color:var(--accent);margin-bottom:8px}
+.success-sub{font-size:0.9rem;color:var(--text2);line-height:1.6;max-width:340px;margin:0 auto 14px}
+.success-badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-dim);border:1px solid rgba(201,168,76,0.3);border-radius:20px;padding:6px 14px;font-size:0.78rem;font-weight:600;color:var(--accent)}
 
-/* TOAST */
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1e293b;color:#f1f5f9;padding:12px 20px;border-radius:10px;font-size:0.85rem;font-weight:500;z-index:999;transition:transform 0.3s ease;white-space:nowrap;border:1px solid var(--border2)}
-.toast.show{transform:translateX(-50%) translateY(0)}
+.hidden{display:none!important}
+.footer{text-align:center;margin-top:28px;font-family:'Amiri',serif;font-size:0.82rem;color:rgba(201,168,76,0.3);letter-spacing:1px}
+.back-link{display:block;text-align:center;margin-top:14px;font-size:0.8rem;color:var(--text3);cursor:pointer;text-decoration:none}
+.back-link:hover{color:var(--accent)}
 
-/* STEPS */
-.steps{display:flex;align-items:center;gap:0;margin-bottom:24px}
-.step-item{flex:1;text-align:center;font-size:0.65rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;position:relative}
-.step-item.active{color:var(--green)}
-.step-item.done{color:var(--green2)}
-.step-dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--border2);background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;margin:0 auto 6px;color:var(--text3)}
-.step-item.active .step-dot{border-color:var(--green);color:var(--green);background:var(--green-dim)}
-.step-item.done .step-dot{border-color:var(--green);background:var(--green);color:#fff}
-.step-line{height:1px;background:var(--border2);flex:1;margin-bottom:22px}
-.step-line.done{background:var(--green)}
-
-/* ERROR */
-.err{color:var(--danger);font-size:0.75rem;margin-top:5px;display:none}
-.err.show{display:block}
+.toast{position:fixed;bottom:28px;right:28px;background:#1e2d42;color:#f1f5f9;padding:12px 20px;border-radius:12px;font-size:0.86rem;font-weight:600;border:1px solid rgba(255,255,255,0.12);box-shadow:0 8px 30px rgba(0,0,0,0.4);opacity:0;transform:translateY(10px);transition:all 0.3s;pointer-events:none;z-index:9999;max-width:320px}
 </style>
 </head>
 <body>
@@ -117,340 +119,531 @@ select.fi option{background:var(--surface)}
 
   <!-- HEADER -->
   <div class="hdr">
-    <span class="moon">🌙</span>
-    <div class="hdr-title" data-i18n="title">Compléter mon <span>profil</span></div>
-    <div class="hdr-ar">تقبل الله صيامكم وقيامكم</div>
-    <div class="lang-row">
-      <button class="lang-btn active" onclick="setLang('fr')">🇫🇷 Français</button>
-      <button class="lang-btn" onclick="setLang('ar')">🇲🇦 العربية</button>
-      <button class="lang-btn" onclick="setLang('en')">🇬🇧 English</button>
-    </div>
-    <a href="landing.html" class="back-btn">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-      <span data-i18n="back">Retour</span>
-    </a>
+    <div class="hdr-logo"><span>S</span>OFRA</div>
+    <div class="hdr-sub" id="hdr-sub">Compléter votre profil</div>
   </div>
 
-  <!-- STEPS -->
-  <div class="steps">
-    <div class="step-item active" id="step1">
-      <div class="step-dot" id="dot1">1</div>
-      <span data-i18n="step1">Trouver mon profil</span>
+  <!-- LANG SWITCHER -->
+  <div class="lang-row">
+    <button class="lang-btn active" onclick="setLang('fr')">🇫🇷 Français</button>
+    <button class="lang-btn" onclick="setLang('ar')">🇲🇦 العربية</button>
+    <button class="lang-btn" onclick="setLang('en')">🇬🇧 English</button>
+  </div>
+
+  <!-- STEP INDICATOR -->
+  <div class="steps" id="stepRow">
+    <div class="step active" id="step1">
+      <div class="step-num">1</div>
+      <div class="step-label" id="step1-label">Trouver</div>
     </div>
-    <div class="step-line" id="line1"></div>
-    <div class="step-item" id="step2">
-      <div class="step-dot" id="dot2">2</div>
-      <span data-i18n="step2">Vérifier l'email</span>
+    <div class="step-line" id="line12"></div>
+    <div class="step" id="step2">
+      <div class="step-num">2</div>
+      <div class="step-label" id="step2-label">Vérifier</div>
     </div>
-    <div class="step-line" id="line2"></div>
-    <div class="step-item" id="step3">
-      <div class="step-dot" id="dot3">3</div>
-      <span data-i18n="step3">Compléter</span>
+    <div class="step-line" id="line23"></div>
+    <div class="step" id="step3">
+      <div class="step-num">3</div>
+      <div class="step-label" id="step3-label">Compléter</div>
     </div>
   </div>
 
-  <!-- STEP 1: FIND PROFILE -->
-  <div id="sectionFind">
-    <div class="fcard">
-      <div class="fcard-title" data-i18n="find_title">🔍 Retrouver mon profil</div>
-      <div class="field">
-        <label data-i18n="phone_label">Numéro de téléphone</label>
-        <div class="search-row">
-          <input class="fi" type="tel" id="searchPhone" placeholder="+212600000000" data-i18n-ph="phone_ph"/>
-          <button class="search-btn" id="searchBtn" onclick="searchProfile()" data-i18n="search_btn">Rechercher</button>
-        </div>
-        <div class="err" id="searchErr"></div>
-      </div>
-
-      <!-- Found -->
-      <div class="status-box found" id="foundBox">
-        <strong data-i18n="found_title">✅ Profil trouvé !</strong><br/>
-        <span data-i18n="found_sub">Nous avons trouvé votre profil. Veuillez vérifier votre email pour continuer.</span><br/><br/>
-        <span id="foundName" style="color:var(--text);font-weight:600"></span>
-      </div>
-
-      <!-- Not found -->
-      <div class="status-box notfound" id="notFoundBox">
-        <strong data-i18n="notfound_title">❌ Profil introuvable</strong><br/>
-        <span data-i18n="notfound_sub">Ce numéro n'est pas dans notre liste. Si vous êtes nouveau, veuillez vous inscrire.</span><br/><br/>
-        <a href="register.html" style="color:var(--green);font-weight:600;font-size:0.85rem" data-i18n="go_register">→ Créer un nouveau profil</a>
-      </div>
+  <!-- STEP 1: PHONE LOOKUP -->
+  <div class="fcard" id="step1Card">
+    <div class="fcard-title" id="s1-title">🔍 Retrouver votre profil</div>
+    <div class="fcard-sub" id="s1-sub">Si vous avez donné votre nom et numéro de téléphone à la FMPC, entrez votre numéro ci-dessous pour retrouver votre profil.</div>
+    <div class="ebox" id="s1Error"></div>
+    <div class="phone-row">
+      <input type="tel" class="fi" id="rPhone" placeholder="+212601234567" onkeydown="if(event.key==='Enter')lookupPhone()"/>
+      <button class="vbtn" id="lookupBtn" onclick="lookupPhone()"><span id="lookup-btn-label">Rechercher</span></button>
+    </div>
+    <div class="profile-found" id="profileFound">
+      <div class="pf-label" id="pf-label-text">C'est vous ?</div>
+      <div class="pf-name" id="pfName"></div>
+      <div class="pf-details" id="pfDetails"></div>
+    </div>
+    <button class="submit-btn hidden" id="confirmBtn" onclick="confirmProfile()">
+      <span id="confirm-btn-label">✅ Oui, c'est moi — Continuer</span>
+    </button>
+    <div style="margin-top:8px;text-align:center">
+      <a href="register.html" class="back-link" id="not-found-link" style="display:none" id="registerLink">
+        <span id="not-found-text">Pas trouvé ? S'inscrire comme nouveau →</span>
+      </a>
     </div>
   </div>
 
-  <!-- STEP 2: EMAIL VERIFY -->
-  <div id="sectionEmail" style="display:none">
-    <div class="fcard">
-      <div class="fcard-title" data-i18n="email_title">📧 Vérification par email</div>
-      <div class="field" style="margin-bottom:8px">
-        <label data-i18n="email_label">Adresse email</label>
-        <div class="verify-row">
-          <div class="field">
-            <input class="fi" type="email" id="emailInput" placeholder="votre@email.com"/>
-          </div>
-          <button class="send-code-btn" id="sendCodeBtn" onclick="sendCode()" data-i18n="send_code">Envoyer le code</button>
-        </div>
-        <div class="err" id="emailErr"></div>
-      </div>
-
-      <div id="codeSection" style="display:none">
-        <div class="field" style="margin-bottom:8px">
-          <label data-i18n="code_label">Code de vérification (6 chiffres)</label>
-          <div class="code-row">
-            <input class="fi code-input" type="text" id="codeInput" maxlength="6" placeholder="• • • • • •" inputmode="numeric"/>
-            <button class="verify-btn" id="verifyBtn" onclick="verifyCode()" data-i18n="verify_btn">Vérifier</button>
-          </div>
-          <div class="err" id="codeErr"></div>
-        </div>
-        <div class="verified-badge" id="verifiedBadge">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
-          <span data-i18n="verified">Email vérifié ✓</span>
-        </div>
-      </div>
-
-      <button class="submit-btn" id="continueBtn" onclick="goToStep3()" style="display:none" data-i18n="continue_btn">Continuer →</button>
+  <!-- STEP 2: EMAIL VERIFICATION -->
+  <div class="fcard hidden" id="step2Card">
+    <div class="fcard-title" id="s2-title">📧 Vérification par e-mail</div>
+    <div class="fcard-sub" id="s2-sub">Pour sécuriser votre profil, entrez votre adresse e-mail. Vous recevrez un code à 6 chiffres.</div>
+    <div class="ebox" id="s2Error"></div>
+    <div class="field">
+      <label id="l-email">Adresse e-mail</label>
+      <input type="email" class="fi" id="emailInput" placeholder="ahmed@email.com"/>
     </div>
+    <button class="submit-btn" id="sendCodeBtn" onclick="sendVerifyCode()">
+      <span id="send-code-label">📨 Envoyer le code</span>
+    </button>
+
+    <!-- Code entry panel -->
+    <div class="fcard hidden" id="verifyPanel">
+      <div style="text-align:center;padding:20px 16px">
+        <div style="font-size:3rem;margin-bottom:12px">📬</div>
+        <div style="font-size:1rem;font-weight:700;color:var(--text);margin-bottom:8px" id="code-sent-msg">Vérifiez votre boîte mail</div>
+        <div style="font-size:0.82rem;color:var(--text2);line-height:1.6" id="code-sent-sub">
+          Nous vous avons envoyé un lien de vérification.<br/>
+          Cliquez sur le lien dans l'email pour continuer.
+        </div>
+        <div style="margin-top:14px;padding:10px 14px;background:var(--bg2);border-radius:8px;font-size:0.75rem;color:var(--text3)">
+          💡 Vérifiez aussi vos spams
+        </div>
+      </div>
+      <div class="ebox" id="verifyError"></div>
+      <div style="margin-top:4px;text-align:center">
+        <button style="background:none;border:none;color:var(--text3);font-family:'Space Grotesk',sans-serif;font-size:0.78rem;cursor:pointer" id="resendBtn" onclick="resendCode()"><span id="resend-label">🔄 Renvoyer le lien</span></button>
+      </div>
+    </div>div>
   </div>
 
   <!-- STEP 3: COMPLETE PROFILE -->
-  <div id="sectionComplete" style="display:none">
-    <div class="fcard">
-      <div class="fcard-title" data-i18n="complete_title">📝 Compléter mon profil</div>
+  <div class="fcard hidden" id="step3Card">
+    <div class="fcard-title" id="s3-title">📝 Compléter votre profil</div>
+    <div class="fcard-sub" id="s3-sub">Ces informations nous aident à mieux vous servir. Votre nom et téléphone sont pré-remplis.</div>
+    <div class="ebox" id="s3Error"></div>
 
-      <div class="field">
-        <label data-i18n="name_label">Nom complet</label>
-        <input class="fi" type="text" id="cName" readonly/>
-      </div>
-      <div class="field">
-        <label data-i18n="phone_label">Téléphone</label>
-        <input class="fi" type="tel" id="cPhone" readonly/>
-      </div>
-      <div class="field">
-        <label data-i18n="email_label">Email</label>
-        <input class="fi" type="email" id="cEmail" readonly/>
-        <div style="display:flex;align-items:center;gap:5px;margin-top:5px;font-size:0.75rem;color:var(--green)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
-          <span data-i18n="verified">Email vérifié ✓</span>
-        </div>
-      </div>
-
-      <div style="height:1px;background:var(--border2);margin:16px 0"></div>
-      <div style="font-size:0.75rem;color:var(--text3);margin-bottom:16px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em" data-i18n="missing_info">Informations manquantes</div>
-
-      <div class="field">
-        <label data-i18n="univ_label">Université / École</label>
-        <input class="fi" type="text" id="cUniv" placeholder="ex: Université Mohammed V"/>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div class="field">
-          <label data-i18n="year_label">Année d'études</label>
-          <select class="fi" id="cYear">
-            <option value="">—</option>
-            <option>1ère année</option><option>2ème année</option>
-            <option>3ème année</option><option>4ème année</option>
-            <option>5ème année</option><option>Master</option><option>Doctorat</option>
-          </select>
-        </div>
-        <div class="field">
-          <label data-i18n="city_label">Ville</label>
-          <input class="fi" type="text" id="cCity" placeholder="ex: Casablanca"/>
-        </div>
-      </div>
-      <div class="field">
-        <label data-i18n="country_label">Pays</label>
-        <input class="fi" type="text" id="cCountry" placeholder="Maroc" value="Maroc"/>
-      </div>
-
-      <div class="err" id="completeErr"></div>
-      <button class="submit-btn" id="submitBtn" onclick="submitProfile()" data-i18n="submit_btn">✅ Enregistrer mon profil</button>
+    <div class="field">
+      <label id="l-name">Nom complet</label>
+      <input type="text" class="fi" id="cName" disabled/>
     </div>
+    <div class="field">
+      <label id="l-phone">Téléphone</label>
+      <input type="tel" class="fi" id="cPhone" disabled/>
+    </div>
+    <div class="field">
+      <label id="l-uni">Université / École</label>
+      <input type="text" class="fi" id="cUni" placeholder="Faculté de Médecine..."/>
+    </div>
+    <div class="fi-row" style="margin-bottom:14px">
+      <div class="field" style="margin-bottom:0">
+        <label id="l-year">Année</label>
+        <select class="fi" id="cYear">
+          <option value="" id="y-placeholder">Sélectionner...</option>
+          <option value="1">1ère année</option>
+          <option value="2">2ème année</option>
+          <option value="3">3ème année</option>
+          <option value="4">4ème année</option>
+          <option value="5">5ème année</option>
+          <option value="6">6ème année</option>
+          <option value="7">7ème / Master</option>
+          <option value="other">Autre</option>
+        </select>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label id="l-country">Pays d'origine</label>
+        <input type="text" class="fi" id="cCountry" placeholder="Maroc..."/>
+      </div>
+    </div>
+    <div class="field">
+      <label id="l-city">Ville actuelle</label>
+      <input type="text" class="fi" id="cCity" placeholder="Casablanca"/>
+    </div>
+
+    <div class="fast-toggle" id="fastToggle" onclick="toggleFast()">
+      <div>
+        <div class="fast-toggle-info" id="l-fast">🌙 Je suis en train de jeûner (Ramadan)</div>
+        <div class="fast-toggle-sub" id="l-fast-sub">Cochez si vous êtes musulman et que vous jeûnez</div>
+      </div>
+      <div class="sw" id="fastSw"></div>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="submitProfile()">
+      <span id="submit-btn-label">💾 Sauvegarder</span>
+    </button>
   </div>
 
   <!-- SUCCESS -->
   <div class="success-screen" id="successScreen">
-    <div class="success-icon">🎉</div>
-    <div class="success-title" data-i18n="success_title">Profil complété !</div>
-    <div class="success-sub" data-i18n="success_sub">Votre profil a été mis à jour avec succès. Vous serez contacté par notre équipe.</div>
-    <br/><br/>
-    <a href="landing.html" style="color:var(--green);font-weight:600;font-size:0.88rem" data-i18n="back_home">← Retour à l'accueil</a>
+    <div class="success-icon">✅</div>
+    <div class="success-title" id="success-title">Profil complété !</div>
+    <div class="success-sub" id="success-sub">Vos informations ont été mises à jour. Notre équipe les vérifiera avant validation.</div>
+    <div class="success-badge">✅ Profil mis à jour</div>
   </div>
 
+  <a href="landing.html" class="back-link" id="back-to-home">← Retour à l'accueil</a>
+  <div class="footer">رمضان كريم ✦ Ramadan Kareem</div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import{getFirestore,collection,getDocs,doc,updateDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+import{getAuth,sendSignInLinkToEmail,isSignInWithEmailLink,signInWithEmailLink}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+import{getFirestore,collection,addDoc,getDocs,getDoc,doc,updateDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 const FC={apiKey:"AIzaSyB_SeMMk-2mL_XYTKEemoIeh_j2odQ6LNk",authDomain:"ramadan-food-aid.firebaseapp.com",projectId:"ramadan-food-aid",storageBucket:"ramadan-food-aid.firebasestorage.app",messagingSenderId:"836613630009",appId:"1:836613630009:web:c5b3047298224ec82f05e8"};
-const db=getFirestore(initializeApp(FC));
+const app=initializeApp(FC);const auth=getAuth(app);const db=getFirestore(app);
 
-let foundDoc=null;
+function normPhone(p){
+  let n=String(p||'').replace(/[\s\-\.\(\)]/g,'');
+  if(n.startsWith('00212'))n='+212'+n.slice(5);
+  if(n.startsWith('212')&&!n.startsWith('+'))n='+212'+n.slice(3);
+  if(n.startsWith('0')&&n.length===10)n='+212'+n.slice(1);
+  if(/^[6-7]\d{8}$/.test(n))n='+212'+n;
+  return n;
+}
+
+let authReady=false;
+let foundPerson=null;
+let fastOn=false;
 let verifiedEmail=null;
-let verifyCodeSent=null;
+let pendingCodeId=null;
+let pendingCode=null;
+let lang='fr';
 
-function normPhone(p){return p.replace(/[\s\-\(\)]/g,'').replace(/^00/,'+')}
+// No anon auth - using email link verification
 
-function toast(msg,dur=3000){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),dur);
-}
-
-function setStep(n){
-  for(let i=1;i<=3;i++){
-    const s=document.getElementById('step'+i);
-    const d=document.getElementById('dot'+i);
-    if(i<n){s.className='step-item done';d.textContent='✓'}
-    else if(i===n){s.className='step-item active'}
-    else{s.className='step-item'}
-    if(i<3){
-      document.getElementById('line'+i).className='step-line'+(i<n?' done':'');
+// ── HANDLE EMAIL LINK RETURN ──
+(async()=>{
+  if(isSignInWithEmailLink(auth, window.location.href)){
+    const savedEmail = localStorage.getItem('sofra_complete_email');
+    const savedPerson = localStorage.getItem('sofra_complete_person');
+    if(!savedEmail || !savedPerson){
+      document.querySelector('.wrap').innerHTML=`<div style="text-align:center;padding:60px 20px">
+        <div style="font-size:3rem;margin-bottom:16px">⚠️</div>
+        <div style="font-size:1.1rem;margin-bottom:8px;color:#f1f5f9">Lien expiré</div>
+        <a href="complete.html" style="color:#c9a84c">← Recommencer</a>
+      </div>`;
+      return;
     }
+    try {
+      await signInWithEmailLink(auth, savedEmail, window.location.href);
+      window.history.replaceState({},'',window.location.pathname);
+      const person = JSON.parse(savedPerson);
+      // Pre-fill step 3 and jump straight to it
+      authReady=true;
+      foundPerson=person;
+      verifiedEmail=savedEmail;
+      localStorage.removeItem('sofra_complete_email');
+      localStorage.removeItem('sofra_complete_person');
+      // Set step 3 active
+      setStep(3);
+      document.getElementById('s1').classList.add('hidden');
+      document.getElementById('s2').classList.add('hidden');
+      document.getElementById('s3').classList.remove('hidden');
+      document.getElementById('cName').value=person.name||'';
+      document.getElementById('cPhone').value=person.phone||'';
+      document.getElementById('cUni').value=person.university||'';
+      document.getElementById('cYear').value=person.yearOfStudy||'';
+      document.getElementById('cCountry').value=person.country||'Maroc';
+      document.getElementById('cCity').value=person.city||'';
+      // Show verified badge on email
+      const emailField=document.getElementById('s3-email-display');
+      if(emailField) emailField.textContent=savedEmail;
+    } catch(err) {
+      document.querySelector('.wrap').innerHTML=`<div style="text-align:center;padding:60px 20px">
+        <div style="font-size:3rem;margin-bottom:16px">❌</div>
+        <div style="font-size:1.1rem;margin-bottom:8px;color:#f1f5f9">Erreur: ${err.message}</div>
+        <a href="complete.html" style="color:#c9a84c">← Réessayer</a>
+      </div>`;
+    }
+    return;
   }
-}
+  authReady=true; // Normal page load
+})();
 
-window.searchProfile=async()=>{
-  const phone=normPhone(document.getElementById('searchPhone').value.trim());
-  if(!phone){document.getElementById('searchErr').textContent='Veuillez entrer un numéro';document.getElementById('searchErr').classList.add('show');return;}
-  document.getElementById('searchErr').classList.remove('show');
-  const btn=document.getElementById('searchBtn');
-  btn.disabled=true;btn.textContent='...';
-  document.getElementById('foundBox').style.display='none';
-  document.getElementById('notFoundBox').style.display='none';
-  try{
-    const snap=await getDocs(collection(db,'people'));
-    const match=snap.docs.find(d=>normPhone(d.data().phone||'')===phone);
-    if(match){
-      foundDoc={id:match.id,...match.data()};
-      document.getElementById('foundName').textContent=foundDoc.name;
-      document.getElementById('foundBox').style.display='block';
-      // Go to step 2 after short delay
-      setTimeout(()=>{
-        document.getElementById('sectionFind').style.display='none';
-        document.getElementById('sectionEmail').style.display='block';
-        // Pre-fill email if exists
-        if(foundDoc.email){
-          document.getElementById('emailInput').value=foundDoc.email;
-        }
-        setStep(2);
-      },1200);
-    } else {
-      document.getElementById('notFoundBox').style.display='block';
-    }
-  }catch(e){toast('⚠️ Erreur: '+e.message);}
-  btn.disabled=false;btn.textContent='Rechercher';
+// ─── TRANSLATIONS ───
+const T={
+  fr:{
+    'hdr-sub':'Compléter votre profil',
+    'step1-label':'Trouver','step2-label':'Vérifier','step3-label':'Compléter',
+    's1-title':'🔍 Retrouver votre profil',
+    's1-sub':'Si vous avez donné votre nom et numéro de téléphone à la FMPC, entrez votre numéro ci-dessous.',
+    'pf-label-text':"C'est vous ?",
+    'lookup-btn-label':'Rechercher',
+    'confirm-btn-label':'✅ Oui, c\'est moi — Continuer',
+    'not-found-text':'Pas trouvé ? S\'inscrire comme nouveau →',
+    's2-title':'📧 Vérification par e-mail',
+    's2-sub':'Pour sécuriser votre profil, entrez votre adresse e-mail. Vous recevrez un code à 6 chiffres.',
+    'l-email':'Adresse e-mail',
+    'send-code-label':'📨 Envoyer le code',
+    'code-sent-msg':'📧 Code envoyé !',
+    'code-sent-sub':'Entrez le code à 6 chiffres reçu par e-mail.',
+    'l-vcode':'Code de vérification',
+    'verify-btn-label':'✅ Vérifier',
+    'resend-label':'🔄 Renvoyer le code',
+    's3-title':'📝 Compléter votre profil',
+    's3-sub':'Ces informations nous aident à mieux vous servir. Votre nom et téléphone sont pré-remplis.',
+    'l-name':'Nom complet','l-phone':'Téléphone','l-uni':'Université / École',
+    'l-year':'Année','l-country':"Pays d'origine",'l-city':'Ville actuelle',
+    'l-fast':'🌙 Je suis en train de jeûner (Ramadan)',
+    'l-fast-sub':'Cochez si vous êtes musulman et que vous jeûnez',
+    'submit-btn-label':'💾 Sauvegarder',
+    'success-title':'Profil complété !',
+    'success-sub':'Vos informations ont été mises à jour. Notre équipe les vérifiera avant validation.',
+    'back-to-home':'← Retour à l\'accueil',
+  },
+  ar:{
+    'hdr-sub':'أكمل ملفك الشخصي',
+    'step1-label':'البحث','step2-label':'التحقق','step3-label':'الإكمال',
+    's1-title':'🔍 البحث عن ملفك',
+    's1-sub':'إذا أعطيت اسمك ورقم هاتفك في المقصف، أدخل رقمك للعثور على ملفك.',
+    'pf-label-text':'هل هذا أنت؟',
+    'lookup-btn-label':'بحث',
+    'confirm-btn-label':'✅ نعم، هذا أنا — متابعة',
+    'not-found-text':'لم يُعثر عليك؟ سجّل كطالب جديد →',
+    's2-title':'📧 التحقق عبر البريد الإلكتروني',
+    's2-sub':'لتأمين ملفك، أدخل عنوان بريدك الإلكتروني. ستتلقى رمزاً مكوناً من 6 أرقام.',
+    'l-email':'البريد الإلكتروني',
+    'send-code-label':'📨 إرسال الرمز',
+    'code-sent-msg':'📧 تم إرسال الرمز!',
+    'code-sent-sub':'أدخل الرمز المكون من 6 أرقام المُرسل إلى بريدك.',
+    'l-vcode':'رمز التحقق',
+    'verify-btn-label':'✅ تحقق',
+    'resend-label':'🔄 إعادة الإرسال',
+    's3-title':'📝 أكمل ملفك الشخصي',
+    's3-sub':'هذه المعلومات تساعدنا على خدمتك بشكل أفضل. اسمك وهاتفك معبآن مسبقاً.',
+    'l-name':'الاسم الكامل','l-phone':'الهاتف','l-uni':'الجامعة / المدرسة',
+    'l-year':'السنة','l-country':'بلد الأصل','l-city':'المدينة الحالية',
+    'l-fast':'🌙 أنا صائم (رمضان)',
+    'l-fast-sub':'ضع علامة إذا كنت مسلماً وصائماً',
+    'submit-btn-label':'💾 حفظ',
+    'success-title':'اكتمل الملف الشخصي!',
+    'success-sub':'تم تحديث معلوماتك. سيتحقق فريقنا منها قبل التأكيد.',
+    'back-to-home':'→ العودة إلى الرئيسية',
+  },
+  en:{
+    'hdr-sub':'Complete your profile',
+    'step1-label':'Find','step2-label':'Verify','step3-label':'Complete',
+    's1-title':'🔍 Find your profile',
+    's1-sub':'If you gave your name and phone number at the FMPC cafeteria, enter your number below.',
+    'pf-label-text':'Is this you?',
+    'lookup-btn-label':'Search',
+    'confirm-btn-label':'✅ Yes, that\'s me — Continue',
+    'not-found-text':'Not found? Register as a new student →',
+    's2-title':'📧 Email verification',
+    's2-sub':'To secure your profile, enter your email address. You will receive a 6-digit code.',
+    'l-email':'Email Address',
+    'send-code-label':'📨 Send code',
+    'code-sent-msg':'📧 Code sent!',
+    'code-sent-sub':'Enter the 6-digit code sent to your email.',
+    'l-vcode':'Verification code',
+    'verify-btn-label':'✅ Verify',
+    'resend-label':'🔄 Resend code',
+    's3-title':'📝 Complete your profile',
+    's3-sub':'This information helps us serve you better. Your name and phone are pre-filled.',
+    'l-name':'Full Name','l-phone':'Phone','l-uni':'University / School',
+    'l-year':'Year','l-country':'Country of Origin','l-city':'Current City',
+    'l-fast':'🌙 I am fasting (Ramadan)',
+    'l-fast-sub':'Check if you are Muslim and fasting',
+    'submit-btn-label':'💾 Save',
+    'success-title':'Profile completed!',
+    'success-sub':'Your information has been updated. Our team will verify it before confirming.',
+    'back-to-home':'← Back to home',
+  }
 };
 
-window.sendCode=async()=>{
-  const email=document.getElementById('emailInput').value.trim();
-  if(!email||!email.includes('@')){
-    document.getElementById('emailErr').textContent='Email invalide';
-    document.getElementById('emailErr').classList.add('show');return;
+function t(key){return(T[lang]&&T[lang][key])||T.fr[key]||key;}
+
+window.setLang=l=>{
+  lang=l;
+  document.querySelectorAll('.lang-btn').forEach((b,i)=>{b.classList.toggle('active',['fr','ar','en'][i]===l);});
+  document.documentElement.dir=l==='ar'?'rtl':'ltr';
+  Object.keys(T.fr).forEach(key=>{
+    const el=document.getElementById(key);
+    if(el)el.textContent=t(key);
+  });
+  const yp=document.getElementById('y-placeholder');
+  if(yp)yp.textContent=l==='ar'?'اختر...':l==='en'?'Select...':'Sélectionner...';
+};
+
+// STEP NAVIGATION
+function goStep(n){
+  [1,2,3].forEach(i=>{
+    document.getElementById('step'+i).className='step'+(i===n?' active':i<n?' done':'');
+    const card=document.getElementById('step'+i+'Card');
+    if(card)card.classList.toggle('hidden',i!==n);
+  });
+  document.getElementById('line12').style.background=n>1?'var(--accent)':'var(--border2)';
+  document.getElementById('line23').style.background=n>2?'var(--accent)':'var(--border2)';
+}
+
+// STEP 1: LOOKUP
+window.lookupPhone=async()=>{
+  if(!authReady){showMsg('s1Error','Please wait...');return;}
+  const phone=normPhone(document.getElementById('rPhone').value.trim());
+  if(!phone||phone.replace(/[^\d]/g,'').length<7){showMsg('s1Error',lang==='ar'?'رقم هاتف غير صالح':lang==='en'?'Invalid phone number':'Numéro invalide');return;}
+  const btn=document.getElementById('lookupBtn');
+  const span=btn.querySelector('span');
+  btn.disabled=true;span.textContent='...';
+  hideMsg('s1Error');
+  document.getElementById('profileFound').classList.remove('show');
+  document.getElementById('confirmBtn').classList.add('hidden');
+  document.getElementById('not-found-link').style.display='none';
+
+  const allSnap=await getDocs(collection(db,'people'));
+  const match=allSnap.docs.find(d=>normPhone(d.data().phone||'')===phone);
+  btn.disabled=false;span.textContent=t('lookup-btn-label');
+
+  if(!match){
+    const msg=lang==='ar'?'الرقم غير موجود.':lang==='en'?'Number not found.':'Numéro non trouvé.';
+    showMsg('s1Error',msg);
+    document.getElementById('not-found-link').style.display='block';
+    return;
   }
-  document.getElementById('emailErr').classList.remove('show');
+  foundPerson={id:match.id,...match.data()};
+  const p=foundPerson;
+  document.getElementById('pfName').textContent=p.name||'—';
+  document.getElementById('pfDetails').innerHTML=
+    `${p.university?'🎓 '+p.university+'<br>':''}${p.yearOfStudy?'📚 Year '+p.yearOfStudy+'<br>':''}${p.city?'📍 '+p.city+'<br>':''}${p.fasting?'🌙 '+(lang==='ar'?'صائم':'Fasting'):''}`;
+  document.getElementById('profileFound').classList.add('show');
+  document.getElementById('confirmBtn').classList.remove('hidden');
+};
+
+window.confirmProfile=()=>{
+  if(!foundPerson)return;
+  goStep(2);
+};
+
+// STEP 2: EMAIL VERIFICATION
+window.sendVerifyCode=async()=>{
+  const email=document.getElementById('emailInput').value.trim().toLowerCase();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    showMsg('s2Error',lang==='ar'?'بريد إلكتروني غير صالح':lang==='en'?'Invalid email':'Email invalide');return;
+  }
+  // Check email not already used by someone else
+  const allSnap=await getDocs(collection(db,'people'));
+  const dup=allSnap.docs.find(d=>(d.data().email||'').toLowerCase()===email && d.id!==foundPerson.id);
+  if(dup){
+    const msg=lang==='ar'?'هذا البريد الإلكتروني مسجّل بالفعل.':lang==='en'?'This email is already registered.':'Cet e-mail est déjà utilisé.';
+    showMsg('s2Error',msg);return;
+  }
+
   const btn=document.getElementById('sendCodeBtn');
-  btn.disabled=true;btn.textContent='Envoi...';
-  // Generate 6-digit code
-  verifyCodeSent=Math.floor(100000+Math.random()*900000).toString();
-  // Store in sessionStorage temporarily
-  sessionStorage.setItem('sofra_code',verifyCodeSent);
-  sessionStorage.setItem('sofra_email',email);
-  sessionStorage.setItem('sofra_code_ts',Date.now().toString());
-  // In production: send via Firebase email / EmailJS
-  // For now: show code in toast (replace with real email service)
-  toast(`📧 Code envoyé à ${email} — Code de test: ${verifyCodeSent}`,6000);
-  document.getElementById('codeSection').style.display='block';
-  btn.textContent='Renvoyer';
-  setTimeout(()=>{btn.disabled=false;},30000);
+  btn.disabled=true;document.getElementById('send-code-label').textContent='...';
+  hideMsg('s2Error');
+
+  // Save data for after redirect
+  verifiedEmail=email;
+  localStorage.setItem('sofra_complete_email', email);
+  localStorage.setItem('sofra_complete_person', JSON.stringify(foundPerson));
+
+  try{
+    await sendSignInLinkToEmail(auth, email, {
+      url: window.location.href.split('?')[0],
+      handleCodeInApp: true
+    });
+    document.getElementById('verifyPanel').classList.add('show');
+    document.getElementById('code-sent-msg').textContent=(
+      lang==='ar'?`📧 تم إرسال الرابط إلى ${email} — تحقق من بريدك وانقر على الرابط`
+      :lang==='en'?`📧 Link sent to ${email} — check your inbox and click the link`
+      :`📧 Lien envoyé à ${email} — vérifiez votre boîte mail et cliquez sur le lien`
+    );
+  }catch(e){
+    showMsg('s2Error','⚠️ Error: '+e.message);
+  }
+  btn.disabled=false;document.getElementById('send-code-label').textContent=t('send-code-label');
 };
 
-window.verifyCode=()=>{
-  const entered=document.getElementById('codeInput').value.trim();
-  const stored=sessionStorage.getItem('sofra_code');
-  const ts=parseInt(sessionStorage.getItem('sofra_code_ts')||'0');
-  if(Date.now()-ts>600000){
-    document.getElementById('codeErr').textContent='Code expiré. Veuillez en demander un nouveau.';
-    document.getElementById('codeErr').classList.add('show');return;
-  }
-  if(entered===stored){
-    verifiedEmail=sessionStorage.getItem('sofra_email');
-    document.getElementById('codeErr').classList.remove('show');
-    document.getElementById('verifiedBadge').classList.add('show');
-    document.getElementById('codeInput').readOnly=true;
-    document.getElementById('verifyBtn').disabled=true;
-    document.getElementById('continueBtn').style.display='block';
-    toast('✅ Email vérifié !');
-  } else {
-    document.getElementById('codeErr').textContent='Code incorrect. Réessayez.';
-    document.getElementById('codeErr').classList.add('show');
-  }
+window.resendCode=async()=>{
+  if(!verifiedEmail)return;
+  const btn=document.getElementById('resendBtn');
+  btn.disabled=true;btn.querySelector('span').textContent='...';
+  try{
+    await sendSignInLinkToEmail(auth, verifiedEmail, {url:window.location.href.split('?')[0],handleCodeInApp:true});
+    toast('📧 Nouveau lien envoyé !');
+    hideMsg('verifyError');
+  }catch(e){showMsg('verifyError','⚠️ '+e.message);}
+  btn.disabled=false;btn.querySelector('span').textContent=t('resend-label');
 };
 
-window.goToStep3=()=>{
-  document.getElementById('sectionEmail').style.display='none';
-  document.getElementById('sectionComplete').style.display='block';
-  document.getElementById('cName').value=foundDoc.name||'';
-  document.getElementById('cPhone').value=foundDoc.phone||'';
-  document.getElementById('cEmail').value=verifiedEmail||'';
-  document.getElementById('cUniv').value=foundDoc.university||'';
-  document.getElementById('cCity').value=foundDoc.city||'';
-  document.getElementById('cCountry').value=foundDoc.country||'Maroc';
-  if(foundDoc.year)document.getElementById('cYear').value=foundDoc.year;
-  setStep(3);
+window.verifyCode_fn=async()=>{
+  const entered=document.getElementById('verifyCode').value.trim();
+  if(!entered||entered.length!==6){
+    showMsg('verifyError',lang==='ar'?'الرمز غير صحيح':lang==='en'?'Incorrect code':'Code incorrect');return;
+  }
+  hideMsg('verifyError');
+  const btn=document.getElementById('verifyBtn');
+  btn.disabled=true;document.getElementById('verify-btn-label').textContent='...';
+
+  try{
+    const snap=await getDoc(doc(db,'emailCodes',pendingCodeId));
+    if(!snap.exists()||snap.data().used||snap.data().expiresAtMs<Date.now()||snap.data().code!==entered){
+      showMsg('verifyError',lang==='ar'?'الرمز غير صحيح أو منتهي الصلاحية':lang==='en'?'Incorrect or expired code':'Code incorrect ou expiré');
+      btn.disabled=false;document.getElementById('verify-btn-label').textContent=t('verify-btn-label');return;
+    }
+    await updateDoc(doc(db,'emailCodes',pendingCodeId),{used:true});
+  }catch(e){
+    showMsg('verifyError','⚠️ '+e.message);
+    btn.disabled=false;document.getElementById('verify-btn-label').textContent=t('verify-btn-label');return;
+  }
+
+  // Pre-fill step 3
+  document.getElementById('cName').value=foundPerson.name||'';
+  document.getElementById('cPhone').value=foundPerson.phone||'';
+  document.getElementById('cUni').value=foundPerson.university||'';
+  document.getElementById('cYear').value=foundPerson.yearOfStudy||'';
+  document.getElementById('cCountry').value=foundPerson.country||'';
+  document.getElementById('cCity').value=foundPerson.city||'';
+  fastOn=foundPerson.fasting||false;
+  document.getElementById('fastSw').classList.toggle('on',fastOn);
+  document.getElementById('fastToggle').classList.toggle('on',fastOn);
+
+  btn.disabled=false;document.getElementById('verify-btn-label').textContent=t('verify-btn-label');
+  goStep(3);
+};
+
+// STEP 3: SUBMIT
+window.toggleFast=()=>{
+  fastOn=!fastOn;
+  document.getElementById('fastSw').classList.toggle('on',fastOn);
+  document.getElementById('fastToggle').classList.toggle('on',fastOn);
 };
 
 window.submitProfile=async()=>{
-  const univ=document.getElementById('cUniv').value.trim();
+  if(!foundPerson||!verifiedEmail)return;
+  const uni=document.getElementById('cUni').value.trim();
   const year=document.getElementById('cYear').value;
-  const city=document.getElementById('cCity').value.trim();
   const country=document.getElementById('cCountry').value.trim();
-  if(!univ||!year||!city){
-    document.getElementById('completeErr').textContent='Veuillez remplir tous les champs obligatoires.';
-    document.getElementById('completeErr').classList.add('show');return;
-  }
-  document.getElementById('completeErr').classList.remove('show');
+  const city=document.getElementById('cCity').value.trim();
+
   const btn=document.getElementById('submitBtn');
-  btn.disabled=true;btn.textContent='Enregistrement...';
+  btn.disabled=true;document.getElementById('submit-btn-label').textContent='...';
+  hideMsg('s3Error');
+
   try{
-    await updateDoc(doc(db,'people',foundDoc.id),{
-      email:verifiedEmail,emailVerified:true,
-      university:univ,year,city,country,
-      profileCompletedAt:serverTimestamp()
+    // Submit as pending edit-request for admin approval
+    await addDoc(collection(db,'pending'),{
+      name:foundPerson.name,
+      phone:foundPerson.phone||'',
+      email:verifiedEmail,
+      university:uni,yearOfStudy:year,country,city,
+      fasting:fastOn,
+      status:'pending',
+      type:'edit-request',
+      targetPersonId:foundPerson.id,
+      originalName:foundPerson.name||'',
+      emailVerified:true,
+      submittedAt:serverTimestamp(),
+      submittedAtMs:Date.now(),
+      source:'complete-form'
     });
-    document.getElementById('sectionComplete').style.display='none';
-    document.getElementById('successScreen').style.display='block';
-    sessionStorage.removeItem('sofra_code');
-    sessionStorage.removeItem('sofra_email');
-    sessionStorage.removeItem('sofra_code_ts');
+    document.getElementById('step3Card').classList.add('hidden');
+    document.getElementById('stepRow').classList.add('hidden');
+    document.getElementById('back-to-home').classList.add('hidden');
+    document.getElementById('successScreen').classList.add('show');
   }catch(e){
-    document.getElementById('completeErr').textContent='Erreur: '+e.message;
-    document.getElementById('completeErr').classList.add('show');
-    btn.disabled=false;btn.textContent='✅ Enregistrer mon profil';
+    showMsg('s3Error','⚠️ '+e.message);
+    btn.disabled=false;document.getElementById('submit-btn-label').textContent=t('submit-btn-label');
   }
 };
-</script>
 
-<script>
-// I18N
-const T={
-  fr:{title:'Compléter mon profil',back:'Retour',step1:'Trouver mon profil',step2:"Vérifier l'email",step3:'Compléter',find_title:'🔍 Retrouver mon profil',phone_label:'Numéro de téléphone',phone_ph:'+212600000000',search_btn:'Rechercher',found_title:'✅ Profil trouvé !',found_sub:'Nous avons trouvé votre profil. Veuillez vérifier votre email pour continuer.',notfound_title:'❌ Profil introuvable',notfound_sub:"Ce numéro n'est pas dans notre liste. Si vous êtes nouveau, veuillez vous inscrire.",go_register:'→ Créer un nouveau profil',email_title:'📧 Vérification par email',email_label:'Adresse email',send_code:'Envoyer le code',code_label:'Code de vérification (6 chiffres)',verify_btn:'Vérifier',verified:'Email vérifié ✓',continue_btn:'Continuer →',complete_title:'📝 Compléter mon profil',name_label:'Nom complet',missing_info:'Informations manquantes',univ_label:'Université / École',year_label:"Année d'études",city_label:'Ville',country_label:'Pays',submit_btn:'✅ Enregistrer mon profil',success_title:'Profil complété !',success_sub:'Votre profil a été mis à jour avec succès.',back_home:"← Retour à l'accueil"},
-  ar:{title:'إكمال ملفي الشخصي',back:'رجوع',step1:'البحث عن ملفي',step2:'التحقق من البريد',step3:'الإكمال',find_title:'🔍 البحث عن ملفي الشخصي',phone_label:'رقم الهاتف',phone_ph:'+212600000000',search_btn:'بحث',found_title:'✅ تم العثور على ملفك!',found_sub:'وجدنا ملفك الشخصي. يرجى التحقق من بريدك الإلكتروني للمتابعة.',notfound_title:'❌ لم يتم العثور على الملف',notfound_sub:'هذا الرقم غير موجود في قائمتنا. إذا كنت جديداً، يرجى التسجيل.',go_register:'→ إنشاء ملف جديد',email_title:'📧 التحقق من البريد الإلكتروني',email_label:'البريد الإلكتروني',send_code:'إرسال الرمز',code_label:'رمز التحقق (6 أرقام)',verify_btn:'تحقق',verified:'تم التحقق ✓',continue_btn:'متابعة →',complete_title:'📝 إكمال ملفي الشخصي',name_label:'الاسم الكامل',missing_info:'المعلومات الناقصة',univ_label:'الجامعة / المعهد',year_label:'سنة الدراسة',city_label:'المدينة',country_label:'البلد',submit_btn:'✅ حفظ ملفي الشخصي',success_title:'تم إكمال الملف!',success_sub:'تم تحديث ملفك الشخصي بنجاح.',back_home:'← العودة للرئيسية'},
-  en:{title:'Complete my profile',back:'Back',step1:'Find my profile',step2:'Verify email',step3:'Complete',find_title:'🔍 Find my profile',phone_label:'Phone number',phone_ph:'+212600000000',search_btn:'Search',found_title:'✅ Profile found!',found_sub:'We found your profile. Please verify your email to continue.',notfound_title:'❌ Profile not found',notfound_sub:'This number is not in our list. If you are new, please register.',go_register:'→ Create a new profile',email_title:'📧 Email verification',email_label:'Email address',send_code:'Send code',code_label:'Verification code (6 digits)',verify_btn:'Verify',verified:'Email verified ✓',continue_btn:'Continue →',complete_title:'📝 Complete my profile',name_label:'Full name',missing_info:'Missing information',univ_label:'University / School',year_label:'Year of study',city_label:'City',country_label:'Country',submit_btn:'✅ Save my profile',success_title:'Profile completed!',success_sub:'Your profile has been updated successfully.',back_home:'← Back to home'}
-};
-
-function setLang(l){
-  document.documentElement.lang=l;
-  document.documentElement.dir=l==='ar'?'rtl':'ltr';
-  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',
-    (l==='fr'&&b.textContent.includes('Français'))||(l==='ar'&&b.textContent.includes('العربية'))||(l==='en'&&b.textContent.includes('English'))));
-  const t=T[l];
-  document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(t[k])el.textContent=t[k];});
-  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{const k=el.dataset.i18nPh;if(t[k])el.placeholder=t[k];});
-  document.querySelector('.hdr-ar').textContent='تقبل الله صيامكم وقيامكم';
+function showMsg(id,msg){const el=document.getElementById(id);el.textContent=msg;el.style.display='block';}
+function hideMsg(id){document.getElementById(id).style.display='none';}
+function toast(msg,dur=3000){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.style.opacity='1';el.style.transform='translateY(0)';
+  clearTimeout(el._t);el._t=setTimeout(()=>{el.style.opacity='0';el.style.transform='translateY(10px)'},dur);
 }
-window.setLang=setLang;
 </script>
 </body>
 </html>
