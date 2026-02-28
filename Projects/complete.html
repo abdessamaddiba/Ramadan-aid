@@ -18,6 +18,8 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px 16px 48px}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 15% 25%,rgba(201,168,76,0.06) 0%,transparent 55%),radial-gradient(ellipse at 85% 75%,rgba(201,168,76,0.04) 0%,transparent 50%);pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 30%,rgba(201,168,76,0.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 70%,rgba(245,158,11,0.03) 0%,transparent 50%);pointer-events:none;z-index:0}
 .wrap{max-width:520px;margin:0 auto;position:relative;z-index:1}
 
@@ -28,7 +30,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .hdr-sub{font-size:0.75rem;color:var(--text3)}
 
 /* LANG SWITCHER */
-.lang-row{display:flex;gap:8px;justify-content:center;margin-bottom:22px}
+.lang-row{display:flex;gap:8px;justify-content:center;margin-bottom:22px;direction:ltr}
 .lang-btn{padding:5px 14px;border-radius:20px;border:1.5px solid var(--border2);background:var(--surface);color:var(--text2);font-family:'Space Grotesk',sans-serif;font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.15s}
 .lang-btn.active{background:var(--gold);color:#0d0a02;border-color:var(--gold)}
 
@@ -115,6 +117,7 @@ select.fi option{background:var(--surface)}
 </style>
 </head>
 <body>
+<canvas id="bgCanvas" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.7"></canvas>
 <div class="wrap">
 
   <!-- HEADER -->
@@ -139,12 +142,12 @@ select.fi option{background:var(--surface)}
     <div class="step-line" id="line12"></div>
     <div class="step" id="step2">
       <div class="step-num">2</div>
-      <div class="step-label" id="step2-label">Vérifier</div>
+      <div class="step-label" id="step2-label">Compléter</div>
     </div>
     <div class="step-line" id="line23"></div>
     <div class="step" id="step3">
       <div class="step-num">3</div>
-      <div class="step-label" id="step3-label">Compléter</div>
+      <div class="step-label" id="step3-label">Confirmé</div>
     </div>
   </div>
 
@@ -172,62 +175,33 @@ select.fi option{background:var(--surface)}
     </div>
   </div>
 
-  <!-- STEP 2: EMAIL VERIFICATION -->
+  <!-- STEP 2: COMPLETE PROFILE (fill in missing info) -->
   <div class="fcard hidden" id="step2Card">
-    <div class="fcard-title" id="s2-title">📧 Vérification par e-mail</div>
-    <div class="fcard-sub" id="s2-sub">Pour sécuriser votre profil, entrez votre adresse e-mail. Vous recevrez un code à 6 chiffres.</div>
+    <div class="fcard-title" id="s2-title">📝 Compléter votre profil</div>
+    <div class="fcard-sub" id="s2-sub">Vérifiez et complétez vos informations. Tous les champs sont obligatoires sauf l'e-mail.</div>
     <div class="ebox" id="s2Error"></div>
-    <div class="field">
-      <label id="l-email">Adresse e-mail</label>
-      <input type="email" class="fi" id="emailInput" placeholder="ahmed@email.com"/>
-    </div>
-    <button class="submit-btn" id="sendCodeBtn" onclick="sendVerifyCode()">
-      <span id="send-code-label">📨 Envoyer le code</span>
-    </button>
-
-    <!-- Code entry panel -->
-    <div class="fcard hidden" id="verifyPanel">
-      <div style="text-align:center;padding:20px 16px">
-        <div style="font-size:3rem;margin-bottom:12px">📬</div>
-        <div style="font-size:1rem;font-weight:700;color:var(--text);margin-bottom:8px" id="code-sent-msg">Vérifiez votre boîte mail</div>
-        <div style="font-size:0.82rem;color:var(--text2);line-height:1.6" id="code-sent-sub">
-          Nous vous avons envoyé un lien de vérification.<br/>
-          Cliquez sur le lien dans l'email pour continuer.
-        </div>
-        <div style="margin-top:14px;padding:10px 14px;background:var(--bg2);border-radius:8px;font-size:0.75rem;color:var(--text3)">
-          💡 Vérifiez aussi vos spams
-        </div>
-      </div>
-      <div class="ebox" id="verifyError"></div>
-      <div style="margin-top:4px;text-align:center">
-        <button style="background:none;border:none;color:var(--text3);font-family:'Space Grotesk',sans-serif;font-size:0.78rem;cursor:pointer" id="resendBtn" onclick="resendCode()"><span id="resend-label">🔄 Renvoyer le lien</span></button>
-      </div>
-    </div>div>
-  </div>
-
-  <!-- STEP 3: COMPLETE PROFILE -->
-  <div class="fcard hidden" id="step3Card">
-    <div class="fcard-title" id="s3-title">📝 Compléter votre profil</div>
-    <div class="fcard-sub" id="s3-sub">Ces informations nous aident à mieux vous servir. Votre nom et téléphone sont pré-remplis.</div>
-    <div class="ebox" id="s3Error"></div>
 
     <div class="field">
-      <label id="l-name">Nom complet</label>
-      <input type="text" class="fi" id="cName" disabled/>
+      <label id="l2-name">Nom complet</label>
+      <input type="text" class="fi" id="c2Name" disabled/>
     </div>
     <div class="field">
-      <label id="l-phone">Téléphone</label>
-      <input type="tel" class="fi" id="cPhone" disabled/>
+      <label id="l2-phone">Téléphone</label>
+      <input type="tel" class="fi" id="c2Phone" disabled/>
     </div>
     <div class="field">
-      <label id="l-uni">Université / École</label>
-      <input type="text" class="fi" id="cUni" placeholder="Faculté de Médecine..."/>
+      <label id="l2-email">E-mail <span style="font-size:0.65rem;color:var(--text3);font-weight:400">(optionnel)</span></label>
+      <input type="email" class="fi" id="c2Email" placeholder="ahmed@email.com"/>
+    </div>
+    <div class="field">
+      <label id="l2-uni">Université / École *</label>
+      <input type="text" class="fi" id="c2Uni" placeholder="Faculté de Médecine..."/>
     </div>
     <div class="fi-row" style="margin-bottom:14px">
       <div class="field" style="margin-bottom:0">
-        <label id="l-year">Année</label>
-        <select class="fi" id="cYear">
-          <option value="" id="y-placeholder">Sélectionner...</option>
+        <label id="l2-year">Année *</label>
+        <select class="fi" id="c2Year">
+          <option value="">Sélectionner...</option>
           <option value="1">1ère année</option>
           <option value="2">2ème année</option>
           <option value="3">3ème année</option>
@@ -239,35 +213,44 @@ select.fi option{background:var(--surface)}
         </select>
       </div>
       <div class="field" style="margin-bottom:0">
-        <label id="l-country">Pays d'origine</label>
-        <input type="text" class="fi" id="cCountry" placeholder="Maroc..."/>
+        <label id="l2-country">Pays d'origine *</label>
+        <input type="text" class="fi" id="c2Country" placeholder="Maroc..."/>
       </div>
     </div>
     <div class="field">
-      <label id="l-city">Ville actuelle</label>
-      <input type="text" class="fi" id="cCity" placeholder="Casablanca"/>
+      <label id="l2-city">Ville actuelle *</label>
+      <input type="text" class="fi" id="c2City" placeholder="Casablanca"/>
     </div>
 
-    <div class="fast-toggle" id="fastToggle" onclick="toggleFast()">
+    <div class="fast-toggle" id="c2FastToggle" onclick="toggleFast()">
       <div>
-        <div class="fast-toggle-info" id="l-fast">🌙 Je suis en train de jeûner (Ramadan)</div>
-        <div class="fast-toggle-sub" id="l-fast-sub">Cochez si vous êtes musulman et que vous jeûnez</div>
+        <div class="fast-toggle-info" id="l2-fast">🌙 Je jeûne (Ramadan)</div>
+        <div class="fast-toggle-sub" id="l2-fast-sub">Cochez si vous êtes musulman et que vous jeûnez</div>
       </div>
-      <div class="sw" id="fastSw"></div>
+      <div class="sw" id="c2FastSw"></div>
     </div>
 
     <button class="submit-btn" id="submitBtn" onclick="submitProfile()">
-      <span id="submit-btn-label">💾 Sauvegarder</span>
+      <span id="submit-btn-label">💾 Confirmer et envoyer</span>
     </button>
   </div>
 
-  <!-- SUCCESS -->
-  <div class="success-screen" id="successScreen">
-    <div class="success-icon">✅</div>
-    <div class="success-title" id="success-title">Profil complété !</div>
-    <div class="success-sub" id="success-sub">Vos informations ont été mises à jour. Notre équipe les vérifiera avant validation.</div>
-    <div class="success-badge">✅ Profil mis à jour</div>
+  <!-- STEP 3: SUCCESS CONFIRMATION -->
+  <div class="fcard hidden" id="step3Card">
+    <!-- Confirmation screen content -->
+    <div style="text-align:center;padding:16px 8px">
+      <div style="font-size:3.5rem;margin-bottom:14px;animation:pop 0.4s ease">✅</div>
+      <div style="font-family:'Amiri',serif;font-size:1.4rem;font-weight:700;color:var(--accent);margin-bottom:10px" id="s3-title">Merci !</div>
+      <div style="font-size:0.9rem;color:var(--text2);line-height:1.7;max-width:340px;margin:0 auto 16px" id="s3-body">
+        Vos informations ont bien été reçues et enregistrées. Notre équipe les vérifiera avant la distribution. Nous vous remercions sincèrement pour votre confiance. رمضان مبارك 🌙
+      </div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:var(--accent-dim);border:1px solid rgba(201,168,76,0.3);border-radius:20px;padding:6px 16px;font-size:0.78rem;font-weight:600;color:var(--accent)" id="s3-badge">
+        ⏳ En attente de validation
+      </div>
+    </div>
   </div>
+
+
 
   <a href="landing.html" class="back-link" id="back-to-home">← Retour à l'accueil</a>
   <div class="footer">رمضان كريم ✦ Ramadan Kareem</div>
@@ -275,13 +258,20 @@ select.fi option{background:var(--surface)}
 
 <div class="toast" id="toast"></div>
 
-<script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import{getAuth,sendSignInLinkToEmail,isSignInWithEmailLink,signInWithEmailLink}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
-import{getFirestore,collection,addDoc,getDocs,getDoc,doc,updateDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
-
-const FC={apiKey:"AIzaSyB_SeMMk-2mL_XYTKEemoIeh_j2odQ6LNk",authDomain:"ramadan-food-aid.firebaseapp.com",projectId:"ramadan-food-aid",storageBucket:"ramadan-food-aid.firebasestorage.app",messagingSenderId:"836613630009",appId:"1:836613630009:web:c5b3047298224ec82f05e8"};
-const app=initializeApp(FC);const auth=getAuth(app);const db=getFirestore(app);
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script>
+firebase.initializeApp({apiKey:"AIzaSyB_SeMMk-2mL_XYTKEemoIeh_j2odQ6LNk",authDomain:"ramadan-food-aid.firebaseapp.com",projectId:"ramadan-food-aid",storageBucket:"ramadan-food-aid.firebasestorage.app",messagingSenderId:"836613630009",appId:"1:836613630009:web:c5b3047298224ec82f05e8"});
+const db   = firebase.firestore();
+const TS   = firebase.firestore.FieldValue.serverTimestamp;
+const collection = (d,c)=>d.collection(c);
+const addDoc     = (r,data)=>r.add(data);
+const getDocs    = (r)=>r.get();
+const getDoc     = (r)=>r.get();
+const doc        = (d,...p)=>d.doc(p.join('/'));
+const updateDoc  = (r,data)=>r.update(data);
+const serverTimestamp = ()=>TS();
 
 function normPhone(p){
   let n=String(p||'').replace(/[\s\-\.\(\)]/g,'');
@@ -292,70 +282,17 @@ function normPhone(p){
   return n;
 }
 
-let authReady=false;
+let authReady=true; // Always ready - no async auth dependency
 let foundPerson=null;
 let fastOn=false;
-let verifiedEmail=null;
-let pendingCodeId=null;
-let pendingCode=null;
 let lang='fr';
 
-// No anon auth - using email link verification
-
-// ── HANDLE EMAIL LINK RETURN ──
-(async()=>{
-  if(isSignInWithEmailLink(auth, window.location.href)){
-    const savedEmail = localStorage.getItem('sofra_complete_email');
-    const savedPerson = localStorage.getItem('sofra_complete_person');
-    if(!savedEmail || !savedPerson){
-      document.querySelector('.wrap').innerHTML=`<div style="text-align:center;padding:60px 20px">
-        <div style="font-size:3rem;margin-bottom:16px">⚠️</div>
-        <div style="font-size:1.1rem;margin-bottom:8px;color:#f1f5f9">Lien expiré</div>
-        <a href="complete.html" style="color:#c9a84c">← Recommencer</a>
-      </div>`;
-      return;
-    }
-    try {
-      await signInWithEmailLink(auth, savedEmail, window.location.href);
-      window.history.replaceState({},'',window.location.pathname);
-      const person = JSON.parse(savedPerson);
-      // Pre-fill step 3 and jump straight to it
-      authReady=true;
-      foundPerson=person;
-      verifiedEmail=savedEmail;
-      localStorage.removeItem('sofra_complete_email');
-      localStorage.removeItem('sofra_complete_person');
-      // Set step 3 active
-      setStep(3);
-      document.getElementById('s1').classList.add('hidden');
-      document.getElementById('s2').classList.add('hidden');
-      document.getElementById('s3').classList.remove('hidden');
-      document.getElementById('cName').value=person.name||'';
-      document.getElementById('cPhone').value=person.phone||'';
-      document.getElementById('cUni').value=person.university||'';
-      document.getElementById('cYear').value=person.yearOfStudy||'';
-      document.getElementById('cCountry').value=person.country||'Maroc';
-      document.getElementById('cCity').value=person.city||'';
-      // Show verified badge on email
-      const emailField=document.getElementById('s3-email-display');
-      if(emailField) emailField.textContent=savedEmail;
-    } catch(err) {
-      document.querySelector('.wrap').innerHTML=`<div style="text-align:center;padding:60px 20px">
-        <div style="font-size:3rem;margin-bottom:16px">❌</div>
-        <div style="font-size:1.1rem;margin-bottom:8px;color:#f1f5f9">Erreur: ${err.message}</div>
-        <a href="complete.html" style="color:#c9a84c">← Réessayer</a>
-      </div>`;
-    }
-    return;
-  }
-  authReady=true; // Normal page load
-})();
 
 // ─── TRANSLATIONS ───
 const T={
   fr:{
     'hdr-sub':'Compléter votre profil',
-    'step1-label':'Trouver','step2-label':'Vérifier','step3-label':'Compléter',
+    'step1-label':'Trouver','step2-label':'Compléter','step3-label':'Confirmé',
     's1-title':'🔍 Retrouver votre profil',
     's1-sub':'Si vous avez donné votre nom et numéro de téléphone à la FMPC, entrez votre numéro ci-dessous.',
     'pf-label-text':"C'est vous ?",
@@ -384,7 +321,7 @@ const T={
   },
   ar:{
     'hdr-sub':'أكمل ملفك الشخصي',
-    'step1-label':'البحث','step2-label':'التحقق','step3-label':'الإكمال',
+    'step1-label':'البحث','step2-label':'الإكمال','step3-label':'التأكيد',
     's1-title':'🔍 البحث عن ملفك',
     's1-sub':'إذا أعطيت اسمك ورقم هاتفك في المقصف، أدخل رقمك للعثور على ملفك.',
     'pf-label-text':'هل هذا أنت؟',
@@ -413,7 +350,7 @@ const T={
   },
   en:{
     'hdr-sub':'Complete your profile',
-    'step1-label':'Find','step2-label':'Verify','step3-label':'Complete',
+    'step1-label':'Find','step2-label':'Complete','step3-label':'Confirmed',
     's1-title':'🔍 Find your profile',
     's1-sub':'If you gave your name and phone number at the FMPC cafeteria, enter your number below.',
     'pf-label-text':'Is this you?',
@@ -452,6 +389,33 @@ window.setLang=l=>{
     const el=document.getElementById(key);
     if(el)el.textContent=t(key);
   });
+  // Also update step2 card labels
+  const step2Labels={
+    's2-title':{fr:'📝 Compléter votre profil',ar:'📝 أكمل ملفك الشخصي',en:'📝 Complete your profile'},
+    's2-sub':{fr:'Vérifiez et complétez vos informations. Tous les champs sont obligatoires sauf l\'e-mail.',ar:'تحقق من معلوماتك وأكملها. جميع الحقول إلزامية ماعدا البريد الإلكتروني.',en:'Verify and complete your information. All fields are required except email.'},
+    'l2-name':{fr:'Nom complet',ar:'الاسم الكامل',en:'Full name'},
+    'l2-phone':{fr:'Téléphone',ar:'الهاتف',en:'Phone'},
+    'l2-email':{fr:'E-mail',ar:'البريد الإلكتروني',en:'Email'},
+    'l2-uni':{fr:'Université / École *',ar:'الجامعة / المعهد *',en:'University / School *'},
+    'l2-year':{fr:'Année *',ar:'السنة *',en:'Year *'},
+    'l2-country':{fr:'Pays d\'origine *',ar:'بلد الأصل *',en:'Country of origin *'},
+    'l2-city':{fr:'Ville actuelle *',ar:'المدينة الحالية *',en:'Current city *'},
+    'l2-fast':{fr:'🌙 Je jeûne (Ramadan)',ar:'🌙 أنا صائم (رمضان)',en:'🌙 I am fasting (Ramadan)'},
+    'l2-fast-sub':{fr:'Cochez si vous êtes musulman et que vous jeûnez',ar:'ضع علامة إذا كنت مسلماً وصائماً',en:'Check if you are Muslim and fasting'},
+    'submit-btn-label':{fr:'💾 Confirmer et envoyer',ar:'💾 تأكيد وإرسال',en:'💾 Confirm and send'},
+    's3-title':{fr:'Merci !',ar:'شكراً !',en:'Thank you!'},
+    's3-body':{fr:'Vos informations ont bien été reçues et enregistrées. Notre équipe les vérifiera avant la distribution. Nous vous remercions sincèrement pour votre confiance. رمضان مبارك 🌙',
+              ar:'تم استلام معلوماتك وتسجيلها. سيتحقق فريقنا منها قبل التوزيع. نشكرك على ثقتك بنا. رمضان مبارك 🌙',
+              en:'Your information has been received and saved. Our team will verify it before distribution. We sincerely thank you for your trust. Ramadan Mubarak 🌙'},
+    's3-badge':{fr:'⏳ En attente de validation',ar:'⏳ في انتظار المراجعة',en:'⏳ Pending review'}
+  };
+  Object.entries(step2Labels).forEach(([id,vals])=>{
+    const el=document.getElementById(id);
+    if(el)el.textContent=vals[l]||vals.fr;
+  });
+  // Update select placeholder
+  const yp2=document.getElementById('c2Year');
+  if(yp2&&yp2.options[0]){yp2.options[0].textContent=l==='ar'?'اختر...':l==='en'?'Select...':'Sélectionner...';}
   const yp=document.getElementById('y-placeholder');
   if(yp)yp.textContent=l==='ar'?'اختر...':l==='en'?'Select...':'Sélectionner...';
 };
@@ -459,17 +423,20 @@ window.setLang=l=>{
 // STEP NAVIGATION
 function goStep(n){
   [1,2,3].forEach(i=>{
-    document.getElementById('step'+i).className='step'+(i===n?' active':i<n?' done':'');
+    const el=document.getElementById('step'+i);
+    if(el) el.className='step'+(i===n?' active':i<n?' done':'');
     const card=document.getElementById('step'+i+'Card');
-    if(card)card.classList.toggle('hidden',i!==n);
+    if(card) card.classList.toggle('hidden',i!==n);
   });
-  document.getElementById('line12').style.background=n>1?'var(--accent)':'var(--border2)';
-  document.getElementById('line23').style.background=n>2?'var(--accent)':'var(--border2)';
+  const l12=document.getElementById('line12');
+  const l23=document.getElementById('line23');
+  if(l12) l12.style.background=n>1?'var(--accent)':'var(--border2)';
+  if(l23) l23.style.background=n>2?'var(--accent)':'var(--border2)';
 }
 
 // STEP 1: LOOKUP
 window.lookupPhone=async()=>{
-  if(!authReady){showMsg('s1Error','Please wait...');return;}
+  // authReady check removed - no longer needed
   const phone=normPhone(document.getElementById('rPhone').value.trim());
   if(!phone||phone.replace(/[^\d]/g,'').length<7){showMsg('s1Error',lang==='ar'?'رقم هاتف غير صالح':lang==='en'?'Invalid phone number':'Numéro invalide');return;}
   const btn=document.getElementById('lookupBtn');
@@ -480,160 +447,103 @@ window.lookupPhone=async()=>{
   document.getElementById('confirmBtn').classList.add('hidden');
   document.getElementById('not-found-link').style.display='none';
 
-  const allSnap=await getDocs(collection(db,'people'));
-  const match=allSnap.docs.find(d=>normPhone(d.data().phone||'')===phone);
-  btn.disabled=false;span.textContent=t('lookup-btn-label');
+  try{
+    const allSnap=await getDocs(collection(db,'people'));
+    const match=allSnap.docs.find(d=>normPhone(d.data().phone||'')===phone);
+    btn.disabled=false;span.textContent=t('lookup-btn-label');
 
-  if(!match){
-    const msg=lang==='ar'?'الرقم غير موجود.':lang==='en'?'Number not found.':'Numéro non trouvé.';
+    if(!match){
+      const msg=lang==='ar'?'الرقم غير موجود في قائمتنا.':lang==='en'?'Number not found in our list.':'Numéro non trouvé dans notre liste.';
+      showMsg('s1Error',msg);
+      document.getElementById('not-found-link').style.display='block';
+      return;
+    }
+    foundPerson={id:match.id,...match.data()};
+    const p=foundPerson;
+    document.getElementById('pfName').textContent=p.name||'—';
+    document.getElementById('pfDetails').innerHTML=
+      `${p.university?'🎓 '+p.university+'<br>':''}${p.yearOfStudy?'📚 Année '+p.yearOfStudy+'<br>':''}${p.city?'📍 '+p.city+'<br>':''}${p.fasting?'🌙 '+(lang==='ar'?'صائم':lang==='en'?'Fasting':'En jeûne'):''}`;
+    document.getElementById('profileFound').classList.add('show');
+    document.getElementById('confirmBtn').classList.remove('hidden');
+  }catch(err){
+    btn.disabled=false;span.textContent=t('lookup-btn-label');
+    const msg=err.code==='permission-denied'
+      ?(lang==='ar'?'⚠️ صلاحيات غير كافية. تحقق من قواعد Firestore.':lang==='en'?'⚠️ Insufficient permissions. Check Firestore rules.':'⚠️ Permissions insuffisantes. Vérifiez les règles Firestore.')
+      :(lang==='ar'?'⚠️ خطأ: ':lang==='en'?'⚠️ Error: ':'⚠️ Erreur: ')+err.message;
     showMsg('s1Error',msg);
-    document.getElementById('not-found-link').style.display='block';
-    return;
   }
-  foundPerson={id:match.id,...match.data()};
-  const p=foundPerson;
-  document.getElementById('pfName').textContent=p.name||'—';
-  document.getElementById('pfDetails').innerHTML=
-    `${p.university?'🎓 '+p.university+'<br>':''}${p.yearOfStudy?'📚 Year '+p.yearOfStudy+'<br>':''}${p.city?'📍 '+p.city+'<br>':''}${p.fasting?'🌙 '+(lang==='ar'?'صائم':'Fasting'):''}`;
-  document.getElementById('profileFound').classList.add('show');
-  document.getElementById('confirmBtn').classList.remove('hidden');
 };
 
 window.confirmProfile=()=>{
   if(!foundPerson)return;
+  // Pre-fill step2 fields from found profile
+  document.getElementById('c2Name').value = foundPerson.name||'';
+  document.getElementById('c2Phone').value = foundPerson.phone||'';
+  document.getElementById('c2Email').value = foundPerson.email||'';
+  document.getElementById('c2Uni').value = foundPerson.university||'';
+  document.getElementById('c2Year').value = foundPerson.yearOfStudy||'';
+  document.getElementById('c2Country').value = foundPerson.country||'';
+  document.getElementById('c2City').value = foundPerson.city||'';
+  fastOn = foundPerson.fasting||false;
+  document.getElementById('c2FastSw').classList.toggle('on',fastOn);
+  document.getElementById('c2FastToggle').classList.toggle('on',fastOn);
   goStep(2);
 };
 
-// STEP 2: EMAIL VERIFICATION
-window.sendVerifyCode=async()=>{
-  const email=document.getElementById('emailInput').value.trim().toLowerCase();
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-    showMsg('s2Error',lang==='ar'?'بريد إلكتروني غير صالح':lang==='en'?'Invalid email':'Email invalide');return;
-  }
-  // Check email not already used by someone else
-  const allSnap=await getDocs(collection(db,'people'));
-  const dup=allSnap.docs.find(d=>(d.data().email||'').toLowerCase()===email && d.id!==foundPerson.id);
-  if(dup){
-    const msg=lang==='ar'?'هذا البريد الإلكتروني مسجّل بالفعل.':lang==='en'?'This email is already registered.':'Cet e-mail est déjà utilisé.';
-    showMsg('s2Error',msg);return;
-  }
 
-  const btn=document.getElementById('sendCodeBtn');
-  btn.disabled=true;document.getElementById('send-code-label').textContent='...';
-  hideMsg('s2Error');
 
-  // Save data for after redirect
-  verifiedEmail=email;
-  localStorage.setItem('sofra_complete_email', email);
-  localStorage.setItem('sofra_complete_person', JSON.stringify(foundPerson));
-
-  try{
-    await sendSignInLinkToEmail(auth, email, {
-      url: window.location.href.split('?')[0],
-      handleCodeInApp: true
-    });
-    document.getElementById('verifyPanel').classList.add('show');
-    document.getElementById('code-sent-msg').textContent=(
-      lang==='ar'?`📧 تم إرسال الرابط إلى ${email} — تحقق من بريدك وانقر على الرابط`
-      :lang==='en'?`📧 Link sent to ${email} — check your inbox and click the link`
-      :`📧 Lien envoyé à ${email} — vérifiez votre boîte mail et cliquez sur le lien`
-    );
-  }catch(e){
-    showMsg('s2Error','⚠️ Error: '+e.message);
-  }
-  btn.disabled=false;document.getElementById('send-code-label').textContent=t('send-code-label');
-};
-
-window.resendCode=async()=>{
-  if(!verifiedEmail)return;
-  const btn=document.getElementById('resendBtn');
-  btn.disabled=true;btn.querySelector('span').textContent='...';
-  try{
-    await sendSignInLinkToEmail(auth, verifiedEmail, {url:window.location.href.split('?')[0],handleCodeInApp:true});
-    toast('📧 Nouveau lien envoyé !');
-    hideMsg('verifyError');
-  }catch(e){showMsg('verifyError','⚠️ '+e.message);}
-  btn.disabled=false;btn.querySelector('span').textContent=t('resend-label');
-};
-
-window.verifyCode_fn=async()=>{
-  const entered=document.getElementById('verifyCode').value.trim();
-  if(!entered||entered.length!==6){
-    showMsg('verifyError',lang==='ar'?'الرمز غير صحيح':lang==='en'?'Incorrect code':'Code incorrect');return;
-  }
-  hideMsg('verifyError');
-  const btn=document.getElementById('verifyBtn');
-  btn.disabled=true;document.getElementById('verify-btn-label').textContent='...';
-
-  try{
-    const snap=await getDoc(doc(db,'emailCodes',pendingCodeId));
-    if(!snap.exists()||snap.data().used||snap.data().expiresAtMs<Date.now()||snap.data().code!==entered){
-      showMsg('verifyError',lang==='ar'?'الرمز غير صحيح أو منتهي الصلاحية':lang==='en'?'Incorrect or expired code':'Code incorrect ou expiré');
-      btn.disabled=false;document.getElementById('verify-btn-label').textContent=t('verify-btn-label');return;
-    }
-    await updateDoc(doc(db,'emailCodes',pendingCodeId),{used:true});
-  }catch(e){
-    showMsg('verifyError','⚠️ '+e.message);
-    btn.disabled=false;document.getElementById('verify-btn-label').textContent=t('verify-btn-label');return;
-  }
-
-  // Pre-fill step 3
-  document.getElementById('cName').value=foundPerson.name||'';
-  document.getElementById('cPhone').value=foundPerson.phone||'';
-  document.getElementById('cUni').value=foundPerson.university||'';
-  document.getElementById('cYear').value=foundPerson.yearOfStudy||'';
-  document.getElementById('cCountry').value=foundPerson.country||'';
-  document.getElementById('cCity').value=foundPerson.city||'';
-  fastOn=foundPerson.fasting||false;
-  document.getElementById('fastSw').classList.toggle('on',fastOn);
-  document.getElementById('fastToggle').classList.toggle('on',fastOn);
-
-  btn.disabled=false;document.getElementById('verify-btn-label').textContent=t('verify-btn-label');
-  goStep(3);
-};
 
 // STEP 3: SUBMIT
 window.toggleFast=()=>{
   fastOn=!fastOn;
-  document.getElementById('fastSw').classList.toggle('on',fastOn);
-  document.getElementById('fastToggle').classList.toggle('on',fastOn);
+  document.getElementById('c2FastSw').classList.toggle('on',fastOn);
+  document.getElementById('c2FastToggle').classList.toggle('on',fastOn);
 };
 
 window.submitProfile=async()=>{
-  if(!foundPerson||!verifiedEmail)return;
-  const uni=document.getElementById('cUni').value.trim();
-  const year=document.getElementById('cYear').value;
-  const country=document.getElementById('cCountry').value.trim();
-  const city=document.getElementById('cCity').value.trim();
+  if(!foundPerson)return;
+  const uni=document.getElementById('c2Uni').value.trim();
+  const year=document.getElementById('c2Year').value;
+  const country=document.getElementById('c2Country').value.trim();
+  const city=document.getElementById('c2City').value.trim();
+  const email=document.getElementById('c2Email').value.trim().toLowerCase();
+
+  hideMsg('s2Error');
+  // Mandatory: all except email
+  if(!uni||!year||!country||!city){
+    showMsg('s2Error',lang==='ar'?'يرجى ملء جميع الحقول الإلزامية.':lang==='en'?'Please fill in all required fields.':'Veuillez remplir tous les champs obligatoires.');
+    return;
+  }
 
   const btn=document.getElementById('submitBtn');
-  btn.disabled=true;document.getElementById('submit-btn-label').textContent='...';
-  hideMsg('s3Error');
+  btn.disabled=true;
+  document.getElementById('submit-btn-label').textContent='...';
 
   try{
-    // Submit as pending edit-request for admin approval
     await addDoc(collection(db,'pending'),{
       name:foundPerson.name,
       phone:foundPerson.phone||'',
-      email:verifiedEmail,
+      email:email||foundPerson.email||'',
       university:uni,yearOfStudy:year,country,city,
       fasting:fastOn,
       status:'pending',
       type:'edit-request',
       targetPersonId:foundPerson.id,
       originalName:foundPerson.name||'',
-      emailVerified:true,
       submittedAt:serverTimestamp(),
       submittedAtMs:Date.now(),
       source:'complete-form'
     });
-    document.getElementById('step3Card').classList.add('hidden');
-    document.getElementById('stepRow').classList.add('hidden');
-    document.getElementById('back-to-home').classList.add('hidden');
-    document.getElementById('successScreen').classList.add('show');
-  }catch(e){
-    showMsg('s3Error','⚠️ '+e.message);
-    btn.disabled=false;document.getElementById('submit-btn-label').textContent=t('submit-btn-label');
+    // Go to step 3 confirmation
+    goStep(3);
+    document.getElementById('back-to-home').style.display='none';
+  }catch(err){
+    const msg=err.code==='permission-denied'
+      ?(lang==='ar'?'⚠️ صلاحيات غير كافية. تحقق من قواعد Firestore.':lang==='en'?'⚠️ Insufficient permissions. Check Firestore rules.':'⚠️ Permissions insuffisantes. Vérifiez les règles Firestore.')
+      :(lang==='ar'?'⚠️ خطأ: ':lang==='en'?'⚠️ Error: ':'⚠️ Erreur: ')+err.message;
+    showMsg('s2Error',msg);
+    btn.disabled=false;
+    document.getElementById('submit-btn-label').textContent=t('submit-btn-label');
   }
 };
 
@@ -644,6 +554,173 @@ function toast(msg,dur=3000){
   el.textContent=msg;el.style.opacity='1';el.style.transform='translateY(0)';
   clearTimeout(el._t);el._t=setTimeout(()=>{el.style.opacity='0';el.style.transform='translateY(10px)'},dur);
 }
+</script>
+<script>
+(function(){
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  const G = '#c9a84c';
+  let W, H, t = 0;
+
+  function resize(){
+    W = canvas.offsetWidth; H = canvas.offsetHeight;
+    canvas.width = W; canvas.height = H;
+  }
+
+  // Draw crescent moon
+  function crescent(cx, cy, R, rot, alpha){
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = G;
+    ctx.lineWidth = 1.4;
+    ctx.translate(cx, cy); ctx.rotate(rot);
+    ctx.beginPath();
+    ctx.arc(0, 0, R, 0, Math.PI * 2);
+    ctx.stroke();
+    // inner circle to cut crescent shape
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.fillStyle = 'rgba(0,0,0,1)';
+    ctx.beginPath();
+    ctx.arc(R * 0.32, 0, R * 0.78, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.restore();
+  }
+
+  // Small 6-pointed star
+  function star6(cx, cy, r, rot, alpha){
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = G;
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    for(let i = 0; i < 6; i++){
+      const a = (i * Math.PI / 3) + rot;
+      const a2 = ((i + 0.5) * Math.PI / 3) + rot;
+      if(i === 0) ctx.moveTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
+      else ctx.lineTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
+      ctx.lineTo(cx + r * 0.45 * Math.cos(a2), cy + r * 0.45 * Math.sin(a2));
+    }
+    ctx.closePath(); ctx.stroke();
+    ctx.restore();
+  }
+
+  // 8-pointed star
+  function star8(cx, cy, r, rot, alpha){
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = G;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for(let i = 0; i < 16; i++){
+      const a = (i * Math.PI / 8) + rot;
+      const rr = i % 2 === 0 ? r : r * 0.4;
+      if(i === 0) ctx.moveTo(cx + rr * Math.cos(a), cy + rr * Math.sin(a));
+      else ctx.lineTo(cx + rr * Math.cos(a), cy + rr * Math.sin(a));
+    }
+    ctx.closePath(); ctx.stroke();
+    // small inner circle
+    ctx.beginPath();
+    ctx.arc(cx, cy, r * 0.22, 0, Math.PI * 2);
+    ctx.globalAlpha = alpha * 0.5;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // Geometric dotted ring (like the crescent EPS dots)
+  function dotRing(cx, cy, r, n, dotR, rot, alpha){
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = G;
+    for(let i = 0; i < n; i++){
+      const a = (i / n) * Math.PI * 2 + rot;
+      ctx.beginPath();
+      ctx.arc(cx + r * Math.cos(a), cy + r * Math.sin(a), dotR, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // Radial glow
+  function glow(cx, cy, r, alpha){
+    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+    g.addColorStop(0, `rgba(201,168,76,${alpha})`);
+    g.addColorStop(1, 'rgba(201,168,76,0)');
+    ctx.save();
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+
+  function draw(){
+    ctx.clearRect(0, 0, W, H);
+    const breathe = Math.sin(t * 0.018);
+
+    // Background glow — top-left and bottom-right
+    glow(W * 0.12, H * 0.15, W * 0.35, 0.06 + breathe * 0.02);
+    glow(W * 0.88, H * 0.85, W * 0.3,  0.05 + breathe * 0.015);
+
+    // Large crescent — top right, slowly rotating
+    const CR = Math.min(W, H) * 0.18;
+    crescent(W * 0.82, H * 0.14, CR, t * 0.004, 0.18 + breathe * 0.05);
+
+    // Dot ring around crescent area
+    dotRing(W * 0.82, H * 0.14, CR * 1.5, 18, 1.8, t * 0.003, 0.12 + breathe * 0.04);
+
+    // Central 8-star — very subtle
+    const SR = Math.min(W, H) * 0.12;
+    star8(W * 0.5, H * 0.38, SR, t * 0.006, 0.07 + breathe * 0.02);
+    dotRing(W * 0.5, H * 0.38, SR * 1.6, 8, 1.5, -t * 0.006, 0.08);
+
+    // Small crescent — bottom left
+    crescent(W * 0.12, H * 0.82, CR * 0.55, -t * 0.005 + 1, 0.12 + breathe * 0.04);
+
+    // Orbiting 6-stars around main crescent
+    const orbit = CR * 2.2;
+    for(let i = 0; i < 5; i++){
+      const a = (i / 5) * Math.PI * 2 + t * 0.012;
+      const ox = W * 0.82 + orbit * Math.cos(a);
+      const oy = H * 0.14 + orbit * Math.sin(a);
+      if(ox > 0 && ox < W && oy > 0 && oy < H){
+        star6(ox, oy, CR * 0.22, t * 0.04 + i, 0.1 + 0.06 * Math.sin(t * 0.04 + i));
+      }
+    }
+
+    // Scattered dots — like EPS texture
+    for(let i = 0; i < 20; i++){
+      const x = W * (0.1 + 0.8 * ((i * 0.618033) % 1));
+      const y = H * (0.1 + 0.8 * ((i * 0.381966) % 1));
+      const pulse = 0.08 + 0.06 * Math.sin(t * 0.03 + i * 0.7);
+      ctx.save();
+      ctx.globalAlpha = pulse;
+      ctx.fillStyle = G;
+      ctx.beginPath();
+      ctx.arc(x, y, 1.2 + Math.sin(t * 0.05 + i) * 0.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Thin geometric lines connecting dots (sparse)
+    ctx.save();
+    ctx.strokeStyle = G;
+    ctx.lineWidth = 0.4;
+    ctx.globalAlpha = 0.06 + breathe * 0.02;
+    ctx.beginPath();
+    ctx.arc(W * 0.5, H * 0.5, Math.min(W,H) * 0.42, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(W * 0.5, H * 0.5, Math.min(W,H) * 0.35, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+
+    t++;
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  window.addEventListener('resize', ()=>{ resize(); });
+  draw();
+})();
 </script>
 </body>
 </html>

@@ -22,7 +22,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .hdr-ar{font-family:'Amiri',serif;font-size:0.95rem;color:var(--text3);direction:rtl;margin-bottom:16px}
 
 /* LANG SWITCHER */
-.lang-row{display:flex;gap:8px;justify-content:center;margin-bottom:24px}
+.lang-row{display:flex;gap:8px;justify-content:center;margin-bottom:24px;direction:ltr}
 .lang-btn{padding:6px 16px;border-radius:20px;border:1.5px solid var(--border2);background:var(--surface);color:var(--text2);font-family:'Space Grotesk',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.15s}
 .lang-btn.active{background:var(--green);color:#fff;border-color:var(--green)}
 
@@ -310,7 +310,7 @@ const T={
     'l-name':'Nom complet','l-email':'Adresse e-mail','l-phone':'Numéro de téléphone',
     'l-uni':'Université / École','l-year':"Année d'études",
     'l-country':'Pays','l-city':'Ville actuelle',
-    'l-fast':'🌙 Je jeûne (Ramadan)',
+    'l-fast':'🌙 Je jeûne (Ramadan)','l-fast-sub':'Cochez si vous êtes musulman et que vous jeûnez',
     'submit-label':'✅ Soumettre mon inscription',
     'err-required':'Veuillez remplir tous les champs obligatoires.',
     'err-phone':'Numéro de téléphone invalide.',
@@ -320,7 +320,10 @@ const T={
     'err-pending':'Votre demande est déjà en attente de validation.',
     'success-title':'Inscription soumise !',
     'success-body':"Votre inscription a été soumise avec succès. Notre équipe va examiner votre dossier sous peu. Ramadan Mubarak 🌙",
-    'back-home':'← Retour à l\'accueil'
+    'back-home':'← Retour à l\'accueil',
+    'err-connection':'⚠️ Erreur de connexion: ',
+    'err-permission':'⚠️ Permissions insuffisantes. Vérifiez les règles Firestore.',
+    'err-generic':'⚠️ Erreur: '
   },
   ar:{
     'w-title':'🌙 كلمة قبل البدء',
@@ -331,7 +334,7 @@ const T={
     'l-name':'الاسم الكامل','l-email':'البريد الإلكتروني','l-phone':'رقم الهاتف',
     'l-uni':'الجامعة / المعهد','l-year':'سنة الدراسة',
     'l-country':'البلد','l-city':'المدينة الحالية',
-    'l-fast':'🌙 أنا صائم (رمضان)',
+    'l-fast':'🌙 أنا صائم (رمضان)','l-fast-sub':'ضع علامة إذا كنت مسلماً وصائماً',
     'submit-label':'✅ إرسال طلب التسجيل',
     'err-required':'يرجى ملء جميع الحقول المطلوبة.',
     'err-phone':'رقم الهاتف غير صالح.',
@@ -341,7 +344,10 @@ const T={
     'err-pending':'طلبك قيد المراجعة بالفعل.',
     'success-title':'تم إرسال الطلب!',
     'success-body':'تم إرسال طلب تسجيلك بنجاح. سيقوم فريقنا بمراجعة ملفك قريباً. رمضان مبارك 🌙',
-    'back-home':'← العودة للرئيسية'
+    'back-home':'← العودة للرئيسية',
+    'err-connection':'⚠️ خطأ في الاتصال: ',
+    'err-permission':'⚠️ صلاحيات غير كافية. تحقق من قواعد Firestore.',
+    'err-generic':'⚠️ خطأ: '
   },
   en:{
     'w-title':'🌙 A word before we begin',
@@ -352,7 +358,7 @@ const T={
     'l-name':'Full name','l-email':'Email address','l-phone':'Phone number',
     'l-uni':'University / School','l-year':'Year of study',
     'l-country':'Country','l-city':'Current city',
-    'l-fast':'🌙 I am fasting (Ramadan)',
+    'l-fast':'🌙 I am fasting (Ramadan)','l-fast-sub':'Check if you are Muslim and fasting',
     'submit-label':'✅ Submit my registration',
     'err-required':'Please fill in all required fields.',
     'err-phone':'Invalid phone number.',
@@ -362,7 +368,10 @@ const T={
     'err-pending':'Your request is already pending review.',
     'success-title':'Registration submitted!',
     'success-body':'Your registration has been submitted successfully. Our team will review your file shortly. Ramadan Mubarak 🌙',
-    'back-home':'← Back to home'
+    'back-home':'← Back to home',
+    'err-connection':'⚠️ Connection error: ',
+    'err-permission':'⚠️ Insufficient permissions. Check Firestore rules.',
+    'err-generic':'⚠️ Error: '
   }
 };
 
@@ -382,11 +391,17 @@ window.setLang=function(l){
   // Update all translated elements
   const ids=['w-title','w-body','p-new-title','p-new-sub','p-ret-title','p-ret-sub',
              'f-title','l-name','l-email','l-phone','l-uni','l-year','l-country','l-city',
-             'l-fast','submit-label'];
+             'l-fast','l-fast-sub','submit-label'];
   ids.forEach(id=>{
     const el=document.getElementById(id);
     if(el)el.textContent=t(id);
   });
+  // Re-render closed screen if visible (so it translates too)
+  const cs=document.querySelector('.closed-screen');
+  if(cs&&window._closedKey){
+    cs.remove();
+    showClosedScreen(window._closedKey);
+  }
 };
 
 window.selectPath=function(path){
@@ -483,6 +498,7 @@ function showClosedScreen(key){
   };
   const l=lang||'fr';
   const m=(msgs[key]||msgs['error'])[l]||msgs[key]['fr'];
+  window._closedKey=key;
   const closed=document.createElement('div');
   closed.className='closed-screen';
   closed.style.cssText='text-align:center;padding:32px 20px;background:var(--surface);border:1px solid var(--border2);border-radius:16px;margin-bottom:16px';
@@ -514,22 +530,30 @@ window.submitNew=async function(){
 
   btn.disabled=true;lbl.textContent='...';
 
-  // Duplicate check
+  // Duplicate check:
+  // 1. registeredPhones — written by students on submit, public r/w, no personal data
+  // 2. people — approved list, public read
   try{
-    const peopleSnap=await db.collection('people').get();
-    const pendingSnap=await db.collection('pending').get();
-
+    const phoneKey=phone.replace(/[^0-9]/g,'');
+    const [regDoc, peopleSnap]=await Promise.all([
+      db.doc('registeredPhones/'+phoneKey).get(),
+      db.collection('people').get()
+    ]);
+    // Already in registeredPhones (submitted or approved)
+    if(regDoc.exists){
+      const src=regDoc.data().source||'';
+      if(src==='pending'){showMsg('newError',t('err-pending'));reset();return;}
+      showMsg('newError',t('err-duplicate-phone'));reset();return;
+    }
+    // Already in approved people list (phone or email)
     if(peopleSnap.docs.find(d=>normPhone(d.data().phone||'')===phone)){
       showMsg('newError',t('err-duplicate-phone'));reset();return;
     }
-    if(peopleSnap.docs.find(d=>(d.data().email||'').toLowerCase()===email)){
+    if(email&&peopleSnap.docs.find(d=>(d.data().email||'').toLowerCase()===email)){
       showMsg('newError',t('err-duplicate-email'));reset();return;
     }
-    if(pendingSnap.docs.find(d=>normPhone(d.data().phone||'')===phone&&d.data().status==='pending')){
-      showMsg('newError',t('err-pending'));reset();return;
-    }
   }catch(e){
-    showMsg('newError','⚠️ Erreur de connexion: '+e.message);reset();return;
+    showMsg('newError',t('err-connection')+e.message);reset();return;
   }
 
   // Submit directly to pending
@@ -542,6 +566,14 @@ window.submitNew=async function(){
       submittedAt:ST(),submittedAtMs:Date.now(),
       source:'self-registration'
     });
+    // Write phone to registeredPhones so future submissions are blocked
+    // Rule: allow write: if true — contains only phone number, no personal data
+    try{
+      const phoneKey=phone.replace(/[^0-9]/g,'');
+      await db.doc('registeredPhones/'+phoneKey).set({
+        phone, source:'pending', addedAtMs:Date.now()
+      });
+    }catch(e){/* non-blocking — staff handles duplicates in dashboard */}
     if(inviteId){
       try{await db.doc('invites/'+inviteId).update({status:'used',usedAt:ST()});}catch(e){}
     }
@@ -551,11 +583,7 @@ window.submitNew=async function(){
     document.getElementById('successScreen').classList.remove('hidden');
     document.getElementById('successScreen').classList.add('show');
   }catch(e){
-    if(e.code==='permission-denied'){
-      showMsg('newError','⚠️ Erreur de permission. Contactez l\'administrateur.');
-    }else{
-      showMsg('newError','⚠️ Erreur: '+e.message);
-    }
+    showMsg('newError',e.code==='permission-denied'?t('err-permission'):t('err-generic')+e.message);
     reset();
   }
 };

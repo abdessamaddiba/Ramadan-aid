@@ -88,6 +88,22 @@ nav{position:fixed;top:0;left:0;right:0;height:56px;display:flex;align-items:cen
   .nav-mid{display:none}
   .lantern{width:80px}
 }
+
+/* ── LANTERN ANIMATIONS ── */
+@keyframes sway1{0%,100%{transform:translate(80px,295px) rotate(-3deg)}50%{transform:translate(80px,295px) rotate(3deg)}}
+@keyframes sway2{0%,100%{transform:translate(175px,315px) rotate(-2.5deg)}50%{transform:translate(175px,315px) rotate(2.5deg)}}
+@keyframes sway3{0%,100%{transform:translate(345px,315px) rotate(2deg)}50%{transform:translate(345px,315px) rotate(-2deg)}}
+@keyframes sway4{0%,100%{transform:translate(440px,295px) rotate(3deg)}50%{transform:translate(440px,295px) rotate(-3deg)}}
+@keyframes twinkle{0%,100%{opacity:0.5}50%{opacity:1}}
+@keyframes glowPulse{0%,100%{opacity:0.06}50%{opacity:0.12}}
+@keyframes floatCrescent{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+#lantern1{animation:sway1 4.2s ease-in-out infinite;transform-origin:80px 295px}
+#lantern2{animation:sway2 3.8s ease-in-out infinite 0.4s;transform-origin:175px 315px}
+#lantern3{animation:sway3 4.5s ease-in-out infinite 0.8s;transform-origin:345px 315px}
+#lantern4{animation:sway4 4s ease-in-out infinite 0.2s;transform-origin:440px 295px}
+#gs1,#gs2,#gs3{animation:twinkle 2.5s ease-in-out infinite}
+#gs2{animation-delay:0.8s}
+#gs3{animation-delay:1.4s}
 </style>
 </head>
 <body>
@@ -147,80 +163,207 @@ nav{position:fixed;top:0;left:0;right:0;height:56px;display:flex;align-items:cen
   </div>
 
   <div class="right">
-    <div class="pattern">
-      <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
-        <defs>
-          <pattern id="geo" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-            <g fill="none" stroke="#c9a84c" stroke-width="0.5">
-              <path d="M50 10 L58 34 L82 26 L68 46 L90 54 L66 58 L74 82 L50 68 L26 82 L34 58 L10 54 L32 46 L18 26 L42 34 Z" opacity="0.6"/>
-              <polygon points="50,22 62,30 70,42 70,58 62,70 50,78 38,70 30,58 30,42 38,30" opacity="0.3"/>
-              <line x1="50" y1="10" x2="50" y2="90" opacity="0.15"/>
-              <line x1="10" y1="50" x2="90" y2="50" opacity="0.15"/>
-              <line x1="22" y1="22" x2="78" y2="78" opacity="0.1"/>
-              <line x1="78" y1="22" x2="22" y2="78" opacity="0.1"/>
-              <polygon points="0,50 7,44 14,50 7,56" opacity="0.35"/>
-              <polygon points="100,50 93,44 86,50 93,56" opacity="0.35"/>
-              <polygon points="50,0 56,7 50,14 44,7" opacity="0.35"/>
-              <polygon points="50,100 56,93 50,86 44,93" opacity="0.35"/>
-            </g>
-          </pattern>
-          <pattern id="geo2" x="50" y="50" width="100" height="100" patternUnits="userSpaceOnUse">
-            <g fill="none" stroke="#c9a84c" stroke-width="0.3" opacity="0.3">
-              <polygon points="50,22 62,30 70,42 70,58 62,70 50,78 38,70 30,58 30,42 38,30"/>
-            </g>
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#geo)"/>
-        <rect width="100%" height="100%" fill="url(#geo2)"/>
-      </svg>
-    </div>
-    <div class="glow"></div>
-    <div class="lantern-wrap">
-      <svg class="lantern" viewBox="0 0 100 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <line x1="50" y1="0" x2="50" y2="14" stroke="#c9a84c" stroke-width="1.2" stroke-dasharray="2.5,2.5"/>
-        <path d="M34 14 Q50 7 66 14 L62 26 H38 Z" fill="#c9a84c"/>
-        <path d="M38 26 Q24 52 24 90 Q24 128 38 154 H62 Q76 128 76 90 Q76 52 62 26 Z" fill="rgba(201,168,76,0.05)" stroke="#c9a84c" stroke-width="0.8"/>
-        <line x1="50" y1="26" x2="50" y2="154" stroke="#c9a84c" stroke-width="0.6" opacity="0.4"/>
-        <line x1="38" y1="26" x2="38" y2="154" stroke="#c9a84c" stroke-width="0.6" opacity="0.3"/>
-        <line x1="62" y1="26" x2="62" y2="154" stroke="#c9a84c" stroke-width="0.6" opacity="0.3"/>
-        <ellipse cx="50" cy="52" rx="26" ry="4" stroke="#c9a84c" stroke-width="0.7" fill="none" opacity="0.5"/>
-        <ellipse cx="50" cy="90" rx="26" ry="4" stroke="#c9a84c" stroke-width="0.7" fill="none" opacity="0.5"/>
-        <ellipse cx="50" cy="128" rx="22" ry="3.5" stroke="#c9a84c" stroke-width="0.7" fill="none" opacity="0.5"/>
-        <polygon points="50,66 54,76 65,76 57,82 60,92 50,86 40,92 43,82 35,76 46,76" fill="rgba(201,168,76,0.25)" stroke="#c9a84c" stroke-width="0.7"/>
-        <path d="M38 154 L41 164 H59 L62 154 Z" fill="#c9a84c"/>
-        <ellipse cx="50" cy="164" rx="10" ry="2.5" fill="#c9a84c" opacity="0.6"/>
-      </svg>
-      <div>
-        <div class="ll1">سفرة · Sofra</div>
-        <div class="ll2" data-i18n="ramadan_label">Ramadan 1447 · 2026</div>
-      </div>
-    </div>
-  </div>
-</div>
+    <!-- MOSQUE ARCH + LANTERNS SVG ILLUSTRATION -->
+    <svg id="islamicScene" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 580"
+         style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+      <defs>
+        <!-- Dot grid pattern -->
+        <pattern id="dots" x="0" y="0" width="22" height="22" patternUnits="userSpaceOnUse">
+          <circle cx="11" cy="11" r="0.9" fill="#c9a84c" opacity="0.35"/>
+        </pattern>
+        <!-- Gold glow filter -->
+        <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="softglow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="6" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
 
-<script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import{getFirestore,collection,getCountFromServer,query,where}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
-const FC={apiKey:"AIzaSyB_SeMMk-2mL_XYTKEemoIeh_j2odQ6LNk",authDomain:"ramadan-food-aid.firebaseapp.com",projectId:"ramadan-food-aid",storageBucket:"ramadan-food-aid.firebasestorage.app",messagingSenderId:"836613630009",appId:"1:836613630009:web:c5b3047298224ec82f05e8"};
-const db=getFirestore(initializeApp(FC));
-(async()=>{try{const col=collection(db,'people');const[a,b,c]=await Promise.all([getCountFromServer(col),getCountFromServer(query(col,where('fasting','==',true))),getCountFromServer(query(col,where('served','==',true)))]);document.getElementById('sTotal').textContent=a.data().count;document.getElementById('sFasting').textContent=b.data().count;document.getElementById('sServed').textContent=c.data().count;}catch(e){}})();
-</script>
+      <!-- Background fill -->
+      <rect width="520" height="580" fill="#07080f"/>
+      <!-- Dot pattern overlay -->
+      <rect width="520" height="580" fill="url(#dots)"/>
 
-<script>
-const T={
-  fr:{nav_tagline:'Aide alimentaire pour étudiants · Ramadan 2026',tagline_fr:'La table est ouverte pour tous',staff_login:'Connexion Staff',btn_new:'Je suis nouveau',btn_new_sub:'Première inscription — créer mon profil',btn_existing:"J'ai déjà donné mes infos",btn_existing_sub:'Compléter mon profil · vérifier mon statut',s_students:'Étudiants',s_fasting:'En jeûne',s_served:'Servis',ramadan_label:'Ramadan 1447 · 2026'},
-  ar:{nav_tagline:'مساعدة غذائية للطلاب · رمضان 2026',tagline_fr:'المائدة مفتوحة للجميع',staff_login:'دخول الفريق',btn_new:'أنا جديد هنا',btn_new_sub:'تسجيل لأول مرة — إنشاء ملفي الشخصي',btn_existing:'سبق وأعطيت معلوماتي',btn_existing_sub:'إكمال ملفي · التحقق من حالتي',s_students:'طالب',s_fasting:'صائم',s_served:'تمت خدمتهم',ramadan_label:'رمضان 1447 · 2026'},
-  en:{nav_tagline:'Food aid for students · Ramadan 2026',tagline_fr:'The table is open for everyone',staff_login:'Staff Login',btn_new:"I'm new here",btn_new_sub:'First registration — create my profile',btn_existing:'I already gave my info',btn_existing_sub:'Complete my profile · check my status',s_students:'Students',s_fasting:'Fasting',s_served:'Served',ramadan_label:'Ramadan 1447 · 2026'}
-};
-function setLang(l){
-  document.documentElement.lang=l;
-  document.documentElement.dir=l==='ar'?'rtl':'ltr';
-  document.querySelectorAll('.lbtn').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase()===l));
-  const t=T[l];
-  document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(t[k])el.textContent=t[k];});
-  document.querySelector('.tagline-ar').textContent='تقبل الله صيامكم وقيامكم';
-}
-window.setLang=setLang;
-</script>
-</body>
-</html>
+      <!-- Ambient gold glow behind arch -->
+      <ellipse cx="260" cy="220" rx="200" ry="160" fill="rgba(201,168,76,0.06)"/>
+
+      <!-- ══ MOSQUE ARCH SILHOUETTE ══ -->
+      <!-- Main arch shape — filled dark so dot pattern shows through cutout -->
+      <!-- Large central pointed arch -->
+      <path d="M90,520 L90,250 Q90,80 260,60 Q430,80 430,250 L430,520 Z"
+            fill="none" stroke="#c9a84c" stroke-width="1.8" opacity="0.7" filter="url(#glow)"/>
+
+      <!-- Left minaret arch -->
+      <path d="M40,520 L40,310 Q40,240 90,230 Q140,240 140,310 L140,520"
+            fill="none" stroke="#c9a84c" stroke-width="1.2" opacity="0.5"/>
+      <!-- Right minaret arch -->
+      <path d="M380,520 L380,310 Q380,240 430,230 Q480,240 480,310 L480,520"
+            fill="none" stroke="#c9a84c" stroke-width="1.2" opacity="0.5"/>
+
+      <!-- Central arch decorative inner line -->
+      <path d="M108,520 L108,258 Q108,96 260,78 Q412,96 412,258 L412,520"
+            fill="none" stroke="#c9a84c" stroke-width="0.6" opacity="0.35"/>
+
+      <!-- Arch top ornament — small dome finial -->
+      <circle cx="260" cy="58" r="5" fill="#c9a84c" opacity="0.8" filter="url(#glow)"/>
+      <circle cx="260" cy="46" r="2.5" fill="#c9a84c" opacity="0.6"/>
+      <line x1="260" y1="52" x2="260" y2="64" stroke="#c9a84c" stroke-width="1" opacity="0.5"/>
+
+      <!-- Left minaret finial -->
+      <circle cx="90" cy="228" r="3.5" fill="#c9a84c" opacity="0.6"/>
+      <circle cx="90" cy="220" r="1.8" fill="#c9a84c" opacity="0.5"/>
+      <!-- Right minaret finial -->
+      <circle cx="430" cy="228" r="3.5" fill="#c9a84c" opacity="0.6"/>
+      <circle cx="430" cy="220" r="1.8" fill="#c9a84c" opacity="0.5"/>
+
+      <!-- Islamic geometric motif inside arch (subtle) -->
+      <g opacity="0.12" stroke="#c9a84c" stroke-width="0.7" fill="none" transform="translate(195,110)">
+        <polygon points="65,0 130,37.5 130,112.5 65,150 0,112.5 0,37.5" />
+        <polygon points="65,20 110,45 110,105 65,130 20,105 20,45" />
+        <line x1="65" y1="0" x2="65" y2="150"/>
+        <line x1="0" y1="37.5" x2="130" y2="112.5"/>
+        <line x1="130" y1="37.5" x2="0" y2="112.5"/>
+      </g>
+
+      <!-- ══ STRING / GARLAND ══ -->
+      <!-- Main garland from left minaret top to right, drooping -->
+      <path id="garland1" d="M40,230 Q130,280 260,265 Q390,280 480,230"
+            fill="none" stroke="#c9a84c" stroke-width="0.9" stroke-dasharray="3,4" opacity="0.55"/>
+      <!-- Secondary garland string -->
+      <path d="M90,228 Q175,268 260,255 Q345,268 430,228"
+            fill="none" stroke="#c9a84c" stroke-width="0.6" opacity="0.3"/>
+
+      <!-- Small stars on garland -->
+      <g fill="#c9a84c" filter="url(#glow)">
+        <polygon id="gs1" points="130,254 132,260 138,260 133,264 135,270 130,266 125,270 127,264 122,260 128,260" opacity="0.8" transform="scale(0.55) translate(107,208)"/>
+        <polygon id="gs2" points="260,247 262,253 268,253 263,257 265,263 260,259 255,263 257,257 252,253 258,253" opacity="0.8" transform="scale(0.55) translate(207,200)"/>
+        <polygon id="gs3" points="390,254 392,260 398,260 393,264 395,270 390,266 385,270 387,264 382,260 388,260" opacity="0.8" transform="scale(0.55) translate(307,208)"/>
+      </g>
+
+      <!-- Hanging drop lines for lanterns -->
+      <!-- Lantern 1 (far left) -->
+      <line x1="80" y1="230" x2="80" y2="295" stroke="#c9a84c" stroke-width="0.8" opacity="0.5"/>
+      <!-- Lantern 2 (center-left) -->
+      <line x1="175" y1="260" x2="175" y2="315" stroke="#c9a84c" stroke-width="0.8" opacity="0.5"/>
+      <!-- Lantern 3 (center-right) -->
+      <line x1="345" y1="260" x2="345" y2="315" stroke="#c9a84c" stroke-width="0.8" opacity="0.5"/>
+      <!-- Lantern 4 (far right) -->
+      <line x1="440" y1="230" x2="440" y2="295" stroke="#c9a84c" stroke-width="0.8" opacity="0.5"/>
+
+      <!-- ══ LANTERN 1 — Far left, tall ornate ══ -->
+      <g id="lantern1" transform="translate(80,295)">
+        <!-- Cap -->
+        <path d="M-12,0 Q0,-14 12,0" fill="none" stroke="#c9a84c" stroke-width="1.2" opacity="0.85"/>
+        <line x1="-12" y1="0" x2="12" y2="0" stroke="#c9a84c" stroke-width="1" opacity="0.7"/>
+        <!-- Body panels -->
+        <rect x="-10" y="0" width="20" height="50" rx="1" fill="none" stroke="#c9a84c" stroke-width="1.1" opacity="0.8"/>
+        <!-- Inner grid -->
+        <line x1="-10" y1="18" x2="10" y2="18" stroke="#c9a84c" stroke-width="0.5" opacity="0.4"/>
+        <line x1="-10" y1="35" x2="10" y2="35" stroke="#c9a84c" stroke-width="0.5" opacity="0.4"/>
+        <line x1="0" y1="0" x2="0" y2="50" stroke="#c9a84c" stroke-width="0.5" opacity="0.4"/>
+        <!-- Diamond window -->
+        <polygon points="0,-8 5,0 0,8 -5,0" transform="translate(0,9)" fill="rgba(201,168,76,0.15)" stroke="#c9a84c" stroke-width="0.7"/>
+        <!-- Base -->
+        <path d="M-10,50 Q0,58 10,50" fill="none" stroke="#c9a84c" stroke-width="1" opacity="0.7"/>
+        <line x1="-4" y1="54" x2="4" y2="54" stroke="#c9a84c" stroke-width="0.8" opacity="0.5"/>
+        <!-- Glow -->
+        <ellipse cx="0" cy="25" rx="8" ry="16" fill="rgba(201,168,76,0.07)"/>
+      </g>
+
+      <!-- ══ LANTERN 2 — Center-left, ornate with crescent ══ -->
+      <g id="lantern2" transform="translate(175,315)">
+        <!-- Cap pointed -->
+        <path d="M-13,0 L0,-16 L13,0" fill="none" stroke="#c9a84c" stroke-width="1.3" opacity="0.9"/>
+        <line x1="-13" y1="0" x2="13" y2="0" stroke="#c9a84c" stroke-width="1" opacity="0.7"/>
+        <!-- Body -->
+        <rect x="-11" y="0" width="22" height="58" rx="2" fill="none" stroke="#c9a84c" stroke-width="1.2" opacity="0.85"/>
+        <!-- Arch window -->
+        <path d="M-6,5 L-6,28 Q-6,34 0,34 Q6,34 6,28 L6,5 Z" fill="rgba(201,168,76,0.12)" stroke="#c9a84c" stroke-width="0.7" opacity="0.7"/>
+        <!-- Lower panel -->
+        <rect x="-6" y="38" width="12" height="15" rx="1" fill="rgba(201,168,76,0.08)" stroke="#c9a84c" stroke-width="0.6" opacity="0.6"/>
+        <!-- Side decorations -->
+        <line x1="-11" y1="20" x2="-16" y2="25" stroke="#c9a84c" stroke-width="0.7" opacity="0.4"/>
+        <line x1="11" y1="20" x2="16" y2="25" stroke="#c9a84c" stroke-width="0.7" opacity="0.4"/>
+        <!-- Base -->
+        <path d="M-11,58 Q0,68 11,58" fill="none" stroke="#c9a84c" stroke-width="1" opacity="0.7"/>
+        <circle cx="0" cy="64" r="2" fill="#c9a84c" opacity="0.5"/>
+        <!-- Crescent on top -->
+        <g transform="translate(0,-22)" opacity="0.7">
+          <circle cx="0" cy="0" r="4" fill="none" stroke="#c9a84c" stroke-width="1"/>
+          <circle cx="1.5" cy="0" r="3" fill="#07080f" stroke="none"/>
+        </g>
+        <!-- Glow -->
+        <ellipse cx="0" cy="29" rx="9" ry="20" fill="rgba(201,168,76,0.08)"/>
+      </g>
+
+      <!-- ══ LANTERN 3 — Center-right, cage style ══ -->
+      <g id="lantern3" transform="translate(345,315)">
+        <!-- Round cage top -->
+        <path d="M-13,0 Q0,-12 13,0" fill="none" stroke="#c9a84c" stroke-width="1.2" opacity="0.85"/>
+        <ellipse cx="0" cy="0" rx="13" ry="4" fill="none" stroke="#c9a84c" stroke-width="1" opacity="0.6"/>
+        <!-- Cage bars -->
+        <ellipse cx="0" cy="30" rx="13" ry="35" fill="none" stroke="#c9a84c" stroke-width="1.1" opacity="0.8"/>
+        <line x1="-13" y1="30" x2="13" y2="30" stroke="#c9a84c" stroke-width="0.6" opacity="0.4"/>
+        <ellipse cx="0" cy="30" rx="13" ry="15" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.3"/>
+        <line x1="0" y1="-5" x2="0" y2="65" stroke="#c9a84c" stroke-width="0.6" opacity="0.35"/>
+        <line x1="-12" y1="10" x2="12" y2="50" stroke="#c9a84c" stroke-width="0.5" opacity="0.25"/>
+        <line x1="12" y1="10" x2="-12" y2="50" stroke="#c9a84c" stroke-width="0.5" opacity="0.25"/>
+        <!-- Bottom -->
+        <ellipse cx="0" cy="65" rx="13" ry="4" fill="none" stroke="#c9a84c" stroke-width="1" opacity="0.6"/>
+        <circle cx="0" cy="70" r="2.5" fill="#c9a84c" opacity="0.5"/>
+        <!-- Inner glow -->
+        <ellipse cx="0" cy="30" rx="7" ry="18" fill="rgba(201,168,76,0.09)"/>
+      </g>
+
+      <!-- ══ LANTERN 4 — Far right, tall cage ══ -->
+      <g id="lantern4" transform="translate(440,295)">
+        <!-- Cap -->
+        <path d="M-12,0 Q0,-14 12,0" fill="none" stroke="#c9a84c" stroke-width="1.2" opacity="0.85"/>
+        <line x1="-12" y1="0" x2="12" y2="0" stroke="#c9a84c" stroke-width="1" opacity="0.7"/>
+        <!-- Body -->
+        <rect x="-10" y="0" width="20" height="52" rx="1" fill="none" stroke="#c9a84c" stroke-width="1.1" opacity="0.8"/>
+        <line x1="-10" y1="17" x2="10" y2="17" stroke="#c9a84c" stroke-width="0.5" opacity="0.4"/>
+        <line x1="-10" y1="35" x2="10" y2="35" stroke="#c9a84c" stroke-width="0.5" opacity="0.4"/>
+        <line x1="0" y1="0" x2="0" y2="52" stroke="#c9a84c" stroke-width="0.5" opacity="0.4"/>
+        <polygon points="0,-8 5,0 0,8 -5,0" transform="translate(0,9)" fill="rgba(201,168,76,0.15)" stroke="#c9a84c" stroke-width="0.7"/>
+        <!-- Base -->
+        <path d="M-10,52 Q0,60 10,52" fill="none" stroke="#c9a84c" stroke-width="1" opacity="0.7"/>
+        <line x1="-4" y1="56" x2="4" y2="56" stroke="#c9a84c" stroke-width="0.8" opacity="0.5"/>
+        <ellipse cx="0" cy="26" rx="8" ry="16" fill="rgba(201,168,76,0.07)"/>
+      </g>
+
+      <!-- Crescent moons hanging from garland -->
+      <!-- Left crescent -->
+      <g transform="translate(55,255)" opacity="0.75">
+        <circle cx="0" cy="0" r="7" fill="none" stroke="#c9a84c" stroke-width="1.2"/>
+        <circle cx="2.5" cy="0" r="5.5" fill="#07080f" stroke="none"/>
+      </g>
+      <!-- Right crescent -->
+      <g transform="translate(465,255)" opacity="0.75">
+        <circle cx="0" cy="0" r="7" fill="none" stroke="#c9a84c" stroke-width="1.2"/>
+        <circle cx="-2.5" cy="0" r="5.5" fill="#07080f" stroke="none"/>
+      </g>
+
+      <!-- Stars scattered -->
+      <g fill="#c9a84c" opacity="0.5">
+        <!-- 4-point stars -->
+        <path d="M150,160 L152,167 L159,169 L152,171 L150,178 L148,171 L141,169 L148,167 Z" transform="scale(0.45) translate(189,187)"/>
+        <path d="M370,175 L372,182 L379,184 L372,186 L370,193 L368,186 L361,184 L368,182 Z" transform="scale(0.45) translate(487,218)"/>
+        <path d="M260,135 L262,142 L269,144 L262,146 L260,153 L258,146 L251,144 L258,142 Z" transform="scale(0.4) translate(390,152)"/>
+        <!-- Small dots as stars -->
+        <circle cx="110" cy="170" r="1.5" opacity="0.6"/>
+        <circle cx="200" cy="145" r="1.2" opacity="0.5"/>
+        <circle cx="320" cy="155" r="1.5" opacity="0.6"/>
+        <circle cx="415" cy="175" r="1.2" opacity="0.5"/>
+        <circle cx="260" cy="120" r="2" opacity="0.7" filter="url(#glow)"/>
+      </g>
+    </svg>
+
+    <!-- Sofra text overlay -->
+    <div style="position:absolute;bottom:32px;left:0;right:0;text-align:center;z-index:10;pointer-events:none">
+      <div style="font-family:'Amiri',serif;font-size:1.5rem;color:#c9a84c;letter-spacing:0.08em;text-shadow:0 0 24px rgba(201,168,76,0.6)">سفرة · Sofra</div>
+      <div style="font-size:0.55rem;color:rgba(201,168,76,0.5);letter-spacing:0.18em;text-transform:uppercase;margin-top:4px" data-i18n="ramadan_label">Ramadan 1447 · 2026</div>
+    </div>
