@@ -1,0 +1,1941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080c14">
+<title>Ramadan Food Aid — Admin</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap');
+:root{--bg:#080c14;--bg2:#0d1220;--surface:#111827;--surface2:#1a2438;--surface3:#1f2d42;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--green:#22c55e;--green2:#16a34a;--green-dim:rgba(34,197,94,0.1);--gold:#f59e0b;--gold-dim:rgba(245,158,11,0.1);--danger:#ef4444;--danger-dim:rgba(239,68,68,0.1);--warn:#f97316;--blue:#3b82f6;--blue-dim:rgba(59,130,246,0.1);--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--sw:260px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+.full-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.full-screen::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(34,197,94,0.06) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(245,158,11,0.04) 0%,transparent 50%);pointer-events:none}
+.auth-box{width:100%;max-width:420px;position:relative;z-index:1}
+.auth-brand{text-align:center;margin-bottom:32px}
+.moon{font-size:2.8rem;display:block;margin-bottom:10px;filter:drop-shadow(0 0 20px rgba(245,158,11,0.5));animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.brand-name{font-size:1.8rem;font-weight:700;letter-spacing:-0.5px}.brand-name span{color:var(--green)}
+.brand-ar{font-family:'Amiri',serif;font-size:1rem;color:var(--text3);margin-top:4px;direction:rtl}
+.acard{background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:28px;position:relative;overflow:hidden}
+.acard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.acard-title{font-size:1.1rem;font-weight:700;margin-bottom:22px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:0.72rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px}
+.fi{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:0.92rem;padding:11px 14px;outline:none;transition:border-color 0.2s,box-shadow 0.2s}
+.fi:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(34,197,94,0.1)}
+.fi::placeholder{color:var(--text3)}
+textarea.fi{min-height:75px;resize:vertical}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 20px;border-radius:10px;border:none;font-family:'Space Grotesk',sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer;transition:all 0.15s;white-space:nowrap}
+.btn-p{background:var(--green);color:#fff;width:100%;padding:13px}.btn-p:hover{background:var(--green2)}.btn-p:active{transform:scale(0.98)}.btn-p:disabled{background:var(--surface2);color:var(--text3);cursor:not-allowed;transform:none}
+.btn-g{background:transparent;border:1px solid var(--border2);color:var(--text2)}.btn-g:hover{border-color:var(--green);color:var(--green)}
+.btn-sm{padding:6px 12px;font-size:0.78rem}
+.aswitch{text-align:center;margin-top:16px;font-size:0.85rem;color:var(--text3)}.aswitch a{color:var(--green);cursor:pointer;font-weight:600}
+.ebox{background:var(--danger-dim);border:1px solid var(--danger);border-radius:8px;padding:10px 14px;font-size:0.83rem;color:var(--danger);margin-bottom:14px;display:none}
+#mainApp{display:none;min-height:100vh}
+.al{display:flex;min-height:100vh}
+.sb{width:var(--sw);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:200;transition:transform 0.3s}
+.sb-brand{padding:22px 18px 18px;border-bottom:1px solid var(--border)}
+.sb-brand .bname{font-size:1.05rem;font-weight:700}.sb-brand .bname span{color:var(--green)}
+.sb-brand .bar{font-family:'Amiri',serif;font-size:0.78rem;color:var(--text3);direction:rtl;margin-top:2px}
+.live{display:flex;align-items:center;gap:4px;font-size:0.65rem;color:var(--green);font-weight:600;margin-top:6px}
+.ldot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+.sb-stats{padding:14px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.ss{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center}
+.ss.g{border-color:rgba(34,197,94,0.25);background:var(--green-dim)}.ss.r{border-color:rgba(239,68,68,0.2);background:var(--danger-dim)}.ss.b{border-color:rgba(59,130,246,0.2);background:var(--blue-dim)}
+.ssn{font-size:1.5rem;font-weight:700;line-height:1}.ssl{font-size:0.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
+.cg{color:var(--green)}.cgo{color:var(--gold)}.cw{color:var(--warn)}.cd{color:var(--danger)}.ct{color:var(--text)}.cb{color:var(--blue)}
+.fp{padding:12px 14px;border-bottom:1px solid var(--border);background:var(--green-dim)}
+.fpt{font-size:0.66rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px}
+.fpr{display:flex;gap:6px}.fpi{flex:1;text-align:center}.fpn{font-size:1.1rem;font-weight:700;color:var(--green)}.fpl{font-size:0.56rem;color:var(--text3);text-transform:uppercase}
+.sb-nav{padding:10px 8px;flex:1;overflow-y:auto}
+.ni{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:0.87rem;font-weight:500;color:var(--text2);cursor:pointer;transition:all 0.15s;margin-bottom:2px;position:relative}
+.ni:hover{background:var(--surface2);color:var(--text)}.ni.active{background:var(--green-dim);color:var(--green);border:1px solid rgba(34,197,94,0.2)}.ni.hidden{display:none}
+.nicon{width:20px;text-align:center;flex-shrink:0}
+.nbadge{position:absolute;right:10px;background:var(--blue);color:#fff;font-size:0.6rem;font-weight:700;padding:2px 6px;border-radius:10px;min-width:18px;text-align:center}
+.sb-foot{padding:12px 14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.upill{display:flex;align-items:center;gap:8px;min-width:0}
+.uav{width:30px;height:30px;border-radius:50%;background:var(--green-dim);border:1px solid rgba(34,197,94,0.3);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--green);flex-shrink:0}
+.rtag{font-size:0.6rem;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px}
+.rtag.admin{background:var(--green-dim);color:var(--green);border:1px solid rgba(34,197,94,0.3)}
+.rtag.root{background:rgba(99,102,241,0.18);color:#818cf8;border-color:rgba(99,102,241,0.4)}.rtag.volunteer{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(245,158,11,0.3)}.rtag.staff{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(245,158,11,0.3)}
+.mc{margin-left:var(--sw);flex:1;min-height:100vh;display:flex;flex-direction:column}
+.tb{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:99}
+.tbtitle{font-size:1.1rem;font-weight:700;letter-spacing:-0.3px}
+.tbact{display:flex;gap:8px;align-items:center}
+.pg{display:none;padding:28px;flex:1}.pg.active{display:block}
+.sw-wrap{position:relative;margin-bottom:20px}
+.sicon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
+.sinput{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:12px;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:0.95rem;padding:14px 16px 14px 42px;outline:none;transition:border-color 0.2s,box-shadow 0.2s}
+.sinput:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(34,197,94,0.08)}.sinput::placeholder{color:var(--text3)}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px}
+.pc{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;position:relative;overflow:hidden;transition:border-color 0.2s}
+.pc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;background:var(--border2)}
+.pc.fasting::before{background:var(--green)}.pc.bl::before{background:#334155}.pc.as::before{background:var(--gold)}.pc.pending-card::before{background:var(--blue)}
+.pc.fasting{border-color:rgba(34,197,94,0.2);background:linear-gradient(135deg,rgba(34,197,94,0.04),var(--surface))}.pc.bl{border-color:rgba(100,116,139,0.3);opacity:0.7}.pc.as{border-color:rgba(245,158,11,0.3)}.pc.pending-card{border-color:rgba(59,130,246,0.2);background:rgba(59,130,246,0.03)}
+.ctop{display:flex;align-items:flex-start;gap:12px}
+.av{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.95rem;flex-shrink:0;background:var(--surface2);color:var(--green);border:1px solid var(--border)}
+.pc.fasting .av{background:var(--green-dim);color:var(--green);border-color:rgba(34,197,94,0.3)}.pc.bl .av{background:#1e293b;color:var(--text3)}.pc.as .av{background:var(--gold-dim);color:var(--gold)}.pc.pending-card .av{background:var(--blue-dim);color:var(--blue);border-color:rgba(59,130,246,0.3)}
+.ci{flex:1;min-width:0}
+.cnr{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px}
+.cname{font-size:0.95rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tag{font-size:0.6rem;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.tag.f{background:var(--green-dim);color:var(--green);border:1px solid rgba(34,197,94,0.3)}.tag.r{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(245,158,11,0.3)}.tag.b{background:#1e293b;color:var(--text3);border:1px solid rgba(100,116,139,0.3)}.tag.p{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(59,130,246,0.3)}
+.cph{font-size:0.78rem;color:var(--text3);direction:ltr;margin-bottom:2px}.cno{font-size:0.75rem;color:var(--warn)}.cst{font-size:0.72rem;color:var(--green);margin-top:3px}.csp{font-size:0.75rem;color:var(--gold);margin-top:3px;font-weight:600}.cdet{font-size:0.72rem;color:var(--text3);margin-top:2px;line-height:1.5}
+.cact{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+.ef{margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:none}.ef.open{display:block}
+.er{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}.er.full{grid-template-columns:1fr}
+.el{font-size:0.68rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+.ei{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:0.85rem;padding:9px 11px;outline:none;transition:border-color 0.2s}
+.ei:focus{border-color:var(--green)}.ei::placeholder{color:var(--text3)}
+.etr{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:9px 12px;margin-bottom:8px;cursor:pointer}
+.esw{width:38px;height:21px;background:var(--surface3);border-radius:11px;position:relative;transition:background 0.2s;flex-shrink:0}.esw.on{background:var(--green)}.esw::after{content:'';position:absolute;top:2px;left:2px;width:17px;height:17px;background:#fff;border-radius:50%;transition:transform 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.3)}.esw.on::after{transform:translateX(17px)}
+.eact{display:flex;gap:6px;margin-top:10px}
+.fr{display:flex;gap:7px;margin-bottom:16px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}.fr::-webkit-scrollbar{display:none}
+.pill{padding:6px 14px;border-radius:8px;border:1px solid var(--border2);font-size:0.78rem;font-weight:600;cursor:pointer;white-space:nowrap;color:var(--text2);background:var(--surface);transition:all 0.15s;flex-shrink:0}.pill.active{background:var(--green);color:#fff;border-color:var(--green)}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}.mo.open{display:flex}
+.md{background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:28px;width:100%;max-width:440px}
+.mdt{font-size:1.1rem;font-weight:700;margin-bottom:8px}.mds{font-size:0.85rem;color:var(--text2);margin-bottom:20px}.mda{display:flex;gap:8px;margin-top:20px}
+.empty{text-align:center;padding:60px 20px;color:var(--text3)}.ei2{font-size:3rem;margin-bottom:14px}.et{font-size:1.1rem;font-weight:700;color:var(--text2);margin-bottom:6px}.es{font-size:0.85rem}
+.loading{text-align:center;padding:60px;color:var(--text3)}.spinner{display:inline-block;width:26px;height:26px;border:2px solid var(--border2);border-top-color:var(--green);border-radius:50%;animation:spin 0.7s linear infinite;margin-bottom:12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ib{background:var(--green-dim);border:1px solid rgba(34,197,94,0.2);border-radius:10px;padding:12px 14px;font-size:0.82rem;color:var(--text2);margin-bottom:16px;line-height:1.6}.ib strong{color:var(--green)}
+.vc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:12px}.vn{font-size:0.9rem;font-weight:600}.ve{font-size:0.75rem;color:var(--text3);margin-top:2px}
+.toast{position:fixed;bottom:28px;right:28px;background:var(--surface);color:var(--text);padding:12px 20px;border-radius:12px;font-size:0.86rem;font-weight:600;border:1px solid var(--border2);box-shadow:0 8px 30px rgba(0,0,0,0.4);opacity:0;transform:translateY(10px);transition:all 0.3s;pointer-events:none;z-index:9999}.toast.show{opacity:1;transform:translateY(0)}
+.div{height:1px;background:var(--border);margin:22px 0}.stitle{font-size:1rem;font-weight:700;margin-bottom:14px}
+.atr{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:14px 16px;margin-bottom:14px;cursor:pointer;transition:all 0.2s}.atr.on{border-color:rgba(34,197,94,0.4);background:var(--green-dim)}
+/* PENDING BANNER */
+.tag-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:0.68rem;font-weight:600;border:1px solid var(--border2);color:var(--text2);background:var(--surface2);cursor:default}
+.tag-badge.removable{cursor:pointer}.tag-badge.removable:hover{background:var(--danger);color:#fff;border-color:var(--danger)}
+.tag-input-row{display:flex;gap:6px;margin-top:6px}.tag-input-row input{flex:1;padding:6px 10px;border-radius:8px;border:1px solid var(--border2);background:var(--surface2);color:var(--text1);font-size:0.8rem}
+.tag-filter-row{display:flex;flex-wrap:wrap;gap:6px;padding:8px 16px 0;overflow-x:auto}
+.tpill{padding:5px 12px;border-radius:20px;border:1px solid var(--border2);font-size:0.75rem;font-weight:600;cursor:pointer;color:var(--text2);background:var(--surface);white-space:nowrap;transition:all 0.15s}
+.tpill.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.reg-toggle-box{background:var(--surface2);border:1px solid var(--border2);border-radius:14px;padding:16px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.reg-toggle-box.open{border-color:rgba(34,197,94,0.3);background:rgba(34,197,94,0.05)}
+.reg-toggle-box.closed{border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.05)}
+.reg-status-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.reg-status-dot.open{background:var(--green)}
+.reg-status-dot.closed{background:var(--danger)}
+.invite-card{background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.invite-phone-row{display:flex;gap:8px;margin-top:10px}
+.invite-list{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.invite-item{background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.invite-item .inv-phone{font-size:0.85rem;font-weight:600;color:var(--text1)}
+.invite-item .inv-status{font-size:0.72rem;padding:2px 8px;border-radius:20px;font-weight:600}
+.inv-pending{background:rgba(245,158,11,0.1);color:var(--gold);border:1px solid rgba(245,158,11,0.3)}
+.inv-used{background:rgba(34,197,94,0.1);color:var(--green);border:1px solid rgba(34,197,94,0.3)}
+.inv-expired{background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid rgba(239,68,68,0.3)}
+.pending-banner{background:var(--blue-dim);border:1px solid rgba(59,130,246,0.25);border-radius:12px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.pb-text{font-size:0.88rem;color:var(--blue)}.pb-count{font-size:1.4rem;font-weight:700;color:var(--blue)}
+/* EXPORT BUTTONS */
+.export-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:20px}
+.export-card{background:var(--surface);border:1.5px solid var(--border2);border-radius:14px;padding:20px 16px;text-align:center;cursor:pointer;transition:all 0.2s}
+.export-card:hover{border-color:var(--green);background:var(--green-dim);transform:translateY(-2px)}
+.export-card:active{transform:scale(0.97)}
+.export-icon{font-size:2rem;display:block;margin-bottom:8px}
+.export-title{font-size:0.9rem;font-weight:700;margin-bottom:3px}
+.export-sub{font-size:0.72rem;color:var(--text3)}
+/* EXPORT SCOPE TOGGLE */
+.scope-row{display:flex;gap:8px;margin-bottom:18px}
+.scope-pill{padding:7px 16px;border-radius:8px;border:1.5px solid var(--border2);font-size:0.78rem;font-weight:600;cursor:pointer;color:var(--text2);background:var(--surface);transition:all 0.15s}
+.scope-pill.active{background:var(--green);color:#fff;border-color:var(--green)}
+/* REGISTER LINK BOX */
+.reg-link-box{background:var(--surface);border:1.5px solid rgba(59,130,246,0.25);border-radius:14px;padding:18px;margin-bottom:20px}
+.reg-link-title{font-size:0.8rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px}
+.reg-link-url{font-size:0.85rem;color:var(--text2);background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:10px 14px;word-break:break-all;margin-bottom:10px;font-family:monospace}
+/* MOBILE */
+@media(max-width:768px){
+  .sb{transform:translateX(-100%)}.sb.open{transform:translateX(0)}
+  .sbo{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:199}.sbo.open{display:block}
+  .mc{margin-left:0;padding-bottom:70px}.tb{padding:12px 16px}.pg{padding:14px}.cgrid{grid-template-columns:1fr}
+  .mtabs{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);z-index:150;overflow-x:auto}
+  .mt{flex:1;min-width:55px;padding:11px 4px 13px;text-align:center;font-size:0.58rem;font-weight:600;color:var(--text3);cursor:pointer;transition:color 0.2s;text-transform:uppercase;letter-spacing:0.2px}
+  .mt .mi{font-size:1.1rem;display:block;margin-bottom:2px}.mt.active{color:var(--green)}.mt.hidden{display:none}
+  .hbg{display:flex;flex-direction:column;gap:4px;cursor:pointer;padding:4px}.hbg span{display:block;width:20px;height:2px;background:var(--text2);border-radius:2px}
+  .er{grid-template-columns:1fr}.export-grid{grid-template-columns:1fr 1fr}
+}
+@media(min-width:769px){.mtabs{display:none}.hbg{display:none}.sbo{display:none!important}}
+
+/* PROXY PANEL */
+.proxy-panel{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:none}
+.proxy-panel.open{display:block}
+.proxy-title{font-size:0.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px}
+.proxy-search-row{display:flex;gap:6px;margin-bottom:8px}
+.proxy-input{flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:0.84rem;padding:8px 11px;outline:none;transition:border-color 0.2s}
+.proxy-input:focus{border-color:var(--blue)}
+.proxy-input::placeholder{color:var(--text3)}
+.proxy-add-btn{padding:8px 12px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.proxy-add-btn:hover{background:#2563eb}
+.proxy-list{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.proxy-item{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid rgba(59,130,246,0.2);border-radius:8px;padding:8px 11px}
+.proxy-item-name{font-size:0.85rem;font-weight:600}
+.proxy-item-sub{font-size:0.7rem;color:var(--text3);margin-top:1px}
+.proxy-remove{background:none;border:none;color:var(--text3);cursor:pointer;font-size:0.8rem;padding:2px 5px;transition:color 0.15s}
+.proxy-remove:hover{color:var(--danger)}
+.proxy-badge{font-size:0.6rem;font-weight:700;padding:2px 7px;border-radius:20px;background:var(--blue-dim);color:var(--blue);border:1px solid rgba(59,130,246,0.3);white-space:nowrap;flex-shrink:0}
+.proxy-info{font-size:0.72rem;color:var(--blue);margin-top:4px;line-height:1.5}
+.proxy-suggestions{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;overflow:hidden;margin-bottom:6px;display:none}
+.proxy-suggestions.show{display:block}
+.proxy-suggestion{padding:9px 12px;font-size:0.84rem;cursor:pointer;transition:background 0.1s;border-bottom:1px solid var(--border)}
+.proxy-suggestion:last-child{border-bottom:none}
+.proxy-suggestion:hover{background:var(--surface3)}
+.proxy-suggestion .ps-sub{font-size:0.7rem;color:var(--text3);margin-top:1px}
+</style>
+</head>
+<body>
+<div class="full-screen" id="authScreen">
+  <div class="auth-box">
+    <div class="auth-brand"><span class="moon">🌙</span><div class="brand-name">Ramadan <span>Food Aid</span></div><div class="brand-ar">مساعدات رمضان الغذائية</div></div>
+    <div class="acard">
+      <div class="acard-title">Staff Login</div>
+      <div class="ebox" id="authError"></div>
+
+      <!-- Google Sign In -->
+      <button class="btn" id="googleBtn" onclick="handleGoogleAuth()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:var(--surface2);border:1.5px solid var(--border2);color:var(--text);font-size:0.9rem;font-weight:600;padding:13px;border-radius:10px;cursor:pointer;transition:all 0.2s;margin-bottom:14px">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+        Sign in with Google
+      </button>
+
+      <!-- Divider -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <div style="flex:1;height:1px;background:var(--border2)"></div>
+        <div style="font-size:0.7rem;color:var(--text3);font-weight:600">OR</div>
+        <div style="flex:1;height:1px;background:var(--border2)"></div>
+      </div>
+
+      <!-- Email/Password (existing accounts only) -->
+      <div class="field"><label>Email</label><input type="email" class="fi" id="authEmail" placeholder="your@email.com"/></div>
+      <div class="field"><label>Password</label><input type="password" class="fi" id="authPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter')handleAuth()"/></div>
+      <button class="btn btn-p" id="authBtn" onclick="handleAuth()">Sign In</button>
+    </div>
+  </div>
+</div>
+
+<!-- Pending Access Screen (shown after Google signup, before approval) -->
+<div class="full-screen" id="pendingAccessScreen" style="display:none">
+  <div class="auth-box">
+    <div class="auth-brand"><span class="moon">🌙</span><div class="brand-name">Ramadan <span>Food Aid</span></div><div class="brand-ar">مساعدات رمضان الغذائية</div></div>
+    <div class="acard" style="text-align:center">
+      <div style="font-size:3rem;margin-bottom:12px">⏳</div>
+      <div class="acard-title" style="margin-bottom:8px">Access Pending</div>
+      <div style="font-size:0.85rem;color:var(--text2);line-height:1.6;margin-bottom:16px">
+        Your Google account has been registered. The admin will review your request and assign your access level.<br/><br/>
+        You'll be able to sign in once approved.
+      </div>
+      <div style="font-size:0.75rem;color:var(--text3);background:var(--surface2);border-radius:8px;padding:10px;margin-bottom:14px" id="pendingEmail"></div>
+      <button class="btn" onclick="signOut(auth).then(()=>showS('authScreen'))" style="width:100%;background:var(--surface2);color:var(--text2)">← Back to Login</button>
+    </div>
+  </div>
+</div>
+
+<!-- Rejected Screen -->
+<div class="full-screen" id="rejectedScreen" style="display:none">
+  <div class="auth-box">
+    <div class="auth-brand"><span class="moon">🌙</span><div class="brand-name">Ramadan <span>Food Aid</span></div><div class="brand-ar">مساعدات رمضان الغذائية</div></div>
+    <div class="acard" style="text-align:center">
+      <div style="font-size:3rem;margin-bottom:12px">🚫</div>
+      <div class="acard-title" style="margin-bottom:8px">Access Denied</div>
+      <div style="font-size:0.85rem;color:var(--text2);line-height:1.6;margin-bottom:16px">
+        We cannot recognize this account. If you believe this is a mistake, please contact the administrator.
+      </div>
+      <button class="btn" onclick="signOut(auth).then(()=>showS('authScreen'))" style="width:100%;background:var(--surface2);color:var(--text2)">← Back to Login</button>
+    </div>
+  </div>
+</div>
+<div class="full-screen" id="setupScreen" style="display:none">
+  <div class="auth-box">
+    <div class="auth-brand"><span class="moon">🌙</span><div class="brand-name">Ramadan <span>Food Aid</span></div></div>
+    <div class="acard">
+      <div class="acard-title">Create Admin Account</div>
+      <div class="ebox" id="setupError"></div>
+      <div class="field"><label>Your Name</label><input type="text" class="fi" id="setupName" placeholder="Mohammed"/></div>
+      <div class="field"><label>Email</label><input type="email" class="fi" id="setupEmail" placeholder="your@email.com"/></div>
+      <div class="field"><label>Password (min 6 chars)</label><input type="password" class="fi" id="setupPassword" placeholder="••••••••"/></div>
+      <button class="btn btn-p" id="setupBtn" onclick="createAdminAccount()">Create Admin Account</button>
+    </div>
+  </div>
+</div>
+<div id="mainApp">
+  <div class="al">
+    <div class="sbo" id="sbo" onclick="closeSB()"></div>
+    <div class="sb" id="sb">
+      <div class="sb-brand">
+        <div class="bname">🌙 Ramadan <span>Aid</span></div>
+        <div class="bar">مساعدات رمضان</div>
+        <div class="live"><div class="ldot"></div>Live sync</div>
+      </div>
+      <div class="sb-stats">
+        <div class="ss"><div class="ssn ct" id="statTotal">0</div><div class="ssl">Total</div></div>
+        <div class="ss g"><div class="ssn cg" id="statFasting">0</div><div class="ssl">🌙 Fasting</div></div>
+        <div class="ss"><div class="ssn cgo" id="statServed">0</div><div class="ssl">Served</div></div>
+        <div class="ss r"><div class="ssn cd" id="statBL">0</div><div class="ssl">Blacklist</div></div>
+      </div>
+      <div class="fp">
+        <div class="fpt">🌙 Fasting Breakdown</div>
+        <div class="fpr">
+          <div class="fpi"><div class="fpn" id="fastTotal">0</div><div class="fpl">Total</div></div>
+          <div class="fpi"><div class="fpn" id="fastServed">0</div><div class="fpl">Served</div></div>
+          <div class="fpi"><div class="fpn" id="fastLeft">0</div><div class="fpl">Left</div></div>
+        </div>
+      </div>
+      <div class="sb-nav">
+        <div class="ni active" id="nav-search" onclick="sw('search')"><span class="nicon">🔍</span>Check Person</div>
+        <div class="ni" id="nav-list" onclick="sw('list')"><span class="nicon">📋</span>Full List</div>
+        <div class="ni hidden" id="nav-pending" onclick="sw('pending')"><span class="nicon">⏳</span>Pending<span class="nbadge hidden" id="pendingBadge">0</span></div>
+        <div class="ni hidden" id="nav-add" onclick="sw('add')"><span class="nicon">➕</span>Add People</div>
+        <div class="ni hidden" id="nav-export" onclick="sw('export')"><span class="nicon">📤</span>Export</div>
+        <div class="ni hidden" id="nav-blacklist" onclick="sw('blacklist')"><span class="nicon">🚫</span>Blacklist</div>
+        <div class="ni hidden" id="nav-announce" onclick="sw('announce')"><span class="nicon">📢</span>Announce<span class="nbadge hidden" id="annBadge" style="background:var(--gold);color:#000">0</span></div>
+                <div class="ni hidden" id="nav-users" onclick="sw('users')"><span class="nicon">👥</span>Staff</div>
+      </div>
+      <div class="sb-foot">
+        <div class="upill">
+          <div class="uav" id="uIni">?</div>
+          <div><div id="uName" style="font-size:0.8rem;font-weight:600;white-space:nowrap;overflow:hidden;max-width:120px">—</div><span class="rtag" id="rBadge">—</span></div>
+        </div>
+        <button class="btn btn-g btn-sm" onclick="doLogout()" style="color:var(--danger);border-color:rgba(239,68,68,0.3)">🚪 Logout</button>
+      </div>
+    </div>
+    <div class="mc">
+      <div class="tb">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="hbg" onclick="openSB()"><span></span><span></span><span></span></div>
+          <div class="tbtitle" id="tbTitle">Check Person</div>
+        </div>
+        <div class="tbact"><button class="btn btn-g btn-sm hidden" id="resetBtn" onclick="confirmReset()">🔄 Reset Day</button></div>
+      </div>
+
+      <!-- CHECK -->
+      <div class="pg active" id="pg-search">
+        <div class="sw-wrap"><span class="sicon">🔍</span><input type="text" class="sinput" id="sInput" placeholder="Search by name or phone number..." oninput="doSearch()" autofocus/></div>
+        <div id="sResults"><div class="empty"><div class="ei2">🌙</div><div class="et">Search for a person</div><div class="es">Type a name or phone number</div></div></div>
+      </div>
+
+      <!-- LIST -->
+      <div class="pg" id="pg-list">
+        <div class="fr">
+          <div class="pill active" onclick="setF('all',this)">All</div>
+          <div class="pill" onclick="setF('fasting',this)">🌙 Fasting</div>
+          <div class="pill" onclick="setF('pending',this)">Pending</div>
+          <div class="pill" onclick="setF('served',this)">Served</div>
+        </div>
+        <div class="tag-filter-row" id="tagFilterRow"></div>
+        <div class="cgrid" id="lResults"><div class="loading"><div class="spinner"></div><br>Loading...</div></div>
+      </div>
+
+      <!-- PENDING APPROVALS -->
+      <div class="pg" id="pg-pending">
+        <div class="pending-banner">
+          <div><div style="font-size:0.7rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:4px">Registration Queue</div><div class="pb-text">Review and approve new registrations from the form</div></div>
+          <div class="pb-count" id="pendingCount">0</div>
+        </div>
+        <div class="cgrid" id="pendingResults"><div class="loading"><div class="spinner"></div><br>Loading...</div></div>
+      </div>
+
+      <!-- ADD -->
+      <div class="pg" id="pg-add">
+        <div style="max-width:600px">
+          <div class="stitle">Add One Person</div>
+          <div class="atr" id="addFR" onclick="toggleAF()">
+            <div><div style="font-size:0.9rem;font-weight:600">🌙 Fasting (Muslim)</div><div style="font-size:0.75rem;color:var(--text3);margin-top:2px">Will be prioritized at top of list</div></div>
+            <div class="esw" id="addFS"></div>
+          </div>
+          <div class="field"><label>Full Name *</label><input type="text" class="fi" id="addName" placeholder="Ahmed Benali"/></div>
+          <div class="field"><label>Phone Number</label><input type="tel" class="fi" id="addPhone" placeholder="+212601234567"/></div>
+          <div class="field"><label>Email (optional)</label><input type="email" class="fi" id="addEmail" placeholder="ahmed@email.com"/></div>
+          <div class="field"><label>Notes (optional)</label><textarea class="fi" id="addNote" placeholder="family of 4..."></textarea></div>
+          <button class="btn btn-p" id="addBtn" onclick="addPerson()">➕ Add to List</button>
+          <div class="div"></div>
+          <div class="stitle">Bulk Add</div>
+          <div class="ib">Each line = one person. Add <strong>fasting</strong> at end to mark as Muslim.<br>Format: <strong>Name, Phone, fasting</strong></div>
+          <div class="field"><textarea class="fi" id="bulkIn" placeholder="Paste your list here..." style="min-height:140px"></textarea></div>
+          <button class="btn btn-p" id="bulkBtn" onclick="bulkAdd()">📥 Import List</button>
+          <div class="div"></div>
+          <!-- WhatsApp Group Link Setting -->
+          <div class="stitle">💬 WhatsApp Group</div>
+          <div style="font-size:0.8rem;color:var(--text2);margin-bottom:10px;line-height:1.5">
+            This link will appear on the registration success screen, so new students can join your group immediately.
+          </div>
+          <div class="field" style="margin-bottom:8px">
+            <label>Group invite link</label>
+            <input type="url" class="fi" id="waLinkInput" placeholder="https://chat.whatsapp.com/..." style="width:100%;box-sizing:border-box"/>
+          </div>
+          <button class="btn btn-p" onclick="saveWALink()" style="width:100%;margin-bottom:14px">💾 Save Link</button>
+          <div class="ebox" id="waLinkMsg" style="margin-bottom:14px"></div>
+          <div class="div"></div>
+
+          <div class="stitle">🔗 Registration Control</div>
+
+          <!-- Registration ON/OFF toggle -->
+          <div class="reg-toggle-box closed" id="regToggleBox">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="reg-status-dot closed" id="regStatusDot"></div>
+              <div>
+                <div style="font-size:0.9rem;font-weight:600" id="regStatusLabel">Registration Closed</div>
+                <div style="font-size:0.75rem;color:var(--text3);margin-top:2px" id="regStatusSub">Students cannot access the registration form</div>
+              </div>
+            </div>
+            <button class="btn btn-p btn-sm" id="regToggleBtn" onclick="window.toggleRegistration()">🔓 Open Registration</button>
+          </div>
+
+          <!-- Invite link generator -->
+          <div class="reg-link-box" style="margin-bottom:14px">
+            <div class="reg-link-title">🔗 Public Registration Link</div>
+            <div class="reg-link-url" id="regLinkUrl">Loading...</div>
+            <button class="btn btn-g btn-sm" onclick="window.copyRegLink()">📋 Copy Link</button>
+          </div>
+
+          <div class="invite-card" style="position:relative;z-index:2">
+            <div style="font-size:0.85rem;font-weight:600;margin-bottom:4px">📨 Generate Invite Link</div>
+            <div style="font-size:0.75rem;color:var(--text3);margin-bottom:10px">Enter the student's phone number → generate a unique one-time link → send via WhatsApp</div>
+            <input type="tel" id="invitePhone" placeholder="+212601234567" style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;color:var(--text1);font-size:0.92rem;padding:11px 14px;outline:none;margin-top:10px;margin-bottom:8px;box-sizing:border-box"/>
+            <button class="btn btn-p" onclick="window.generateInvite()" id="genInviteBtn" style="width:100%">Generate Link</button>
+            <div id="inviteLinkBox" style="display:none;margin-top:10px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:10px">
+              <div style="font-size:0.72rem;color:var(--text3);margin-bottom:4px">One-time link (expires in 24h):</div>
+              <div id="inviteLinkText" style="font-size:0.75rem;word-break:break-all;color:var(--accent);margin-bottom:8px"></div>
+              <div style="display:flex;gap:6px">
+                <button class="btn btn-g btn-sm" onclick="window.copyInviteLink()">📋 Copy</button>
+                <button class="btn btn-p btn-sm" onclick="window.shareWhatsApp()">📱 WhatsApp</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active invites list -->
+          <div style="font-size:0.82rem;font-weight:600;color:var(--text2);margin-bottom:8px">Active Invites</div>
+          <div id="inviteList"><div style="font-size:0.78rem;color:var(--text3)">No invites generated yet</div></div>
+
+          <!-- ROOT ONLY: KILL SWITCH -->
+          <div id="killSwitchSection" style="display:none;margin-top:28px">
+            <div class="div"></div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+              <div class="stitle" style="margin-bottom:0;color:var(--danger)">⚠️ Service Control</div>
+              <span class="rtag root" style="font-size:0.6rem">Root only</span>
+            </div>
+            <div style="font-size:0.8rem;color:var(--text2);margin-bottom:14px;line-height:1.6">
+              Pausing the service disables all public pages (register, complete, landing). Students will see a dignified "service paused" message. Data is never deleted.
+            </div>
+            <div id="killSwitchBox" style="background:rgba(239,68,68,0.05);border:1.5px solid rgba(239,68,68,0.2);border-radius:14px;padding:18px;display:flex;align-items:center;justify-content:space-between;gap:16px">
+              <div>
+                <div style="font-weight:700;font-size:0.9rem;display:flex;align-items:center;gap:8px">
+                  <div id="killDot" style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0"></div>
+                  <span id="killLabel">Service is Active</span>
+                </div>
+                <div style="font-size:0.72rem;color:var(--text3);margin-top:4px" id="killSub">All public pages are accessible</div>
+              </div>
+              <button id="killBtn" onclick="window.toggleKillSwitch()" style="flex-shrink:0;padding:10px 18px;border-radius:10px;border:1.5px solid rgba(239,68,68,0.4);background:rgba(239,68,68,0.08);color:var(--danger);font-weight:700;font-size:0.8rem;cursor:pointer;transition:all 0.2s">
+                🔴 Pause Service
+              </button>
+            </div>
+            <div style="font-size:0.7rem;color:var(--text3);margin-top:8px;line-height:1.5">
+              ⚠️ Before pausing: use Full Export above to download all student data. This gives whoever comes next everything they need to continue manually.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EXPORT -->
+      <div class="pg" id="pg-export">
+        <div style="max-width:680px">
+          <div class="stitle">📤 Export Data</div>
+          <div style="font-size:0.85rem;color:var(--text2);margin-bottom:18px">Export your data for reports, backups, or migrating to a new version of the app.</div>
+
+          <div style="font-size:0.8rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px">What to export:</div>
+          <div class="scope-row">
+            <div class="scope-pill active" id="scope-all" onclick="setScope('all',this)">Everyone</div>
+            <div class="scope-pill" id="scope-served" onclick="setScope('served',this)">Served today</div>
+            <div class="scope-pill" id="scope-fasting" onclick="setScope('fasting',this)">Fasting only</div>
+            <div class="scope-pill" id="scope-pending" onclick="setScope('pending',this)">Not yet served</div>
+          </div>
+
+          <div style="font-size:0.8rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px">Format:</div>
+          <div class="export-grid">
+            <div class="export-card" onclick="exportCSV()">
+              <span class="export-icon">📊</span>
+              <div class="export-title">Excel / CSV</div>
+              <div class="export-sub">Open in Excel, Google Sheets</div>
+            </div>
+            <div class="export-card" onclick="exportJSON()">
+              <span class="export-icon">💾</span>
+              <div class="export-title">JSON Backup</div>
+              <div class="export-sub">Full data backup, re-import later</div>
+            </div>
+            <div class="export-card" onclick="exportTXT()">
+              <span class="export-icon">📄</span>
+              <div class="export-title">Plain Text</div>
+              <div class="export-sub">Simple list, copy to WhatsApp</div>
+            </div>
+          </div>
+
+          <div class="div"></div>
+          <div class="stitle">📋 Quick Stats Summary</div>
+          <div id="exportStats" style="background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:18px;font-size:0.88rem;line-height:2;color:var(--text2)">Loading...</div>
+
+          <!-- ROOT ONLY SECTION -->
+          <div id="rootExportSection" style="display:none;margin-top:28px">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+              <div class="stitle" style="margin-bottom:0">👑 Full System Export</div>
+              <span class="rtag root" style="font-size:0.6rem">Root only</span>
+            </div>
+            <div style="font-size:0.8rem;color:var(--text2);margin-bottom:14px;line-height:1.6">
+              Complete data dump — people, pending approvals, blacklist, served history. Use this before handing over or shutting down.
+            </div>
+            <div class="export-grid">
+              <div class="export-card" onclick="exportFullCSV()" style="border-color:rgba(201,168,76,0.3);background:rgba(201,168,76,0.04)">
+                <span class="export-icon">📦</span>
+                <div class="export-title">Full Export</div>
+                <div class="export-sub">Everything · Excel-ready CSV</div>
+              </div>
+              <div class="export-card" onclick="exportFullJSON()" style="border-color:rgba(201,168,76,0.3);background:rgba(201,168,76,0.04)">
+                <span class="export-icon">🗄️</span>
+                <div class="export-title">Full Backup</div>
+                <div class="export-sub">JSON · re-importable later</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BLACKLIST -->
+      <div class="pg" id="pg-blacklist">
+        <div class="cgrid" id="blResults"><div class="empty"><div class="ei2">🚫</div><div class="et">Blacklist is empty</div></div></div>
+      </div>
+
+      <!-- STAFF -->
+      <div class="pg" id="pg-users">
+        <div style="max-width:600px">
+
+          <!-- ⚡ PENDING STAFF ACCESS REQUESTS -->
+          <div id="pendingStaffSection" style="display:none;margin-bottom:20px">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+              <div style="font-size:0.75rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.6px">⚡ Access Requests</div>
+              <div id="pendingStaffBadge" style="background:var(--danger);color:#fff;font-size:0.65rem;font-weight:700;padding:2px 7px;border-radius:10px">0</div>
+            </div>
+            <div id="pendingStaffList"></div>
+          </div>
+
+          <div class="stitle">Add Staff Member</div>
+          <div style="font-size:0.8rem;color:var(--text2);margin-bottom:12px;line-height:1.5">
+            Create an account for someone who can't use Google login. They'll receive a verification email.
+          </div>
+          <div class="ebox" id="volError"></div>
+          <div class="field"><label>Name</label><input type="text" class="fi" id="volName" placeholder="Fatima"/></div>
+          <div class="field"><label>Email</label><input type="email" class="fi" id="volEmail" placeholder="staff@email.com"/></div>
+          <div class="field"><label>Temporary Password</label><input type="text" class="fi" id="volPass" placeholder="Give them a password"/></div>
+          <button class="btn btn-p" id="addVolBtn" onclick="addVolunteer()">➕ Add Staff Member</button>
+          <div class="div"></div>
+
+          <!-- STAFF ACCESS MONITORING -->
+          <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:14px;padding:16px;margin-bottom:18px">
+            <div style="font-size:0.75rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:12px">📊 Access Overview</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center">
+              <div style="background:var(--surface);border-radius:10px;padding:10px"><div id="monTotal" style="font-size:1.4rem;font-weight:700;color:var(--text)">—</div><div style="font-size:0.6rem;color:var(--text3);text-transform:uppercase">Total</div></div>
+              <div style="background:var(--green-dim);border:1px solid rgba(34,197,94,0.2);border-radius:10px;padding:10px"><div id="monAdmins" style="font-size:1.4rem;font-weight:700;color:var(--green)">—</div><div style="font-size:0.6rem;color:var(--text3);text-transform:uppercase">Admins</div></div>
+              <div style="background:var(--gold-dim);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:10px"><div id="monTimed" style="font-size:1.4rem;font-weight:700;color:var(--gold)">—</div><div style="font-size:0.6rem;color:var(--text3);text-transform:uppercase">Timed Access</div></div>
+            </div>
+          </div>
+
+          <!-- GRANT TIMED ACCESS FORM -->
+          <div class="stitle">⏱ Grant Timed Access</div>
+          <div style="background:var(--surface2);border:1px solid rgba(245,158,11,0.2);border-radius:14px;padding:16px;margin-bottom:18px">
+            <div style="font-size:0.8rem;color:var(--text2);margin-bottom:12px">Give a staff member temporary admin-level access for a specific time window (e.g. during distribution hours).</div>
+            <div class="field"><label>Staff Member</label>
+              <select class="fi" id="timedStaffSelect"><option value="">Select staff member...</option></select>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div class="field" style="margin-bottom:0"><label>Access From</label><input type="datetime-local" class="fi" id="timedFrom"/></div>
+              <div class="field" style="margin-bottom:0"><label>Access Until</label><input type="datetime-local" class="fi" id="timedUntil"/></div>
+            </div>
+            <button class="btn btn-p" style="margin-top:12px;width:100%" onclick="window.grantTimedAccess()">⏱ Grant Timed Access</button>
+          </div>
+
+          <div class="stitle">Current Team</div>
+          <div id="volList"><div class="loading"><div class="spinner"></div><br>Loading...</div></div>
+        </div>
+      </div>
+
+      <!-- ANNOUNCEMENTS PAGE -->
+      <div class="pg" id="pg-announce">
+        <div style="max-width:620px">
+          <div class="stitle">📢 Post Announcement</div>
+          <div style="font-size:0.8rem;color:var(--text2);margin-bottom:14px;line-height:1.5">
+            Announcements appear instantly on the landing page for all students. You can pin one to keep it at the top.
+          </div>
+          <div class="ebox" id="annError"></div>
+          <div class="field">
+            <label>Message</label>
+            <textarea class="fi" id="annText" rows="3" placeholder="Ex: Distribution starts at 5PM today at building B. Bring your student card." style="resize:vertical;font-family:inherit;line-height:1.6"></textarea>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.82rem;color:var(--text2)">
+              <input type="checkbox" id="annPinned" style="accent-color:var(--gold);width:15px;height:15px"/>
+              📌 Pin to top (replaces current pinned)
+            </label>
+          </div>
+          <button class="btn btn-p" onclick="postAnnouncement()" id="annPostBtn">📢 Post Announcement</button>
+          <div class="div"></div>
+          <div class="stitle">📋 Active Announcements</div>
+          <div id="annAdminList"><div class="empty"><div class="ei2">📢</div><div class="et">No announcements yet</div></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- MOBILE TABS -->
+  <div class="mtabs">
+    <div class="mt active" id="mt-search" onclick="sw('search')"><span class="mi">🔍</span>Check</div>
+    <div class="mt" id="mt-list" onclick="sw('list')"><span class="mi">📋</span>List</div>
+    <div class="mt hidden" id="mt-pending" onclick="sw('pending')"><span class="mi">⏳</span>Queue</div>
+    <div class="mt hidden" id="mt-add" onclick="sw('add')"><span class="mi">➕</span>Add</div>
+    <div class="mt hidden" id="mt-export" onclick="sw('export')"><span class="mi">📤</span>Export</div>
+    <div class="mt hidden" id="mt-blacklist" onclick="sw('blacklist')"><span class="mi">🚫</span>Blacklist</div>
+    <div class="mt hidden" id="mt-announce" onclick="sw('announce')"><span class="mi">📢</span>Announce</div>
+    <div class="mt hidden" id="mt-users" onclick="sw('users')"><span class="mi">👥</span>Staff</div>
+  </div>
+</div>
+
+<!-- BLACKLIST MODAL -->
+<div class="mo" id="blModal">
+  <div class="md">
+    <div class="mdt">🚫 Add to Blacklist</div>
+    <div class="mds" id="blModalSub">This person will be blocked.</div>
+    <div class="field"><label>Reason (optional)</label><textarea class="fi" id="blReason" placeholder="e.g. tried to collect twice..." style="min-height:80px"></textarea></div>
+    <div class="mda">
+      <button class="btn" style="flex:1;background:var(--danger);color:#fff" onclick="confirmBL()">🚫 Confirm Blacklist</button>
+      <button class="btn btn-g" onclick="closeBLModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import{getAuth,GoogleAuthProvider,signInWithPopup,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+import{getFirestore,collection,doc,setDoc,getDoc,getDocs,addDoc,updateDoc,deleteDoc,onSnapshot,serverTimestamp,query,orderBy}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+const FC={apiKey:"AIzaSyB_SeMMk-2mL_XYTKEemoIeh_j2odQ6LNk",authDomain:"ramadan-food-aid.firebaseapp.com",projectId:"ramadan-food-aid",storageBucket:"ramadan-food-aid.firebasestorage.app",messagingSenderId:"836613630009",appId:"1:836613630009:web:c5b3047298224ec82f05e8"};
+const app=initializeApp(FC);const auth=getAuth(app);const db=getFirestore(app);
+
+let CU=null,CR=null,people=[],BL=[],pending=[],CF='all',exportScope='all',AF=false;
+let uP=null,uB=null,uPend=null,uV=null,uInv=null,aM='signin',bT=null;
+
+async function checkFR(){const s=await getDocs(collection(db,'users'));showS(s.empty?'setupScreen':'authScreen');}
+
+// toggleAuthMode removed — no self-signup
+
+window.handleAuth=async()=>{
+  const e=document.getElementById('authEmail').value.trim();
+  const p=document.getElementById('authPassword').value;
+  if(!e||!p){sErr('authError','Please fill in all fields');return;}
+  const btn=document.getElementById('authBtn');
+  btn.disabled=true;btn.textContent='Please wait...';hErr('authError');
+  try{
+    await signInWithEmailAndPassword(auth,e,p);
+    // onAuthStateChanged will handle the rest
+  }catch(err){
+    sErr('authError',fe(err.code));
+    btn.disabled=false;btn.textContent='Sign In';
+  }
+};
+
+// ── GOOGLE SIGN IN ──
+window.handleGoogleAuth=async()=>{
+  const btn=document.getElementById('googleBtn');
+  btn.disabled=true;btn.textContent='Opening Google...';hErr('authError');
+  try{
+    const provider=new GoogleAuthProvider();
+    const result=await signInWithPopup(auth,provider);
+    const user=result.user;
+    // Check if they exist in users collection
+    const ud=await getDoc(doc(db,'users',user.uid));
+    if(ud.exists()){
+      // Approved — onAuthStateChanged handles the rest
+      return;
+    }
+    // Check if already in pendingStaff
+    const ps=await getDoc(doc(db,'pendingStaff',user.uid));
+    if(ps.exists()){
+      // Still pending
+      document.getElementById('pendingEmail').textContent=user.email;
+      showS('pendingAccessScreen');
+      return;
+    }
+    // New Google user — write to pendingStaff and show pending screen
+    await setDoc(doc(db,'pendingStaff',user.uid),{
+      uid:user.uid,
+      email:user.email,
+      name:user.displayName||user.email,
+      photoURL:user.photoURL||'',
+      requestedAt:serverTimestamp(),
+      requestedAtMs:Date.now(),
+      status:'pending'
+    });
+    document.getElementById('pendingEmail').textContent=user.email;
+    showS('pendingAccessScreen');
+  }catch(err){
+    if(err.code!=='auth/popup-closed-by-user'){
+      sErr('authError',fe(err.code)||err.message);
+    }
+    btn.disabled=false;btn.textContent='Sign in with Google';
+  }
+};
+
+window.createAdminAccount=async()=>{const n=document.getElementById('setupName').value.trim();const e=document.getElementById('setupEmail').value.trim();const p=document.getElementById('setupPassword').value;if(!n||!e||!p){sErr('setupError','Please fill in all fields');return;}if(p.length<6){sErr('setupError','Password must be at least 6 chars');return;}const btn=document.getElementById('setupBtn');btn.disabled=true;btn.textContent='Creating...';try{const c=await createUserWithEmailAndPassword(auth,e,p);await setDoc(doc(db,'users',c.user.uid),{email:e,name:n,role:'admin',createdAt:serverTimestamp()});}catch(err){sErr('setupError',fe(err.code));btn.disabled=false;btn.textContent='Create Admin Account';}};
+
+window.doLogout=async()=>{[uP,uB,uPend,uV,uInv].forEach(u=>{if(u)u();});uP=uB=uPend=uV=uInv=null;await signOut(auth);window.location.reload();};
+
+onAuthStateChanged(auth,async user=>{
+  if(!user){CU=null;CR=null;people=[];await checkFR();return;}
+  const ud=await getDoc(doc(db,'users',user.uid));
+  if(!ud.exists()){
+    // Check if pending
+    try{
+      const ps=await getDoc(doc(db,'pendingStaff',user.uid));
+      if(ps.exists()){
+        document.getElementById('pendingEmail').textContent=user.email;
+        showS('pendingAccessScreen');
+      } else {
+        showS('rejectedScreen');
+      }
+    }catch(e){ showS('rejectedScreen'); }
+    return;
+  }
+  if(ud.data().status==='rejected'){showS('rejectedScreen');return;}
+  CU={uid:user.uid,...ud.data()};
+  CU.root=ud.data().root===true; // Root access — set manually in Firestore
+  // Check timed access: if staff has an active access window, elevate to admin for this session
+  const now=Date.now();
+  if((CU.role==='volunteer'||CU.role==='staff')&&CU.accessFrom&&CU.accessUntil&&CU.accessFrom<=now&&now<=CU.accessUntil){
+    CR='admin';
+    CU._timedAccess=true; // flag: real admin=false, so no staff management
+  } else {
+    CR=CU.role==='admin'?'admin':'staff';
+    CU._timedAccess=false;
+  }
+  // Update last seen
+  try{ await updateDoc(doc(db,'users',user.uid),{lastSeenAt:serverTimestamp(),lastSeenAtMs:Date.now()}); }catch(e){}
+  const ini=(CU.name||CU.email||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('uIni').textContent=ini;
+  document.getElementById('uName').textContent=CU.name||CU.email;
+  document.getElementById('rBadge').textContent=CU.root?'Root':CR==='admin'?'Admin':'Staff';
+  document.getElementById('rBadge').className='rtag '+(CU.root?'root':CR==='admin'?'admin':'staff');
+  // Show Root-only UI sections
+  if(CU.root){
+    const rs=document.getElementById('rootExportSection');
+    const ks=document.getElementById('killSwitchSection');
+    if(rs)rs.style.display='block';
+    if(ks)ks.style.display='block';
+    loadKillSwitchState();
+  }
+  const adminOnlyEls=['nav-export','nav-users','mt-export','mt-users','nav-pending','mt-pending','nav-announce','mt-announce'];
+  const timedAdminEls=['nav-export','mt-export','nav-pending','mt-pending']; // no staff tab for timed
+  const volEls=['nav-add','nav-blacklist','mt-add','mt-blacklist'];
+  if(CR==='admin' && !CU._timedAccess){
+    // Real admin: gets everything including staff management
+    [...adminOnlyEls,...volEls].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('hidden');});
+    document.getElementById('resetBtn').classList.remove('hidden');
+  } else if(CR==='admin' && CU._timedAccess){
+    // Timed promoted staff: gets most things but NOT the staff management tab
+    [...timedAdminEls,...volEls].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('hidden');});
+    document.getElementById('resetBtn').classList.remove('hidden');
+  } else {
+    volEls.forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('hidden');});
+  }
+  // Update add button label for volunteers
+  if(CR!=='admin'){
+    const btn=document.getElementById('addBtn');
+    if(btn)btn.textContent='📋 Submit for Approval';
+    const bulkBtn=document.getElementById('bulkBtn');
+    if(bulkBtn)bulkBtn.textContent='📋 Submit Bulk for Approval';
+    // Add volunteer notice
+    const notice=document.createElement('div');
+    notice.style.cssText='background:var(--blue-dim);border:1px solid rgba(59,130,246,0.2);border-radius:10px;padding:12px 14px;font-size:0.82rem;color:var(--blue);margin-bottom:14px';
+    notice.textContent='ℹ️ As a staff member, your additions go to the pending queue for admin approval before appearing on the main list.';
+    const pg=document.getElementById('pg-add');
+    const inner=pg?.querySelector('div[style]');
+    if(inner)inner.insertBefore(notice,inner.firstChild);
+    else if(pg)pg.insertBefore(notice,pg.firstChild);
+  }
+  showS('mainApp');startL();setInterval(refreshT,30000);
+  // Set register link
+  const regUrl=window.location.href.replace(/\/[^\/]*$/, '/')+'register.html';
+  document.getElementById('regLinkUrl').textContent=regUrl;
+});
+
+function startL(){
+  const q=query(collection(db,'people'),orderBy('name'));
+  uP=onSnapshot(q,snap=>{people=snap.docs.map(d=>({id:d.id,...d.data()}));updS();renderL();doSearch();updateExportStats();});
+  uB=onSnapshot(collection(db,'blacklist'),snap=>{BL=snap.docs.map(d=>({id:d.id,...d.data()}));renderBL();updS();});
+  uPend=onSnapshot(collection(db,'pending'),snap=>{
+    pending=snap.docs.map(d=>({id:d.id,...d.data()})).filter(p=>p.status==='pending');
+    renderPending();
+    const cnt=pending.length;
+    const badge=document.getElementById('pendingBadge');
+    badge.textContent=cnt;badge.classList.toggle('hidden',cnt===0);
+    document.getElementById('pendingCount').textContent=cnt;
+  });
+  if(CR==='admin'){
+    uV=onSnapshot(collection(db,'users'),snap=>{renderVols(snap.docs.map(d=>({id:d.id,...d.data()})));});
+    // Live listener for pending Google signups
+    onSnapshot(collection(db,'pendingStaff'),snap=>{
+      const reqs=snap.docs.map(d=>({id:d.id,...d.data()})).filter(r=>r.status==='pending');
+      const sec=document.getElementById('pendingStaffSection');
+      const badge=document.getElementById('pendingStaffBadge');
+      const list=document.getElementById('pendingStaffList');
+      if(!sec||!list)return;
+      if(reqs.length===0){sec.style.display='none';return;}
+      sec.style.display='block';
+      if(badge)badge.textContent=reqs.length;
+      // Also show badge on nav
+      const navBadge=document.getElementById('staffNavBadge');
+      if(navBadge){navBadge.textContent=reqs.length;navBadge.style.display='inline-flex';}
+      list.innerHTML=reqs.map(r=>`
+        <div style="background:var(--surface2);border:1px solid rgba(245,158,11,0.25);border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px">
+          ${r.photoURL?`<img src="${esc(r.photoURL)}" style="width:36px;height:36px;border-radius:50%;object-fit:cover" alt=""/>`:
+            `<div style="width:36px;height:36px;border-radius:50%;background:var(--gold-dim);display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:700;color:var(--gold)">${(r.name||r.email||'?')[0].toUpperCase()}</div>`}
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:700;font-size:0.9rem;margin-bottom:2px">${esc(r.name||'Unknown')}</div>
+            <div style="font-size:0.75rem;color:var(--text2)">${esc(r.email)}</div>
+            <div style="font-size:0.68rem;color:var(--text3);margin-top:2px">${ts(r.requestedAtMs||0)}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-p btn-sm" onclick="window.approveStaff('${r.id}','staff')" title="Approve as Staff">✅ Staff</button>
+              <button class="btn btn-sm" style="background:var(--green-dim);color:var(--green);border:1px solid rgba(34,197,94,0.3)" onclick="window.approveStaff('${r.id}','admin')" title="Approve as Admin">⭐ Admin</button>
+            </div>
+            <button class="btn btn-g btn-sm" style="color:var(--danger);font-size:0.72rem" onclick="window.rejectStaff('${r.id}','${esc(r.name||r.email)}')">✕ Reject</button>
+          </div>
+        </div>`).join('');
+    });
+    // Live invite list
+    uInv=onSnapshot(collection(db,'invites'),snap=>{
+      renderInviteList(snap.docs.map(d=>({id:d.id,...d.data()})));
+    });
+  }
+}
+
+const tTitles={search:'Check Person',list:'Full List',pending:'Pending Approvals',add:'Add People',export:'Export Data',blacklist:'Blacklist',users:'Staff',announce:'Announcements'};
+window.sw=name=>{document.querySelectorAll('.ni').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.mt').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.pg').forEach(p=>p.classList.remove('active'));const n=document.getElementById('nav-'+name);const m=document.getElementById('mt-'+name);if(n)n.classList.add('active');if(m)m.classList.add('active');document.getElementById('pg-'+name).classList.add('active');document.getElementById('tbTitle').textContent=tTitles[name]||name;closeSB();if(name==='search')setTimeout(()=>document.getElementById('sInput').focus(),100);if(name==='add'){loadRegSettings();loadInviteList();loadWALink();}if(name==='announce'){loadAnnouncements();}};
+window.openSB=()=>{document.getElementById('sb').classList.add('open');document.getElementById('sbo').classList.add('open');};
+window.closeSB=()=>{document.getElementById('sb').classList.remove('open');document.getElementById('sbo').classList.remove('open');};
+
+function updS(){const tot=people.length,srv=people.filter(p=>p.served).length,ft=people.filter(p=>p.fasting).length,fs=people.filter(p=>p.fasting&&p.served).length,bl=BL.length;document.getElementById('statTotal').textContent=tot;document.getElementById('statFasting').textContent=ft;document.getElementById('statServed').textContent=srv;document.getElementById('statBL').textContent=bl;document.getElementById('fastTotal').textContent=ft;document.getElementById('fastServed').textContent=fs;document.getElementById('fastLeft').textContent=ft-fs;}
+
+function isBL(p){return BL.some(b=>b.personId===p.id||(b.phone&&p.phone&&b.phone===p.phone));}
+
+function cHTML(p,ctx){
+  const ini=p.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);const bl=isBL(p);
+  let cc='';if(bl)cc='bl';else if(p.served&&ctx==='search')cc='as';else if(p.fasting)cc='fasting';
+  const tagH=bl?'<span class="tag b">🚫 Blacklisted</span>':p.fasting?'<span class="tag f">🌙 Fasting</span>':'<span class="tag r">Regular</span>';
+  const isSusp=p.served&&p.servedAtMs&&ctx==='search';
+  const tH=p.served?`<div class="cst">✓ ${p.servedAt} · ⏱ ${ts(p.servedAtMs)}</div>`:'';
+  const spH=isSusp?`<div class="csp">⚠️ Already received food ${ts(p.servedAtMs)} — verify first</div>`:'';
+  const nH=p.note?`<div class="cno">📌 ${esc(p.note)}</div>`:'';
+  const detH=(p.university||p.yearOfStudy||p.city||p.country||p.email)?`<div class="cdet">${p.university?'🎓 '+esc(p.university)+'  ':''}${p.yearOfStudy?'📚 Y'+esc(p.yearOfStudy)+'  ':''}${p.city?'📍 '+esc(p.city)+'  ':''}${p.country?'🌍 '+esc(p.country)+'  ':''}${p.email?'✉️ '+esc(p.email):''}</div>`:'';
+  const tagsH=(p.tags&&p.tags.length)?`<div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:3px">${p.tags.map(t=>`<span class="tag-badge">${esc(t)}</span>`).join('')}</div>`:'';
+  let acts='';
+  if(!bl){
+    if(!p.served)acts+=`<button class="btn btn-p btn-sm" onclick="window.tServed('${p.id}')">✅ Served</button>`;
+    else{acts+=`<button class="btn btn-g btn-sm" onclick="window.tServed('${p.id}')">↩ Undo</button>`;
+    acts+=`<button class="btn btn-sm" style="background:var(--blue-dim);color:var(--blue);border:1px solid rgba(59,130,246,0.3)" onclick="window.toggleProxy('${p.id}')">👥 Picked up for</button>`;if(isSusp)acts+=`<button class="btn btn-sm" style="background:var(--danger-dim);color:var(--danger);border:1px solid var(--danger)" onclick="window.openBLM('${p.id}')">🚫 Blacklist</button>`;}
+    acts+=`<button class="btn btn-g btn-sm" onclick="window.tEdit('${p.id}')">✏️ Edit</button>`;
+    if(CR==='admin'){acts+=`<button class="btn btn-g btn-sm" style="color:var(--text3)" onclick="window.delP('${p.id}')">✕</button>`;if(!isSusp)acts+=`<button class="btn btn-g btn-sm" style="color:var(--text3);font-size:0.72rem" onclick="window.openBLM('${p.id}')">🚫</button>`;}
+  }else{if(CR==='admin')acts+=`<button class="btn btn-g btn-sm" onclick="window.remBL('${p.id}')">✓ Remove from Blacklist</button>`;}
+  const tagBadges=(p.tags||[]).map(t=>`<span class="tag-badge removable" onclick="window.removeTag('${p.id}','${t}')">${esc(t)} ✕</span>`).join('');
+  const eH=`<div class="ef" id="ef-${p.id}"><div class="er"><div><div class="el">Name</div><input class="ei" id="en-${p.id}" value="${esc(p.name)}"/></div><div><div class="el">Phone</div><input class="ei" id="ep-${p.id}" value="${esc(p.phone||'')}"/></div></div><div class="er full"><div><div class="el">Email</div><input class="ei" type="email" id="ee-${p.id}" value="${esc(p.email||'')}" placeholder="email@example.com"/></div></div><div class="er"><div><div class="el">University</div><input class="ei" id="eu-${p.id}" value="${esc(p.university||'')}"/></div><div><div class="el">Year</div><input class="ei" id="ey-${p.id}" value="${esc(p.yearOfStudy||'')}"/></div></div><div class="er"><div><div class="el">Country</div><input class="ei" id="eco-${p.id}" value="${esc(p.country||'')}"/></div><div><div class="el">City</div><input class="ei" id="ec-${p.id}" value="${esc(p.city||'')}"/></div></div><div class="er full"><div><div class="el">Notes</div><input class="ei" id="eno-${p.id}" value="${esc(p.note||'')}"/></div></div><div class="etr" onclick="window.tEF('${p.id}')"><div style="font-size:0.85rem;font-weight:600">🌙 Fasting (Muslim)</div><div class="esw ${p.fasting?'on':''}" id="esw-${p.id}"></div></div><div style="padding:8px 12px"><div class="el" style="margin-bottom:4px">🏷️ Tags</div><div id="etags-${p.id}" style="display:flex;flex-wrap:wrap;gap:4px;min-height:20px;margin-bottom:6px">${tagBadges}</div><div class="tag-input-row"><input id="etagin-${p.id}" class="ei" placeholder="Add tag e.g. Moroccan, VIP..." onkeydown="if(event.key==='Enter'){event.preventDefault();window.addTag('${p.id}')}"/><button class="btn btn-g btn-sm" onclick="window.addTag('${p.id}')">+ Tag</button></div></div><div class="eact"><button class="btn btn-p btn-sm" onclick="window.saveE('${p.id}')">Save</button><button class="btn btn-g btn-sm" onclick="window.tEdit('${p.id}')">Cancel</button></div></div>`;
+  // Proxy list display on card
+  const proxyList = p.proxyFor && p.proxyFor.length > 0
+    ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
+        <div style="font-size:0.68rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">👥 Picked up for</div>
+        ${p.proxyFor.map((pr,pi)=>`<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+          <span style="font-size:0.82rem;font-weight:600">${esc(pr.name)}</span>
+          ${pr.phone?`<span style="font-size:0.7rem;color:var(--text3)">${esc(pr.phone)}</span>`:''}
+          <span style="font-size:0.6rem;color:var(--blue);background:var(--blue-dim);padding:1px 6px;border-radius:10px;border:1px solid rgba(59,130,246,0.2)">proxy</span>
+          <button onclick="window.removeProxy('${p.id}',${pi})" title="Remove" style="margin-left:auto;background:none;border:none;color:var(--text3);cursor:pointer;font-size:0.75rem;padding:1px 4px;border-radius:4px;transition:all 0.15s;flex-shrink:0" onmouseover="this.style.color='var(--danger)';this.style.background='var(--danger-dim)'" onmouseout="this.style.color='var(--text3)';this.style.background='none'">✕</button>
+        </div>`).join('')}
+      </div>` : '';
+
+  const proxyPanelHTML = p.served && !bl ? `
+    <div class="proxy-panel" id="proxy-${p.id}">
+      <div class="proxy-title">👥 Who else did ${esc(p.name.split(' ')[0])} pick up for?</div>
+      <div class="proxy-info">Add friends they collected food for. If they lied, you can blacklist them.</div>
+      <div class="proxy-search-row" style="margin-top:8px">
+        <input class="proxy-input" id="pinput-${p.id}" placeholder="Name or phone..." oninput="window.proxySearch('${p.id}')" onkeydown="if(event.key==='Enter')window.addProxyManual('${p.id}')"/>
+        <button class="proxy-add-btn" onclick="window.addProxyManual('${p.id}')">➕ Add</button>
+      </div>
+      <div class="proxy-suggestions" id="psugg-${p.id}"></div>
+    </div>` : '';
+
+  return`<div class="pc ${cc}" id="pc-${p.id}"><div class="ctop"><div class="av">${ini}</div><div class="ci"><div class="cnr"><span class="cname">${esc(p.name)}</span>${tagH}</div><div class="cph">${esc(p.phone||'—')}</div>${nH}${detH}${tagsH}${tH}${spH}${proxyList}</div></div><div class="cact">${acts}</div>${eH}${proxyPanelHTML}</div>`;
+}
+
+// ── TAG SYSTEM ──
+let CT=''; // current tag filter
+
+function getAllTags(){
+  const all=new Set();
+  people.forEach(p=>(p.tags||[]).forEach(t=>all.add(t)));
+  return [...all].sort();
+}
+
+function renderTagFilters(){
+  const row=document.getElementById('tagFilterRow');
+  if(!row)return;
+  const tags=getAllTags();
+  if(!tags.length){row.innerHTML='';return;}
+  row.innerHTML=`<span class="tpill ${CT===''?'active':''}" onclick="window.setTagF('')">All tags</span>`
+    +tags.map(t=>`<span class="tpill ${CT===t?'active':''}" onclick="window.setTagF('${esc(t)}')">${esc(t)}</span>`).join('');
+}
+
+window.setTagF=(tag)=>{
+  CT=tag;
+  renderTagFilters();
+  renderL();
+};
+
+window.addTag=async(id)=>{
+  const input=document.getElementById('etagin-'+id);
+  if(!input)return;
+  const tag=input.value.trim();
+  if(!tag)return;
+  const p=people.find(x=>x.id===id);if(!p)return;
+  const tags=[...(p.tags||[])];
+  if(tags.includes(tag)){input.value='';return;}
+  tags.push(tag);
+  await updateDoc(doc(db,'people',id),{tags});
+  input.value='';
+  // Update local
+  p.tags=tags;
+  const box=document.getElementById('etags-'+id);
+  if(box)box.innerHTML=tags.map(t=>`<span class="tag-badge removable" onclick="window.removeTag('${id}','${t}')">${esc(t)} ✕</span>`).join('');
+  renderTagFilters();
+};
+
+window.removeTag=async(id,tag)=>{
+  const p=people.find(x=>x.id===id);if(!p)return;
+  const tags=(p.tags||[]).filter(t=>t!==tag);
+  await updateDoc(doc(db,'people',id),{tags});
+  p.tags=tags;
+  const box=document.getElementById('etags-'+id);
+  if(box)box.innerHTML=tags.map(t=>`<span class="tag-badge removable" onclick="window.removeTag('${id}','${t}')">${esc(t)} ✕</span>`).join('');
+  renderTagFilters();
+};
+
+window.doSearch=()=>{
+  const raw=document.getElementById('sInput').value.trim();
+  const box=document.getElementById('sResults');
+  if(!raw){box.innerHTML='<div class="empty"><div class="ei2">🌙</div><div class="et">Search for a person</div><div class="es">Type a name or phone number</div></div>';return;}
+  const q=raw.toLowerCase();
+  const qPhone=normPhone(raw);
+  const res=people.filter(p=>{
+    const nameMatch=p.name.toLowerCase().includes(q);
+    const phoneMatch=p.phone&&normPhone(p.phone).includes(qPhone);
+    return nameMatch||phoneMatch;
+  });
+  if(res.length===0){box.innerHTML=`<div class="empty"><div class="ei2">❓</div><div class="et">Not found</div><div class="es">"${esc(raw)}" is not on the list</div></div>`;return;}
+    const openIds=getOpenEdits();
+  box.innerHTML=`<div class="cgrid">${res.map(p=>cHTML(p,'search')).join('')}</div>`;
+  restoreOpenEdits(openIds);
+};
+
+window.setF=(f,el)=>{CF=f;document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');renderL();};
+
+function sortP(arr){return[...arr].sort((a,b)=>{if(a.served!==b.served)return a.served-b.served;if(a.fasting!==b.fasting)return b.fasting-a.fasting;return a.name.localeCompare(b.name);});}
+
+function getOpenEdits(){
+  const state=[];
+  document.querySelectorAll('.ef.open').forEach(el=>{
+    const id=el.id.replace('ef-','');
+    // Save whatever the user is currently typing
+    state.push({
+      id,
+      type:'edit',
+      name: document.getElementById('en-'+id)?.value,
+      phone: document.getElementById('ep-'+id)?.value,
+      email: document.getElementById('ee-'+id)?.value,
+      university: document.getElementById('eu-'+id)?.value,
+      yearOfStudy: document.getElementById('ey-'+id)?.value,
+      country: document.getElementById('eco-'+id)?.value,
+      city: document.getElementById('ec-'+id)?.value,
+      note: document.getElementById('eno-'+id)?.value,
+      fasting: document.getElementById('esw-'+id)?.classList.contains('on'),
+    });
+  });
+  document.querySelectorAll('.proxy-panel.open').forEach(el=>{
+    const id=el.id.replace('proxy-','');
+    state.push({id,type:'proxy'});
+  });
+  return state;
+}
+function restoreOpenEdits(states){
+  states.forEach(s=>{
+    if(s.type==='proxy'){
+      const el=document.getElementById('proxy-'+s.id);
+      if(el)el.classList.add('open');
+    } else {
+      const el=document.getElementById('ef-'+s.id);
+      if(!el)return;
+      el.classList.add('open');
+      // Restore exactly what the user was typing — overwrite DB values
+      if(s.name!==undefined&&document.getElementById('en-'+s.id))
+        document.getElementById('en-'+s.id).value=s.name;
+      if(s.phone!==undefined&&document.getElementById('ep-'+s.id))
+        document.getElementById('ep-'+s.id).value=s.phone;
+      if(s.email!==undefined&&document.getElementById('ee-'+s.id))
+        document.getElementById('ee-'+s.id).value=s.email;
+      if(s.university!==undefined&&document.getElementById('eu-'+s.id))
+        document.getElementById('eu-'+s.id).value=s.university;
+      if(s.yearOfStudy!==undefined&&document.getElementById('ey-'+s.id))
+        document.getElementById('ey-'+s.id).value=s.yearOfStudy;
+      if(s.country!==undefined&&document.getElementById('eco-'+s.id))
+        document.getElementById('eco-'+s.id).value=s.country;
+      if(s.city!==undefined&&document.getElementById('ec-'+s.id))
+        document.getElementById('ec-'+s.id).value=s.city;
+      if(s.note!==undefined&&document.getElementById('eno-'+s.id))
+        document.getElementById('eno-'+s.id).value=s.note;
+      // Restore fasting toggle
+      const sw=document.getElementById('esw-'+s.id);
+      if(sw){
+        sw.classList.toggle('on',s.fasting);
+      }
+    }
+  });
+}
+function renderL(){
+  const box=document.getElementById('lResults');
+  const openIds=getOpenEdits();
+  let f=people;
+  if(CF==='fasting')f=people.filter(p=>p.fasting);
+  if(CF==='served')f=people.filter(p=>p.served);
+  if(CF==='pending')f=people.filter(p=>!p.served);
+  // Apply tag filter on top
+  if(CT)f=f.filter(p=>(p.tags||[]).includes(CT));
+  renderTagFilters();
+  if(f.length===0){box.innerHTML=people.length===0?'<div class="empty"><div class="ei2">🌙</div><div class="et">No people yet</div></div>':'<div class="empty"><div class="ei2">✅</div><div class="et">All done! Ramadan Kareem 🌙</div></div>';return;}
+  box.innerHTML=sortP(f).map(p=>cHTML(p,'list')).join('');
+  restoreOpenEdits(openIds);
+}
+
+// PENDING APPROVALS
+function renderPending(){
+  const box=document.getElementById('pendingResults');if(!box)return;
+  if(pending.length===0){box.innerHTML='<div class="empty"><div class="ei2">✅</div><div class="et">No pending registrations</div><div class="es">All caught up! New submissions from the form will appear here.</div></div>';return;}
+  box.innerHTML=pending.map(p=>{
+    const ini=(p.name||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    const isEdit=p.type==='edit-request';
+    const detH=`<div class="cdet">${p.university?'🎓 '+esc(p.university)+'<br>':''}${p.yearOfStudy?'📚 Year '+esc(p.yearOfStudy)+'  ':''}${p.city?'📍 '+esc(p.city):''}${p.country?' 🌍 '+esc(p.country):''}${p.fasting?'<br>🌙 Fasting':''}</div>`;
+    const typeTag=isEdit
+      ?`<span class="tag" style="background:rgba(245,158,11,0.1);color:var(--gold);border:1px solid rgba(245,158,11,0.3)">✏️ Edit Request</span>`
+      :`<span class="tag p">⏳ New Person</span>`;
+    const editNote=isEdit
+      ?`<div style="font-size:0.72rem;color:var(--gold);margin-top:3px">Editing: <strong>${esc(p.originalName||'')}</strong> · by ${esc(p.submittedBy||'')}</div>`
+      :`<div style="font-size:0.72rem;color:var(--text3);margin-top:3px">By ${esc(p.submittedBy||p.source||'form')}</div>`;
+    return`<div class="pc pending-card"><div class="ctop"><div class="av">${isEdit?'✏️':ini}</div><div class="ci"><div class="cnr"><span class="cname">${esc(p.name||'Unknown')}</span>${typeTag}${p.fasting&&!isEdit?'<span class="tag f">🌙 Fasting</span>':''}</div><div class="cph">${esc(p.phone||'—')}</div>${detH}${editNote}<div class="cst">Submitted ${ts(p.submittedAtMs)}</div></div></div><div class="cact"><button class="btn btn-p btn-sm" onclick="window.approvePending('${p.id}')">✅ Approve</button><button class="btn btn-g btn-sm" style="color:var(--danger);border-color:rgba(239,68,68,0.3)" onclick="window.rejectPending('${p.id}','${esc(p.name||'')}')">✕ Reject</button></div></div>`;
+  }).join('');
+}
+
+window.approvePending=async id=>{
+  const p=pending.find(x=>x.id===id);if(!p)return;
+  // Show loading state on button
+  const btn=document.querySelector(`[onclick="window.approvePending('${id}')"]`);
+  if(btn){btn.disabled=true;btn.textContent='⏳ Approving...';}
+  try {
+    if(p.type==='edit-request'){
+      if(!p.targetPersonId){toast('⚠️ Cannot find original person — targetPersonId missing');if(btn){btn.disabled=false;btn.textContent='✅ Approve';}return;}
+      await updateDoc(doc(db,'people',p.targetPersonId),{
+        name:p.name,phone:p.phone||'',email:p.email||'',university:p.university||'',
+        yearOfStudy:p.yearOfStudy||'',country:p.country||'',city:p.city||'',
+        note:p.note||'',fasting:p.fasting||false,
+        lastEditedBy:p.submittedBy||'student-form',lastEditedAt:serverTimestamp()
+      });
+      await updateDoc(doc(db,'pending',id),{status:'approved',approvedAt:serverTimestamp(),approvedBy:CU.email});
+      toast(`✅ Edit for ${p.name} approved and applied!`);
+    } else {
+      await addDoc(collection(db,'people'),{
+        name:p.name,phone:p.phone||'',email:p.email||'',note:p.note||'',
+        university:p.university||'',yearOfStudy:p.yearOfStudy||'',
+        country:p.country||'',city:p.city||'',fasting:p.fasting||false,
+        served:false,servedAt:null,servedAtMs:null,servedBy:null,
+        addedBy:p.submittedBy||'registration-form',
+        createdAt:serverTimestamp(),verified:true
+      });
+      await updateDoc(doc(db,'pending',id),{status:'approved',approvedAt:serverTimestamp(),approvedBy:CU.email});
+      toast(`✅ ${p.name} approved and added to list!`);
+    }
+  } catch(err) {
+    console.error('Approve error:',err);
+    toast(`⚠️ Failed: ${err.message}`);
+    if(btn){btn.disabled=false;btn.textContent='✅ Approve';}
+  }
+};
+
+window.rejectPending=async(id,name)=>{if(!confirm(`Reject ${name||'this person'}?`))return;await updateDoc(doc(db,'pending',id),{status:'rejected',rejectedAt:serverTimestamp(),rejectedBy:CU.email});toast(`✕ ${name||'Person'} rejected`);};
+
+function renderBL(){const box=document.getElementById('blResults');if(!box)return;if(BL.length===0){box.innerHTML='<div class="empty"><div class="ei2">🚫</div><div class="et">Blacklist is empty</div></div>';return;}box.innerHTML=BL.map(b=>`<div class="pc bl"><div class="ctop"><div class="av" style="background:#1e293b;color:var(--text3)">🚫</div><div class="ci"><div class="cnr"><span class="cname">${esc(b.name||'Unknown')}</span><span class="tag b">Blacklisted</span></div><div class="cph">${esc(b.phone||'—')}</div>${b.reason?`<div class="cno">📋 ${esc(b.reason)}</div>`:''}<div class="cst">Added ${ts(b.addedAtMs)}</div></div></div>${CR==='admin'?`<div class="cact"><button class="btn btn-g btn-sm" onclick="window.remBLD('${b.id}')">✓ Remove</button></div>`:''}</div>`).join('');}
+
+function refreshT(){
+  // Don't refresh if any edit form is open
+  if(document.querySelector('.ef.open'))return;
+  const a=document.querySelector('.pg.active');if(!a)return;
+  if(a.id==='pg-search')doSearch();
+  if(a.id==='pg-list')renderL();
+}
+
+window.tServed=async id=>{const p=people.find(x=>x.id===id);if(!p)return;if(isBL(p)){toast('🚫 This person is blacklisted');return;}const ms=Date.now(),str=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});await updateDoc(doc(db,'people',id),{served:!p.served,servedAt:!p.served?str:null,servedAtMs:!p.served?ms:null,servedBy:!p.served?CU.email:null});toast(!p.served?`✅ ${p.name} served`:`↩ ${p.name} unmarked`);};
+window.tEdit=id=>{const f=document.getElementById('ef-'+id);if(f)f.classList.toggle('open');};
+window.tEF=id=>{const s=document.getElementById('esw-'+id);if(s)s.classList.toggle('on');};
+window.saveE=async id=>{
+  const n=document.getElementById('en-'+id).value.trim();
+  if(!n){toast('⚠️ Name required');return;}
+  const p=people.find(x=>x.id===id);
+  const updates={
+    name:n,
+    phone:normPhone(document.getElementById('ep-'+id).value.trim()),
+    email:(document.getElementById('ee-'+id)?.value.trim()||'').toLowerCase(),
+    university:document.getElementById('eu-'+id).value.trim(),
+    yearOfStudy:document.getElementById('ey-'+id).value.trim(),
+    country:document.getElementById('eco-'+id)?.value.trim()||'',
+    city:document.getElementById('ec-'+id).value.trim(),
+    note:document.getElementById('eno-'+id).value.trim(),
+    fasting:document.getElementById('esw-'+id).classList.contains('on'),
+    tags:p?.tags||[]
+  };
+  if(CR==='admin'){
+    await updateDoc(doc(db,'people',id),updates);
+    toast('✅ Updated!');
+  } else {
+    // Volunteer — submit edit request for admin approval
+    const original=people.find(x=>x.id===id);
+    await addDoc(collection(db,'pending'),{
+      ...updates,
+      status:'pending',
+      type:'edit-request',
+      targetPersonId:id,
+      originalName:original?.name||'',
+      submittedBy:CU.email,
+      submittedAt:serverTimestamp(),
+      submittedAtMs:Date.now(),
+      source:'volunteer-edit'
+    });
+    toast('📋 Edit submitted — waiting for admin approval');
+    // Close the edit form
+    const ef=document.getElementById('ef-'+id);if(ef)ef.classList.remove('open');
+  }
+};
+window.openBLM=id=>{bT=id;const p=people.find(x=>x.id===id);document.getElementById('blModalSub').textContent=`"${p?.name||id}" will be blocked from receiving food.`;document.getElementById('blReason').value='';document.getElementById('blModal').classList.add('open');};
+window.closeBLModal=()=>{document.getElementById('blModal').classList.remove('open');bT=null;};
+window.confirmBL=async()=>{if(!bT)return;const p=people.find(x=>x.id===bT);if(!p)return;const r=document.getElementById('blReason').value.trim();await addDoc(collection(db,'blacklist'),{personId:p.id,name:p.name,phone:p.phone||'',reason:r,addedBy:CU.email,addedAtMs:Date.now(),addedAt:serverTimestamp()});window.closeBLModal();toast(`🚫 ${p.name} blacklisted`);};
+window.remBL=async pid=>{const e=BL.find(b=>b.personId===pid);if(e){await deleteDoc(doc(db,'blacklist',e.id));toast('✓ Removed');}};
+window.remBLD=async id=>{if(!confirm('Remove from blacklist?'))return;await deleteDoc(doc(db,'blacklist',id));toast('✓ Removed');};
+window.toggleAF=()=>{AF=!AF;document.getElementById('addFS').classList.toggle('on',AF);document.getElementById('addFR').classList.toggle('on',AF);};
+window.addPerson=async()=>{
+  const n=document.getElementById('addName').value.trim();
+  const ph=normPhone(document.getElementById('addPhone').value.trim());
+  const em=(document.getElementById('addEmail').value.trim()||'').toLowerCase();
+  const no=document.getElementById('addNote').value.trim();
+  if(!n){toast('⚠️ Please enter a name');return;}
+  const btn=document.getElementById('addBtn');btn.disabled=true;
+  btn.textContent='Checking...';
+  // Duplicate check
+  if(ph){
+    const dup=people.find(p=>normPhone(p.phone||'')===ph);
+    if(dup){toast(`⚠️ ${ph} already registered as "${dup.name}"`);btn.disabled=false;btn.textContent='➕ Add to List';return;}
+    const dupPending=pending.find(p=>normPhone(p.phone||'')===ph&&p.status!=='approved');
+    if(dupPending){toast(`⚠️ ${ph} already has a pending request for "${dupPending.name}"`);btn.disabled=false;btn.textContent='➕ Add to List';return;}
+  }
+  const dupName=people.find(p=>p.name.trim().toLowerCase()===n.toLowerCase());
+  if(dupName){if(!confirm(`⚠️ "${n}" already exists in the list. Add anyway?`)){btn.disabled=false;btn.textContent='➕ Add to List';return;}}
+  btn.textContent=CR==='admin'?'Adding...':'Submitting...';
+  const data={name:n,phone:ph,email:em,note:no,fasting:AF,served:false,servedAt:null,servedAtMs:null,servedBy:null,addedBy:CU.email,createdAt:serverTimestamp()};
+  try {
+    if(CR==='admin'){
+      await addDoc(collection(db,'people'),data);
+      btn.textContent='➕ Add to List';
+      toast(`✅ ${n} added!`);
+    } else {
+      await addDoc(collection(db,'pending'),{...data,status:'pending',submittedBy:CU.email,submittedAt:serverTimestamp(),submittedAtMs:Date.now(),source:'volunteer-add'});
+      btn.textContent='📋 Submit for Approval';
+      toast(`📋 ${n} submitted — waiting for admin approval`);
+    }
+    document.getElementById('addName').value=document.getElementById('addPhone').value=document.getElementById('addEmail').value=document.getElementById('addNote').value='';
+    AF=false;document.getElementById('addFS').classList.remove('on');document.getElementById('addFR').classList.remove('on');
+  } catch(err){toast('⚠️ Failed: '+err.message);}
+  btn.disabled=false;
+};
+window.bulkAdd=async()=>{
+  const raw=document.getElementById('bulkIn').value.trim();
+  if(!raw){toast('⚠️ Nothing to import');return;}
+  const btn=document.getElementById('bulkBtn');btn.disabled=true;
+  btn.textContent=CR==='admin'?'Importing...':'Submitting...';
+  const lines=raw.split('\n').map(l=>l.trim()).filter(Boolean);
+  let added=0,skipped=0,skippedNames=[];
+  for(const line of lines){
+    const parts=line.split(/[,\t]/).map(p=>p.trim());
+    let n='',ph='',no='',f=false;
+    parts.forEach(part=>{
+      if(part.toLowerCase()==='fasting'){f=true;return;}
+      if(/^[\+\d][\d\s\-\(\)]{5,}$/.test(part))ph=part;
+      else if(!n)n=part;
+      else no=part;
+    });
+    if(!n&&ph)n=ph;
+    if(!n)continue;
+    const normPh=normPhone(ph);
+    // Duplicate check
+    const dupPhone=normPh&&people.find(p=>normPhone(p.phone||'')===normPh);
+    const dupName=people.find(p=>p.name.trim().toLowerCase()===n.toLowerCase());
+    const dupPending=normPh&&pending.find(p=>normPhone(p.phone||'')===normPh&&p.status!=='approved');
+    if(dupPhone||dupName||dupPending){skipped++;skippedNames.push(n);continue;}
+    const data={name:n,phone:normPh||ph,note:no,fasting:f,served:false,servedAt:null,servedAtMs:null,servedBy:null,addedBy:CU.email,createdAt:serverTimestamp()};
+    if(CR==='admin'){
+      await addDoc(collection(db,'people'),data);
+    } else {
+      await addDoc(collection(db,'pending'),{...data,status:'pending',submittedBy:CU.email,submittedAt:serverTimestamp(),submittedAtMs:Date.now(),source:'volunteer-bulk'});
+    }
+    added++;
+  }
+  document.getElementById('bulkIn').value='';
+  btn.disabled=false;btn.textContent=CR==='admin'?'📥 Import List':'📋 Submit Bulk for Approval';
+  let msg=CR==='admin'?`✅ ${added} imported!`:`📋 ${added} submitted for approval!`;
+  if(skipped>0)msg+=` | ⚠️ ${skipped} skipped (duplicates): ${skippedNames.slice(0,3).join(', ')}${skippedNames.length>3?'...':''}`;
+  toast(msg,4000);
+};
+window.delP=async id=>{const p=people.find(x=>x.id===id);if(!p||!confirm(`Delete ${p.name}?`))return;await deleteDoc(doc(db,'people',id));toast(`🗑 Removed`);};
+window.confirmReset=async()=>{if(!confirm('Reset ALL served statuses?\nBlacklist stays.'))return;await Promise.all(people.map(p=>updateDoc(doc(db,'people',p.id),{served:false,servedAt:null,servedAtMs:null,servedBy:null,servedViaProxy:null,proxyPickedUpBy:null,proxyPickedUpById:null,proxyFor:[]})));toast('🌙 Ready for new day!');};
+
+// EXPORT
+window.setScope=(s,el)=>{exportScope=s;document.querySelectorAll('.scope-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');};
+
+function getScopedData(){
+  if(exportScope==='served') return people.filter(p=>p.served);
+  if(exportScope==='fasting') return people.filter(p=>p.fasting);
+  if(exportScope==='pending') return people.filter(p=>!p.served);
+  return people;
+}
+
+window.exportCSV=()=>{
+  const data=getScopedData();
+  const headers=['Name','Phone','Email','University','Year','City','Country','Fasting','Served','Served At','Notes'];
+  const rows=data.map(p=>[p.name,p.phone||'',p.email||'',p.university||'',p.yearOfStudy||'',p.city||'',p.country||'',p.fasting?'Yes':'No',p.served?'Yes':'No',p.servedAt||'',p.note||'']);
+  const csv=[headers,...rows].map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  dl('\uFEFF'+csv,'ramadan-aid-'+exportScope+'.csv','text/csv');
+  toast('📊 CSV exported!');
+};
+
+window.exportJSON=()=>{
+  const data=getScopedData();
+  const out={exported:new Date().toISOString(),scope:exportScope,count:data.length,people:data};
+  dl(JSON.stringify(out,null,2),'ramadan-aid-backup-'+Date.now()+'.json','application/json');
+  toast('💾 JSON backup exported!');
+};
+
+window.exportTXT=()=>{
+  const data=getScopedData();
+  const lines=['🌙 Ramadan Food Aid — '+exportScope.toUpperCase(),'Generated: '+new Date().toLocaleString(),'Total: '+data.length,'','---'];
+  data.forEach((p,i)=>{lines.push(`${i+1}. ${p.name}${p.phone?' ('+p.phone+')':''}${p.fasting?' 🌙':''}${p.served?' ✅ served at '+p.servedAt:''}${p.note?' — '+p.note:''}`);});
+  dl(lines.join('\n'),'ramadan-aid-list.txt','text/plain');
+  toast('📄 Text list exported!');
+};
+
+function dl(content,filename,mime){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type:mime}));a.download=filename;a.click();URL.revokeObjectURL(a.href);}
+
+function updateExportStats(){
+  const box=document.getElementById('exportStats');if(!box)return;
+  const t=people.length,s=people.filter(p=>p.served).length,f=people.filter(p=>p.fasting).length,fs=people.filter(p=>p.fasting&&p.served).length,bl=BL.length,pend=pending.length;
+  box.innerHTML=`<span style="color:var(--text)">👥 Total people:</span> <strong style="color:var(--green)">${t}</strong><br><span style="color:var(--text)">🌙 Fasting:</span> <strong style="color:var(--green)">${f}</strong> (${fs} served)<br><span style="color:var(--text)">✅ Served today:</span> <strong style="color:var(--gold)">${s}</strong> / ${t}<br><span style="color:var(--text)">⏳ Still waiting:</span> <strong style="color:var(--warn)">${t-s}</strong><br><span style="color:var(--text)">🚫 Blacklisted:</span> <strong style="color:var(--danger)">${bl}</strong><br><span style="color:var(--text)">📋 Pending approvals:</span> <strong style="color:var(--blue)">${pend}</strong>`;
+}
+
+window.copyRegLink=()=>{const url=document.getElementById('regLinkUrl')?.textContent;if(url)navigator.clipboard.writeText(url).then(()=>toast('📋 Link copied!'));};
+
+// ── REGISTRATION CONTROL ──
+let regOpen=false;
+let lastInviteLink='';
+let lastInvitePhone='';
+
+async function loadRegSettings(){
+  try {
+    const snap=await getDoc(doc(db,'settings','registration'));
+    regOpen=snap.exists()?snap.data().open||false:false;
+  } catch(e){ regOpen=false; }
+  updateRegToggleUI();
+}
+
+function updateRegToggleUI(){
+  const box=document.getElementById('regToggleBox');
+  const dot=document.getElementById('regStatusDot');
+  const label=document.getElementById('regStatusLabel');
+  const sub=document.getElementById('regStatusSub');
+  const btn=document.getElementById('regToggleBtn');
+  if(!box)return;
+  if(regOpen){
+    box.className='reg-toggle-box open';
+    dot.className='reg-status-dot open';
+    label.textContent='Registration Open';
+    sub.textContent='Students can access the registration form';
+    btn.textContent='🔒 Close Registration';
+    btn.style.background='rgba(239,68,68,0.15)';
+    btn.style.color='var(--danger)';
+    btn.style.borderColor='rgba(239,68,68,0.3)';
+  } else {
+    box.className='reg-toggle-box closed';
+    dot.className='reg-status-dot closed';
+    label.textContent='Registration Closed';
+    sub.textContent='Students cannot access the registration form';
+    btn.textContent='🔓 Open Registration';
+    btn.style.background='';btn.style.color='';btn.style.borderColor='';
+  }
+}
+
+// ── KILL SWITCH ──
+let serviceActive=true;
+
+async function loadKillSwitchState(){
+  try{
+    const snap=await getDoc(doc(db,'settings','serviceMode'));
+    serviceActive=snap.exists()?snap.data().active!==false:true;
+  }catch(e){ serviceActive=true; }
+  updateKillSwitchUI();
+}
+
+function updateKillSwitchUI(){
+  const dot=document.getElementById('killDot');
+  const label=document.getElementById('killLabel');
+  const sub=document.getElementById('killSub');
+  const btn=document.getElementById('killBtn');
+  const box=document.getElementById('killSwitchBox');
+  if(!dot)return;
+  if(serviceActive){
+    dot.style.background='var(--green)';
+    label.textContent='Service is Active';
+    sub.textContent='All public pages are accessible';
+    btn.textContent='🔴 Pause Service';
+    btn.style.borderColor='rgba(239,68,68,0.4)';
+    btn.style.background='rgba(239,68,68,0.08)';
+    btn.style.color='var(--danger)';
+    box.style.borderColor='rgba(239,68,68,0.2)';
+    box.style.background='rgba(239,68,68,0.05)';
+  } else {
+    dot.style.background='var(--danger)';
+    label.textContent='Service is Paused';
+    sub.textContent='Public pages show a "service paused" message';
+    btn.textContent='🟢 Resume Service';
+    btn.style.borderColor='rgba(34,197,94,0.4)';
+    btn.style.background='rgba(34,197,94,0.08)';
+    btn.style.color='var(--green)';
+    box.style.borderColor='rgba(34,197,94,0.3)';
+    box.style.background='rgba(34,197,94,0.05)';
+  }
+}
+
+window.toggleKillSwitch=async()=>{
+  const newState=!serviceActive;
+  const action=newState?'resume':'pause';
+  const msg=newState
+    ?'Resume the service? Public pages will become accessible again.'
+    :'Pause the service? All public pages will show a service paused message. Make sure you have exported all data first.';
+  if(!confirm(msg))return;
+  const btn=document.getElementById('killBtn');
+  btn.disabled=true;btn.textContent='Saving...';
+  try{
+    await setDoc(doc(db,'settings','serviceMode'),{
+      active:newState,
+      updatedAt:serverTimestamp(),
+      updatedAtMs:Date.now(),
+      updatedBy:CU.email
+    });
+    serviceActive=newState;
+    updateKillSwitchUI();
+    toast(newState?'🟢 Service resumed — public pages are live':'🔴 Service paused — public pages are offline');
+  }catch(e){
+    toast('⚠️ Failed: '+e.message);
+  }
+  btn.disabled=false;
+};
+
+// ── FULL SYSTEM EXPORT (Root only) ──
+window.exportFullCSV=async()=>{
+  toast('⏳ Preparing full export...');
+  try{
+    const [peopleSnap,pendingSnap,blSnap]=await Promise.all([
+      getDocs(collection(db,'people')),
+      getDocs(collection(db,'pending')),
+      getDocs(collection(db,'blacklist'))
+    ]);
+    const rows=[];
+    // People sheet
+    rows.push(['=== APPROVED PEOPLE ===']);
+    rows.push(['Name','Phone','Email','University','Year','City','Country','Fasting','Served','Served At','Notes','Added At']);
+    peopleSnap.docs.forEach(d=>{
+      const p=d.data();
+      rows.push([p.name||'',p.phone||'',p.email||'',p.university||'',p.yearOfStudy||'',p.city||'',p.country||'',p.fasting?'Yes':'No',p.served?'Yes':'No',p.servedAt||'',p.note||'',p.addedAt||'']);
+    });
+    rows.push([]);
+    // Pending sheet
+    rows.push(['=== PENDING APPROVALS ===']);
+    rows.push(['Name','Phone','Email','University','Year','City','Country','Fasting','Status','Submitted At','Source']);
+    pendingSnap.docs.forEach(d=>{
+      const p=d.data();
+      rows.push([p.name||'',p.phone||'',p.email||'',p.university||'',p.yearOfStudy||'',p.city||'',p.country||'',p.fasting?'Yes':'No',p.status||'',p.submittedAt||'',p.source||'']);
+    });
+    rows.push([]);
+    // Blacklist
+    rows.push(['=== BLACKLIST ===']);
+    rows.push(['Name','Phone','Reason','Added At']);
+    blSnap.docs.forEach(d=>{
+      const b=d.data();
+      rows.push([b.name||'',b.phone||'',b.reason||'',b.addedAt||'']);
+    });
+    const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+    dl('﻿'+csv,'sofra-FULL-export-'+new Date().toISOString().slice(0,10)+'.csv','text/csv');
+    toast('📦 Full export downloaded!');
+  }catch(e){ toast('⚠️ Export failed: '+e.message); }
+};
+
+window.exportFullJSON=async()=>{
+  toast('⏳ Preparing full backup...');
+  try{
+    const [peopleSnap,pendingSnap,blSnap]=await Promise.all([
+      getDocs(collection(db,'people')),
+      getDocs(collection(db,'pending')),
+      getDocs(collection(db,'blacklist'))
+    ]);
+    const backup={
+      exportedAt:new Date().toISOString(),
+      exportedBy:CU.email,
+      people:peopleSnap.docs.map(d=>({id:d.id,...d.data()})),
+      pending:pendingSnap.docs.map(d=>({id:d.id,...d.data()})),
+      blacklist:blSnap.docs.map(d=>({id:d.id,...d.data()}))
+    };
+    dl(JSON.stringify(backup,null,2),'sofra-FULL-backup-'+Date.now()+'.json','application/json');
+    toast('🗄️ Full backup downloaded!');
+  }catch(e){ toast('⚠️ Backup failed: '+e.message); }
+};
+
+window.toggleRegistration=async()=>{
+  const btn=document.getElementById('regToggleBtn');
+  btn.disabled=true;btn.textContent='Saving...';
+  regOpen=!regOpen;
+  try {
+    await setDoc(doc(db,'settings','registration'),{
+      open:regOpen,
+      updatedAt:serverTimestamp(),
+      updatedBy:CU.email
+    });
+    updateRegToggleUI();
+    toast(regOpen?'🔓 Registration is now OPEN':'🔒 Registration is now CLOSED');
+  } catch(err){
+    regOpen=!regOpen;// revert
+    toast('⚠️ Failed: '+err.message);
+  }
+  btn.disabled=false;
+};
+
+// ── INVITE LINK GENERATOR ──
+window.generateInvite=async()=>{
+  const phone=normPhone(document.getElementById('invitePhone').value.trim());
+  if(!phone||phone.replace(/[^\d]/g,'').length<7){toast('⚠️ Enter a valid phone number');return;}
+  const btn=document.getElementById('genInviteBtn');
+  btn.disabled=true;btn.textContent='Generating...';
+  try {
+    // Check if person exists
+    const allSnap=await getDocs(collection(db,'people'));
+    const exists=allSnap.docs.find(d=>normPhone(d.data().phone||'')===phone);
+    if(exists){toast('⚠️ This number is already registered as '+exists.data().name);btn.disabled=false;btn.textContent='Generate Link';return;}
+    // Check for existing active invite
+    const invSnap=await getDocs(collection(db,'invites'));
+    const existing=invSnap.docs.find(d=>{
+      const inv=d.data();
+      return normPhone(inv.phone||'')===phone && inv.status==='pending' && inv.expiresAtMs>Date.now();
+    });
+    let inviteId;
+    if(existing){
+      inviteId=existing.id;
+    } else {
+      const token=Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2);
+      const ref=await addDoc(collection(db,'invites'),{
+        phone,token,
+        status:'pending',
+        createdAt:serverTimestamp(),
+        createdAtMs:Date.now(),
+        expiresAtMs:Date.now()+(24*60*60*1000),// 24 hours
+        createdBy:CU.email
+      });
+      inviteId=ref.id;
+    }
+    const baseUrl=window.location.href.replace(/\/[^\/]*$/, '/');
+    const link=baseUrl+'register.html?invite='+inviteId;
+    lastInviteLink=link;
+    lastInvitePhone=phone;
+    document.getElementById('inviteLinkText').textContent=link;
+    document.getElementById('inviteLinkBox').style.display='block';
+    document.getElementById('invitePhone').value='';
+    toast('✅ Invite link generated!');
+  } catch(err){
+    toast('⚠️ Failed: '+err.message);
+  }
+  btn.disabled=false;btn.textContent='Generate Link';
+};
+
+window.copyInviteLink=()=>{
+  navigator.clipboard.writeText(lastInviteLink).then(()=>toast('📋 Link copied!'));
+};
+
+window.shareWhatsApp=()=>{
+  const msg=encodeURIComponent('🌙 Ramadan Mubarak!\n\nYour registration link (valid 24h):\n'+lastInviteLink);
+  window.open('https://wa.me/'+lastInvitePhone.replace('+','')+`?text=${msg}`,'_blank');
+};
+
+window.revokeInvite=async(id)=>{
+  await updateDoc(doc(db,'invites',id),{status:'revoked',revokedAt:serverTimestamp()});
+  toast('🗑️ Invite revoked');
+};
+
+window.copyInviteByPhone=(phone,id)=>{
+  const baseUrl=window.location.href.replace(/\/[^\/]*$/, '/');
+  const link=baseUrl+'register.html?invite='+id;
+  navigator.clipboard.writeText(link).then(()=>toast('📋 Invite link copied!'));
+  // Also update lastInviteLink for WhatsApp button
+  lastInviteLink=link; lastInvitePhone=phone;
+};
+
+// ── ANNOUNCEMENTS ──
+let annUnsub=null;
+
+function loadAnnouncements(){
+  if(annUnsub)return; // already listening
+  annUnsub=onSnapshot(
+    query(collection(db,'announcements'),orderBy('createdAtMs','desc')),
+    snap=>{
+      const anns=snap.docs.map(d=>({id:d.id,...d.data()}));
+      const active=anns.filter(a=>a.active!==false);
+      // Update badge
+      const badge=document.getElementById('annBadge');
+      if(badge){
+        if(active.length>0){badge.textContent=active.length;badge.classList.remove('hidden');}
+        else{badge.classList.add('hidden');}
+      }
+      // Render admin list
+      const box=document.getElementById('annAdminList');
+      if(!box)return;
+      if(anns.length===0){
+        box.innerHTML='<div class="empty"><div class="ei2">📢</div><div class="et">No announcements yet</div></div>';
+        return;
+      }
+      box.innerHTML=anns.map(a=>`
+        <div style="background:var(--surface2);border:1px solid ${a.pinned?'rgba(201,168,76,0.4)':a.active===false?'var(--border)':'var(--border2)'};border-radius:12px;padding:14px 16px;margin-bottom:10px;opacity:${a.active===false?'0.5':'1'}">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+            <div style="flex:1;min-width:0">
+              ${a.pinned?'<div style="font-size:0.62rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">📌 Pinned</div>':''}
+              ${a.active===false?'<div style="font-size:0.62rem;font-weight:700;color:var(--text3);text-transform:uppercase;margin-bottom:4px">Archived</div>':''}
+              <div style="font-size:0.85rem;color:var(--text);line-height:1.6;white-space:pre-wrap">${esc(a.text||'')}</div>
+              <div style="font-size:0.65rem;color:var(--text3);margin-top:5px">${a.postedBy||'Admin'} · ${a.createdAtMs?new Date(a.createdAtMs).toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—'}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0">
+              ${a.active!==false?`<button class="btn btn-g btn-sm" onclick="archiveAnn('${a.id}')" style="font-size:0.72rem">Archive</button>`:''}
+              ${!a.pinned&&a.active!==false?`<button class="btn btn-sm" onclick="pinAnn('${a.id}')" style="background:var(--gold-dim);color:var(--gold);border:1px solid rgba(201,168,76,0.3);font-size:0.72rem">📌 Pin</button>`:''}
+              ${a.pinned?`<button class="btn btn-g btn-sm" onclick="unpinAnn('${a.id}')" style="font-size:0.72rem">Unpin</button>`:''}
+              <button class="btn btn-g btn-sm" onclick="deleteAnn('${a.id}')" style="color:var(--danger);font-size:0.72rem">Delete</button>
+            </div>
+          </div>
+        </div>`).join('');
+    }
+  );
+}
+
+window.postAnnouncement=async()=>{
+  const text=document.getElementById('annText').value.trim();
+  const pinned=document.getElementById('annPinned').checked;
+  if(!text){sErr('annError','Please write a message first.');return;}
+  const btn=document.getElementById('annPostBtn');
+  btn.disabled=true;btn.textContent='Posting...';hErr('annError');
+  try{
+    // If pinning, unpin all current pinned first
+    if(pinned){
+      const snap=await getDocs(query(collection(db,'announcements')));
+      const batch=snap.docs.filter(d=>d.data().pinned).map(d=>updateDoc(doc(db,'announcements',d.id),{pinned:false}));
+      await Promise.all(batch);
+    }
+    await addDoc(collection(db,'announcements'),{
+      text,pinned,active:true,
+      postedBy:CU.name||CU.email,
+      createdAt:serverTimestamp(),
+      createdAtMs:Date.now()
+    });
+    document.getElementById('annText').value='';
+    document.getElementById('annPinned').checked=false;
+    toast('📢 Announcement posted!');
+  }catch(e){sErr('annError','⚠️ '+e.message);}
+  btn.disabled=false;btn.textContent='📢 Post Announcement';
+};
+
+window.archiveAnn=async(id)=>{
+  await updateDoc(doc(db,'announcements',id),{active:false});
+  toast('📦 Archived');
+};
+window.pinAnn=async(id)=>{
+  // Unpin others first
+  const snap=await getDocs(collection(db,'announcements'));
+  await Promise.all(snap.docs.filter(d=>d.data().pinned).map(d=>updateDoc(doc(db,'announcements',d.id),{pinned:false})));
+  await updateDoc(doc(db,'announcements',id),{pinned:true});
+  toast('📌 Pinned!');
+};
+window.unpinAnn=async(id)=>{
+  await updateDoc(doc(db,'announcements',id),{pinned:false});
+  toast('Unpinned');
+};
+window.deleteAnn=async(id)=>{
+  if(!confirm('Delete this announcement permanently?'))return;
+  await deleteDoc(doc(db,'announcements',id));
+  toast('🗑 Deleted');
+};
+
+// ── WHATSAPP LINK ──
+async function loadWALink(){
+  try{
+    const snap=await getDoc(doc(db,'settings','whatsapp'));
+    if(snap.exists()&&snap.data().groupLink){
+      const inp=document.getElementById('waLinkInput');
+      if(inp)inp.value=snap.data().groupLink;
+    }
+  }catch(e){}
+}
+window.saveWALink=async()=>{
+  const link=document.getElementById('waLinkInput').value.trim();
+  if(!link.startsWith('https://')){
+    sErr('waLinkMsg','⚠️ Enter a valid https:// link');return;
+  }
+  try{
+    await setDoc(doc(db,'settings','whatsapp'),{groupLink:link,updatedAt:serverTimestamp(),updatedBy:CU.email});
+    hErr('waLinkMsg');
+    toast('✅ WhatsApp link saved! Students will see it after registering.');
+  }catch(e){sErr('waLinkMsg','⚠️ '+e.message);}
+};
+
+// ── PENDING STAFF APPROVAL ──
+window.approveStaff=async(uid,role)=>{
+  if(!confirm(`Approve this person as ${role}?`))return;
+  try{
+    // Get their info from pendingStaff
+    const ps=await getDoc(doc(db,'pendingStaff',uid));
+    if(!ps.exists()){toast('⚠️ Request not found');return;}
+    const data=ps.data();
+    // Create users record
+    // Note: root:true is NEVER set here — must be granted manually in Firestore Console
+    await setDoc(doc(db,'users',uid),{
+      email:data.email,name:data.name,
+      photoURL:data.photoURL||'',
+      role:role,
+      root:false,
+      createdAt:serverTimestamp(),
+      createdAtMs:Date.now(),
+      approvedBy:CU.email
+    });
+    // Delete from pendingStaff
+    await deleteDoc(doc(db,'pendingStaff',uid));
+    toast(`✅ ${data.name||data.email} approved as ${role}`);
+  }catch(e){toast('⚠️ Error: '+e.message);}
+};
+
+window.rejectStaff=async(uid,name)=>{
+  if(!confirm(`Reject access for ${name}?`))return;
+  try{
+    // Mark as rejected in pendingStaff (so they see "access denied" next login)
+    await updateDoc(doc(db,'pendingStaff',uid),{status:'rejected',rejectedAt:serverTimestamp(),rejectedBy:CU.email});
+    toast(`🚫 ${name} rejected`);
+  }catch(e){toast('⚠️ Error: '+e.message);}
+};
+// Render invite list from live snapshot data (called by onSnapshot)
+function renderInviteList(allInvites){
+  const box=document.getElementById('inviteList');
+  if(!box)return;
+  const now=Date.now();
+  const invites=allInvites
+    .filter(i=>i.status!=='revoked')
+    .sort((a,b)=>(b.createdAtMs||0)-(a.createdAtMs||0));
+  if(!invites.length){box.innerHTML='<div style="font-size:0.78rem;color:var(--text3)">No invites generated yet</div>';return;}
+  box.innerHTML=invites.map(inv=>{
+    const expired=inv.expiresAtMs<now;
+    const statusClass=inv.status==='used'?'inv-used':expired?'inv-expired':'inv-pending';
+    const statusLabel=inv.status==='used'?'✅ Used':expired?'⏰ Expired':'⏳ Pending';
+    const expDate=new Date(inv.expiresAtMs).toLocaleDateString([],{month:'short',day:'numeric'});
+    const expTime=new Date(inv.expiresAtMs).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    return`<div class="invite-item">
+      <div>
+        <div class="inv-phone">${esc(inv.phone||'')}</div>
+        <div style="font-size:0.7rem;color:var(--text3)">Expires ${expDate} ${expTime} · by ${esc(inv.createdBy||'')}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span class="inv-status ${statusClass}">${statusLabel}</span>
+        ${inv.status==='pending'&&!expired?`<button class="btn btn-g btn-sm" style="font-size:0.7rem;padding:2px 8px;color:var(--danger)" onclick="window.revokeInvite('${inv.id}')">Revoke</button><button class="btn btn-g btn-sm" style="font-size:0.7rem;padding:2px 8px" onclick="window.copyInviteByPhone('${esc(inv.phone||'')}','${inv.id}')">📋 Copy</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Keep loadInviteList as a no-op fallback (live listener handles everything now)
+async function loadInviteList(){ /* handled by onSnapshot */ }
+
+
+window.addVolunteer=async()=>{const n=document.getElementById('volName').value.trim();const e=document.getElementById('volEmail').value.trim();const p=document.getElementById('volPass').value;if(!n||!e||!p){sErr('volError','Please fill in all fields');return;}if(p.length<6){sErr('volError','Min 6 chars');return;}const btn=document.getElementById('addVolBtn');btn.disabled=true;btn.textContent='Creating...';hErr('volError');try{const sa=initializeApp(FC,'s_'+Date.now());const sa2=getAuth(sa);const c=await createUserWithEmailAndPassword(sa2,e,p);await setDoc(doc(db,'users',c.user.uid),{email:e,name:n,role:'staff',createdAt:serverTimestamp(),createdBy:CU.email});await c.user.sendEmailVerification();await signOut(sa2);document.getElementById('volName').value=document.getElementById('volEmail').value=document.getElementById('volPass').value='';btn.disabled=false;btn.textContent='➕ Add Staff Member';toast(`✅ ${n} added! Verification email sent to ${e}`);}catch(err){sErr('volError',fe(err.code));btn.disabled=false;btn.textContent='➕ Add Staff Member';}};
+
+function renderVols(users){
+  const box=document.getElementById('volList');if(!box)return;
+  const others=users.filter(u=>u.id!==CU.uid && u.root!==true); // Root users are invisible
+  const now=Date.now();
+  // Update monitoring stats
+  const allUsers=users;
+  const admins=allUsers.filter(u=>u.role==='admin'&&u.root!==true).length; // Root excluded from count
+  const timedActive=allUsers.filter(u=>(u.role==='volunteer'||u.role==='staff')&&u.accessFrom&&u.accessUntil&&u.accessFrom<=now&&now<=u.accessUntil).length;
+  const monTotal=document.getElementById('monTotal');const monAdmins=document.getElementById('monAdmins');const monTimed=document.getElementById('monTimed');
+  if(monTotal)monTotal.textContent=allUsers.length;
+  if(monAdmins)monAdmins.textContent=admins;
+  if(monTimed)monTimed.textContent=timedActive;
+  // Populate timed access dropdown
+  const sel=document.getElementById('timedStaffSelect');
+  if(sel){
+    const curr=sel.value;
+    sel.innerHTML='<option value="">Select staff member...</option>'+others.filter(u=>u.role!=='admin'&&u.root!==true).map(v=>`<option value="${v.id}">${esc(v.name||v.email)}</option>`).join('');
+    if(curr)sel.value=curr;
+  }
+  if(others.length===0){box.innerHTML='<div class="empty"><div class="ei2">👤</div><div class="et">No staff yet</div></div>';return;}
+  box.innerHTML=others.map(v=>{
+    const isAdmin=v.role==='admin';
+    const hasTimed=v.accessFrom&&v.accessUntil;
+    const timedOn=hasTimed&&v.accessFrom<=now&&now<=v.accessUntil;
+    const timedExp=hasTimed&&now>v.accessUntil;
+    const lastSeen=v.lastSeenAtMs?ts(v.lastSeenAtMs):'Never';
+    const isRoot=v.root===true;
+    let statusBadge='';
+    if(isRoot)statusBadge=`<span class="rtag root">👑 Root</span>`;
+    else if(isAdmin)statusBadge=`<span class="rtag admin">Admin</span>`;
+    else if(timedOn)statusBadge=`<span class="rtag" style="background:var(--gold-dim);color:var(--gold);border:1px solid rgba(245,158,11,0.3)">⏱ Timed Admin</span>`;
+    else statusBadge=`<span class="rtag staff">Staff</span>`;
+    let timedInfo='';
+    if(hasTimed){
+      const fromStr=new Date(v.accessFrom).toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+      const untilStr=new Date(v.accessUntil).toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+      timedInfo=`<div style="font-size:0.7rem;color:${timedOn?'var(--gold)':timedExp?'var(--text3)':'var(--blue)'};margin-top:2px">⏱ ${fromStr} → ${untilStr}${timedExp?' (expired)':timedOn?' (active)':''}</div>`;
+    }
+    let actions='';
+    if(!isAdmin){
+      // Any admin can promote staff
+      actions+=`<button class="btn btn-p btn-sm" onclick="window.promoteStaff('${v.id}','${esc(v.name||v.email)}')">⬆ Promote</button>`;
+      // Any admin can remove staff (not admins)
+      if(v.id!==CU.uid)
+        actions+=`<button class="btn btn-g btn-sm" style="color:var(--danger)" onclick="window.remVol('${v.id}','${esc(v.name||v.email)}')">Remove</button>`;
+    } else {
+      // Admin row — only Root can demote or remove admins
+      if(CU.root && v.id!==CU.uid){
+        actions+=`<button class="btn btn-g btn-sm" style="color:var(--warn)" onclick="window.demoteStaff('${v.id}','${esc(v.name||v.email)}')">⬇ Demote</button>`;
+        if(!isRoot)
+          actions+=`<button class="btn btn-g btn-sm" style="color:var(--danger)" onclick="window.remVol('${v.id}','${esc(v.name||v.email)}')">Remove</button>`;
+      }
+    }
+    if(hasTimed&&!isAdmin)actions+=`<button class="btn btn-g btn-sm" style="color:var(--text3);font-size:0.72rem" onclick="window.clearTimedAccess('${v.id}')">✕ Clear Timer</button>`;
+    return`<div class="vc" style="flex-wrap:wrap;gap:10px">
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:2px">
+          <div class="vn">${esc(v.name||v.email)}</div>${statusBadge}
+        </div>
+        <div class="ve">${esc(v.email)}</div>
+        ${timedInfo}
+        <div style="font-size:0.68rem;color:var(--text3);margin-top:2px">Last seen: ${lastSeen}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">${actions}</div>
+    </div>`;
+  }).join('');
+}
+
+window.promoteStaff=async(id,name)=>{
+  if(!confirm(`Promote ${name} to Admin? They will have full access.`))return;
+  await updateDoc(doc(db,'users',id),{role:'admin'});
+  toast(`✅ ${name} promoted to Admin`);
+};
+
+window.demoteStaff=async(id,name)=>{
+  if(!confirm(`Demote ${name} to Staff? They will lose admin access.`))return;
+  await updateDoc(doc(db,'users',id),{role:'staff',accessFrom:null,accessUntil:null});
+  toast(`↩ ${name} demoted to Staff`);
+};
+
+window.clearTimedAccess=async(id)=>{
+  await updateDoc(doc(db,'users',id),{accessFrom:null,accessUntil:null});
+  toast('✕ Timed access cleared');
+};
+
+window.grantTimedAccess=async()=>{
+  const staffId=document.getElementById('timedStaffSelect').value;
+  const fromVal=document.getElementById('timedFrom').value;
+  const untilVal=document.getElementById('timedUntil').value;
+  if(!staffId){toast('⚠️ Select a staff member');return;}
+  if(!fromVal||!untilVal){toast('⚠️ Set both From and Until times');return;}
+  const fromMs=new Date(fromVal).getTime();
+  const untilMs=new Date(untilVal).getTime();
+  if(untilMs<=fromMs){toast('⚠️ Until must be after From');return;}
+  await updateDoc(doc(db,'users',staffId),{accessFrom:fromMs,accessUntil:untilMs,accessGrantedBy:CU.email,accessGrantedAt:serverTimestamp()});
+  toast(`✅ Timed access granted!`);
+  document.getElementById('timedStaffSelect').value='';
+  document.getElementById('timedFrom').value='';
+  document.getElementById('timedUntil').value='';
+};
+window.remVol=async(id,n)=>{if(!confirm(`Remove ${n}?`))return;await deleteDoc(doc(db,'users',id));toast(`🗑 Removed`);};
+
+function normPhone(p){
+  let n=String(p||'').replace(/[\s\-\.\(\)]/g,'');
+  if(n.startsWith('00212'))n='+212'+n.slice(5);
+  if(n.startsWith('212')&&!n.startsWith('+'))n='+212'+n.slice(3);
+  // Strip leading zeros for local numbers
+  if(n.startsWith('0')&&n.length===10)n='+212'+n.slice(1);
+  // 9-digit Moroccan mobile (starts with 6 or 7, no prefix)
+  if(/^[6-7]\d{8}$/.test(n))n='+212'+n;
+  return n;
+}
+function ts(ms){if(!ms)return'';const d=Math.floor((Date.now()-ms)/1000);if(d<60)return`${d}s ago`;const m=Math.floor(d/60);if(m<60)return`${m}m ago`;const h=Math.floor(m/60),r=m%60;return r>0?`${h}h ${r}m ago`:`${h}h ago`;}
+function showS(id){['authScreen','setupScreen','mainApp','pendingAccessScreen','rejectedScreen'].forEach(s=>{const el=document.getElementById(s);if(!el)return;el.style.display=s===id?(s==='mainApp'?'block':'flex'):'none';});}
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2800);}
+function sErr(id,msg){const el=document.getElementById(id);el.textContent=msg;el.style.display='block';}
+function hErr(id){document.getElementById(id).style.display='none';}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fe(code){const m={'auth/invalid-email':'Invalid email.','auth/user-not-found':'No account found.','auth/wrong-password':'Incorrect password.','auth/invalid-credential':'Incorrect email or password.','auth/email-already-in-use':'Email already registered.','auth/weak-password':'Min 6 characters.','auth/too-many-requests':'Too many attempts.'};return m[code]||`Error: ${code}`;}
+showS('authScreen');checkFR();
+
+// ── PROXY FUNCTIONS ──
+window.toggleProxy = id => {
+  const panel = document.getElementById('proxy-'+id);
+  if(panel) {
+    panel.classList.toggle('open');
+    if(panel.classList.contains('open')) {
+      setTimeout(()=>{ const inp=document.getElementById('pinput-'+id); if(inp)inp.focus(); },100);
+    }
+  }
+};
+
+window.proxySearch = id => {
+  const q = document.getElementById('pinput-'+id).value.trim().toLowerCase();
+  const box = document.getElementById('psugg-'+id);
+  if(!q || q.length < 2) { box.classList.remove('show'); box.innerHTML=''; return; }
+  const qPhone=normPhone(q);
+  const matches = people.filter(p =>
+    p.id !== id &&
+    (p.name.toLowerCase().includes(q) || (p.phone && normPhone(p.phone).includes(qPhone)))
+  ).slice(0,5);
+  if(matches.length === 0) { box.classList.remove('show'); return; }
+  box.innerHTML = matches.map(p =>
+    `<div class="proxy-suggestion" onclick="window.addProxyFromList('${id}','${p.id}')">
+      <div>${esc(p.name)}</div>
+      <div class="ps-sub">${esc(p.phone||'No phone')} ${p.fasting?'· 🌙 Fasting':''} ${p.served?'· ⚠️ Already served':''}</div>
+    </div>`
+  ).join('');
+  box.classList.add('show');
+};
+
+window.addProxyFromList = async (primaryId, proxyPersonId) => {
+  const primary = people.find(x=>x.id===primaryId);
+  const proxyPerson = people.find(x=>x.id===proxyPersonId);
+  if(!primary || !proxyPerson) return;
+
+  const nowMs = Date.now();
+  const nowStr = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const proxyEntry = { name: proxyPerson.name, phone: proxyPerson.phone||'', personId: proxyPersonId, addedAt: nowStr, addedAtMs: nowMs };
+
+  // Add to primary's proxyFor list
+  const existing = primary.proxyFor || [];
+  if(existing.find(e=>e.personId===proxyPersonId)) { toast('⚠️ Already added'); return; }
+  await updateDoc(doc(db,'people',primaryId), { proxyFor: [...existing, proxyEntry] });
+
+  // Mark the proxy person as served via proxy
+  await updateDoc(doc(db,'people',proxyPersonId), {
+    served: true,
+    servedAt: nowStr,
+    servedAtMs: nowMs,
+    servedBy: 'proxy:'+primary.name,
+    servedViaProxy: true,
+    proxyPickedUpBy: primary.name,
+    proxyPickedUpById: primaryId
+  });
+
+  // Clear input and suggestions
+  document.getElementById('pinput-'+primaryId).value='';
+  document.getElementById('psugg-'+primaryId).classList.remove('show');
+  toast(`✅ ${proxyPerson.name} marked as served via ${primary.name.split(' ')[0]}`);
+};
+
+window.addProxyManual = async id => {
+  const input = document.getElementById('pinput-'+id);
+  const val = input.value.trim();
+  if(!val) return;
+  const primary = people.find(x=>x.id===id);
+  if(!primary) return;
+
+  // Check if it matches an existing person
+  const match = people.find(p =>
+    p.id !== id &&
+    (p.name.toLowerCase() === val.toLowerCase() || (p.phone && normPhone(p.phone) === normPhone(val)))
+  );
+
+  if(match) { window.addProxyFromList(id, match.id); return; }
+
+  // New person not on list — add them directly as served via proxy
+  const nowMs = Date.now();
+  const nowStr = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+
+  // Detect if val looks like a phone number
+  const isPhone = /^[\+\d][\d\s\-\(\)]{5,}$/.test(val);
+  const newPerson = {
+    name: isPhone ? '(Unknown) '+val : val,
+    phone: isPhone ? val : '',
+    fasting: false,
+    served: true,
+    servedAt: nowStr,
+    servedAtMs: nowMs,
+    servedBy: 'proxy:'+primary.name,
+    servedViaProxy: true,
+    proxyPickedUpBy: primary.name,
+    proxyPickedUpById: id,
+    addedBy: CU.email,
+    createdAt: serverTimestamp()
+  };
+
+  const newRef = await addDoc(collection(db,'people'), newPerson);
+  const proxyEntry = { name: newPerson.name, phone: newPerson.phone, personId: newRef.id, addedAt: nowStr, addedAtMs: nowMs };
+  const existing = primary.proxyFor || [];
+  await updateDoc(doc(db,'people',id), { proxyFor: [...existing, proxyEntry] });
+
+  input.value='';
+  document.getElementById('psugg-'+id).classList.remove('show');
+  toast(`✅ ${newPerson.name} added and marked as served via proxy`);
+};
+
+window.removeProxy = async (primaryId, proxyIndex) => {
+  const primary = people.find(x=>x.id===primaryId);
+  if(!primary) return;
+  const existing = primary.proxyFor || [];
+  const removed = existing[proxyIndex];
+  if(!removed) return;
+  
+  // Remove from primary's proxyFor list
+  const updated = existing.filter((_,i)=>i!==proxyIndex);
+  await updateDoc(doc(db,'people',primaryId), { proxyFor: updated });
+  
+  // If the removed proxy person exists in people list, un-mark them as served-via-proxy
+  if(removed.personId){
+    const proxyPerson = people.find(x=>x.id===removed.personId);
+    if(proxyPerson && proxyPerson.servedViaProxy){
+      await updateDoc(doc(db,'people',removed.personId), {
+        served: false, servedAt: null, servedAtMs: null,
+        servedBy: null, servedViaProxy: null,
+        proxyPickedUpBy: null, proxyPickedUpById: null
+      });
+    }
+  }
+  toast(`↩ ${removed.name} removed from proxy list`);
+};
+
+</script>
+</body>
+</html>
