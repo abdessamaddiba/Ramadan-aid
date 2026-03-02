@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="theme-color" content="#080c14">
 <title>Ramadan Food Aid — Admin</title>
 <style>
@@ -208,7 +208,7 @@ textarea.fi{min-height:75px;resize:vertical}
 
       <!-- Email/Password (existing accounts only) -->
       <div class="field"><label>Email</label><input type="email" class="fi" id="authEmail" placeholder="your@email.com"/></div>
-      <div class="field"><label>Password</label><input type="password" class="fi" id="authPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter')handleAuth()"/></div>
+      <div class="field"><label>Password</label><input type="password" class="fi" id="authPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter')handleAuth()" data-enter-ok="1"/></div>
       <button class="btn btn-p" id="authBtn" onclick="handleAuth()">Sign In</button>
     </div>
   </div>
@@ -310,7 +310,7 @@ textarea.fi{min-height:75px;resize:vertical}
 
       <!-- CHECK -->
       <div class="pg active" id="pg-search">
-        <div class="sw-wrap"><span class="sicon">🔍</span><input type="text" class="sinput" id="sInput" placeholder="Search by name or phone number..." oninput="doSearch()" autofocus/></div>
+        <div class="sw-wrap"><span class="sicon">🔍</span><input type="search" class="sinput" id="sInput" placeholder="Search by name or phone number..." oninput="doSearch()" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/></div>
         <div id="sResults"><div class="empty"><div class="ei2">🌙</div><div class="et">Search for a person</div><div class="es">Type a name or phone number</div></div></div>
       </div>
 
@@ -820,6 +820,21 @@ function startL(){
 }
 
 const tTitles={search:'Check Person',list:'Full List',pending:'Pending Approvals',add:'Add People',export:'Export Data',blacklist:'Blacklist',users:'Staff',announce:'Announcements'};
+// Prevent Enter key from causing mobile page refresh on any non-special input
+document.addEventListener('keydown',function(e){
+  if(e.key==='Enter'){
+    const tag=e.target.tagName;
+    const type=e.target.type;
+    // Allow Enter only on textarea and explicitly handled inputs
+    if(tag==='INPUT'&&type!=='textarea'){
+      const allowed=['authPassword','sInput'];
+      if(!allowed.includes(e.target.id)&&!e.target.hasAttribute('data-enter-ok')){
+        e.preventDefault();
+      }
+    }
+  }
+},true);
+
 window.sw=name=>{document.querySelectorAll('.ni').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.mt').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.pg').forEach(p=>p.classList.remove('active'));const n=document.getElementById('nav-'+name);const m=document.getElementById('mt-'+name);if(n)n.classList.add('active');if(m)m.classList.add('active');document.getElementById('pg-'+name).classList.add('active');document.getElementById('tbTitle').textContent=tTitles[name]||name;closeSB();if(name==='search')setTimeout(()=>document.getElementById('sInput').focus(),100);if(name==='add'){loadRegSettings();loadInviteList();loadWALink();}if(name==='announce'){loadAnnouncements();}};
 window.openSB=()=>{document.getElementById('sb').classList.add('open');document.getElementById('sbo').classList.add('open');};
 window.closeSB=()=>{document.getElementById('sb').classList.remove('open');document.getElementById('sbo').classList.remove('open');};
@@ -847,7 +862,7 @@ function cHTML(p,ctx){
     if(CR==='admin'){acts+=`<button class="btn btn-g btn-sm" style="color:var(--text3)" onclick="window.delP('${p.id}')">✕</button>`;if(!isSusp)acts+=`<button class="btn btn-g btn-sm" style="color:var(--text3);font-size:0.72rem" onclick="window.openBLM('${p.id}')">🚫</button>`;}
   }else{if(CR==='admin')acts+=`<button class="btn btn-g btn-sm" onclick="window.remBL('${p.id}')">✓ Remove from Blacklist</button>`;}
   const tagBadges=(p.tags||[]).map(t=>`<span class="tag-badge removable" onclick="window.removeTag('${p.id}','${t}')">${esc(t)} ✕</span>`).join('');
-  const eH=`<div class="ef" id="ef-${p.id}"><div class="er"><div><div class="el">Name</div><input class="ei" id="en-${p.id}" value="${esc(p.name)}"/></div><div><div class="el">Phone</div><input class="ei" id="ep-${p.id}" value="${esc(p.phone||'')}"/></div></div><div class="er full"><div><div class="el">Email</div><input class="ei" type="email" id="ee-${p.id}" value="${esc(p.email||'')}" placeholder="email@example.com"/></div></div><div class="er"><div><div class="el">University</div><input class="ei" id="eu-${p.id}" value="${esc(p.university||'')}"/></div><div><div class="el">Year</div><input class="ei" id="ey-${p.id}" value="${esc(p.yearOfStudy||'')}"/></div></div><div class="er"><div><div class="el">Country</div><input class="ei" id="eco-${p.id}" value="${esc(p.country||'')}"/></div><div><div class="el">City</div><input class="ei" id="ec-${p.id}" value="${esc(p.city||'')}"/></div></div><div class="er full"><div><div class="el">Notes</div><input class="ei" id="eno-${p.id}" value="${esc(p.note||'')}"/></div></div><div class="etr" onclick="window.tEF('${p.id}')"><div style="font-size:0.85rem;font-weight:600">🌙 Fasting (Muslim)</div><div class="esw ${p.fasting?'on':''}" id="esw-${p.id}"></div></div><div style="padding:8px 12px"><div class="el" style="margin-bottom:4px">🏷️ Tags</div><div id="etags-${p.id}" style="display:flex;flex-wrap:wrap;gap:4px;min-height:20px;margin-bottom:6px">${tagBadges}</div><div class="tag-input-row"><input id="etagin-${p.id}" class="ei" placeholder="Add tag e.g. Moroccan, VIP..." onkeydown="if(event.key==='Enter'){event.preventDefault();window.addTag('${p.id}')}"/><button class="btn btn-g btn-sm" onclick="window.addTag('${p.id}')">+ Tag</button></div></div><div class="eact"><button class="btn btn-p btn-sm" onclick="window.saveE('${p.id}')">Save</button><button class="btn btn-g btn-sm" onclick="window.tEdit('${p.id}')">Cancel</button></div></div>`;
+  const eH=`<div class="ef" id="ef-${p.id}"><div class="er"><div><div class="el">Name</div><input class="ei" id="en-${p.id}" value="${esc(p.name)}"/></div><div><div class="el">Phone</div><input class="ei" id="ep-${p.id}" value="${esc(p.phone||'')}"/></div></div><div class="er full"><div><div class="el">Email</div><input class="ei" type="email" id="ee-${p.id}" value="${esc(p.email||'')}" placeholder="email@example.com"/></div></div><div class="er"><div><div class="el">University</div><input class="ei" id="eu-${p.id}" value="${esc(p.university||'')}"/></div><div><div class="el">Year</div><input class="ei" id="ey-${p.id}" value="${esc(p.yearOfStudy||'')}"/></div></div><div class="er"><div><div class="el">Country</div><input class="ei" id="eco-${p.id}" value="${esc(p.country||'')}"/></div><div><div class="el">City</div><input class="ei" id="ec-${p.id}" value="${esc(p.city||'')}"/></div></div><div class="er full"><div><div class="el">Notes</div><input class="ei" id="eno-${p.id}" value="${esc(p.note||'')}"/></div></div><div class="etr" onclick="window.tEF('${p.id}')"><div style="font-size:0.85rem;font-weight:600">🌙 Fasting (Muslim)</div><div class="esw ${p.fasting?'on':''}" id="esw-${p.id}"></div></div><div style="padding:8px 12px"><div class="el" style="margin-bottom:4px">🏷️ Tags</div><div id="etags-${p.id}" style="display:flex;flex-wrap:wrap;gap:4px;min-height:20px;margin-bottom:6px">${tagBadges}</div><div class="tag-input-row"><input id="etagin-${p.id}" class="ei" placeholder="Add tag e.g. Moroccan, VIP..." onkeydown="if(event.key==='Enter'){event.preventDefault();window.addTag('${p.id}')}" data-enter-ok="1"/><button class="btn btn-g btn-sm" onclick="window.addTag('${p.id}')">+ Tag</button></div></div><div class="eact"><button class="btn btn-p btn-sm" onclick="window.saveE('${p.id}')">Save</button><button class="btn btn-g btn-sm" onclick="window.tEdit('${p.id}')">Cancel</button></div></div>`;
   // Proxy list display on card
   const proxyList = p.proxyFor && p.proxyFor.length > 0
     ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
@@ -865,7 +880,7 @@ function cHTML(p,ctx){
       <div class="proxy-title">👥 Who else did ${esc(p.name.split(' ')[0])} pick up for?</div>
       <div class="proxy-info">Add friends they collected food for. If they lied, you can blacklist them.</div>
       <div class="proxy-search-row" style="margin-top:8px">
-        <input class="proxy-input" id="pinput-${p.id}" placeholder="Name or phone..." oninput="window.proxySearch('${p.id}')" onkeydown="if(event.key==='Enter')window.addProxyManual('${p.id}')"/>
+        <input class="proxy-input" id="pinput-${p.id}" placeholder="Name or phone..." oninput="window.proxySearch('${p.id}')" onkeydown="if(event.key==='Enter'){event.preventDefault();window.addProxyManual('${p.id}')}" data-enter-ok="1"/>
         <button class="proxy-add-btn" onclick="window.addProxyManual('${p.id}')">➕ Add</button>
       </div>
       <div class="proxy-suggestions" id="psugg-${p.id}"></div>

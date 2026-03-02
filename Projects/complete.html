@@ -10,8 +10,8 @@
 :root{
   --bg:#080c14;--bg2:#0d1220;--surface:#111827;--surface2:#1a2438;
   --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
-  --green:#22c55e;--green2:#16a34a;--green-dim:rgba(34,197,94,0.1);--accent:#c9a84c;--accent2:#a07830;--accent-dim:rgba(201,168,76,0.1);
-  --gold:#f59e0b;--gold-dim:rgba(245,158,11,0.1);
+  --green:#22c55e;--green2:#16a34a;--green-dim:rgba(34,197,94,0.1);--accent:#22c55e;--accent2:#16a34a;--accent-dim:rgba(34,197,94,0.1);
+  --gold:#22c55e;--gold-dim:rgba(34,197,94,0.1);
   --danger:#ef4444;--danger-dim:rgba(239,68,68,0.1);
   --blue:#3b82f6;--blue-dim:rgba(59,130,246,0.1);
   --text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;
@@ -26,13 +26,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 /* HEADER */
 .hdr{text-align:center;margin-bottom:24px}
 .hdr-logo{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:300;letter-spacing:0.2em;color:var(--text);margin-bottom:4px}
-.hdr-logo span{color:var(--gold);font-weight:700}
+.hdr-logo span{color:var(--accent);font-weight:700}
 .hdr-sub{font-size:0.75rem;color:var(--text3)}
 
 /* LANG SWITCHER */
 .lang-row{display:flex;gap:8px;justify-content:center;margin-bottom:22px;direction:ltr}
 .lang-btn{padding:5px 14px;border-radius:20px;border:1.5px solid var(--border2);background:var(--surface);color:var(--text2);font-family:'Space Grotesk',sans-serif;font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.15s}
-.lang-btn.active{background:var(--gold);color:#0d0a02;border-color:var(--gold)}
+.lang-btn.active{background:var(--accent);color:#07080f;border-color:var(--accent)}
 
 /* STEP INDICATOR */
 .steps{display:flex;align-items:center;gap:0;margin-bottom:24px}
@@ -47,14 +47,14 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 /* FORM CARD */
 .fcard{background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:24px;position:relative;overflow:hidden;margin-bottom:14px}
-.fcard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+.fcard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green),transparent)}
 .fcard-title{font-size:1rem;font-weight:700;margin-bottom:6px;color:var(--text)}
 .fcard-sub{font-size:0.8rem;color:var(--text3);margin-bottom:18px;line-height:1.5}
 
 .field{margin-bottom:14px}
 .field label{display:block;font-size:0.7rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px}
 .fi{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:0.92rem;padding:12px 14px;outline:none;transition:border-color 0.2s,box-shadow 0.2s}
-.fi:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,168,76,0.1)}
+.fi:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,197,94,0.1)}
 .fi::placeholder{color:var(--text3)}
 .fi:disabled{opacity:0.6;cursor:not-allowed}
 select.fi{cursor:pointer}
@@ -77,7 +77,7 @@ select.fi option{background:var(--surface)}
 
 /* FASTING TOGGLE */
 .fast-toggle{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1.5px solid var(--border2);border-radius:12px;padding:13px 16px;cursor:pointer;transition:all 0.2s;margin-bottom:14px}
-.fast-toggle.on{border-color:rgba(201,168,76,0.4);background:var(--accent-dim)}
+.fast-toggle.on{border-color:rgba(34,197,94,0.4);background:var(--accent-dim)}
 .fast-toggle-info{font-size:0.9rem;font-weight:600}
 .fast-toggle-sub{font-size:0.72rem;color:var(--text3);margin-top:2px}
 .sw{width:40px;height:22px;background:var(--surface2);border-radius:11px;position:relative;transition:background 0.2s;flex-shrink:0}
@@ -90,8 +90,8 @@ select.fi option{background:var(--surface)}
 .verify-panel.show{display:block}
 
 /* SUBMIT BTN */
-.submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,#c9a84c,#a07830);color:#07080f;border:none;border-radius:12px;font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:6px;letter-spacing:0.2px}
-.submit-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(201,168,76,0.25)}
+.submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#07080f;border:none;border-radius:12px;font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:6px;letter-spacing:0.2px}
+.submit-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(34,197,94,0.25)}
 .submit-btn:active{transform:scale(0.98)}
 .submit-btn:disabled{background:var(--surface2);color:var(--text3);cursor:not-allowed;transform:none;box-shadow:none}
 
@@ -237,17 +237,67 @@ select.fi option{background:var(--surface)}
 
   <!-- STEP 3: SUCCESS CONFIRMATION -->
   <div class="fcard hidden" id="step3Card">
-    <!-- Confirmation screen content -->
-    <div style="text-align:center;padding:16px 8px">
+
+    <!-- ── WhatsApp group question (shown first) ── -->
+    <div id="waQuestion" style="text-align:center;padding:16px 8px">
+      <div style="font-size:2.8rem;margin-bottom:12px">💬</div>
+      <div style="font-family:'Amiri',serif;font-size:1.3rem;font-weight:700;color:var(--accent);margin-bottom:8px" id="wa-q-title">
+        Êtes-vous dans notre groupe WhatsApp ?
+      </div>
+      <div style="font-size:0.85rem;color:var(--text2);line-height:1.6;margin-bottom:24px;max-width:320px;margin-left:auto;margin-right:auto" id="wa-q-sub">
+        Les annonces importantes (horaires, lieu de distribution) sont partagées uniquement via le groupe.
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;max-width:300px;margin:0 auto">
+        <button onclick="waAnswer(true)"
+          style="padding:13px;background:rgba(37,211,102,0.12);border:1px solid rgba(37,211,102,0.3);color:#22c55e;border-radius:12px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all 0.2s"
+          id="wa-yes-btn">
+          ✅ Oui, j'y suis déjà
+        </button>
+        <button onclick="waAnswer(false)"
+          style="padding:13px;background:rgba(37,211,102,0.06);border:1px solid rgba(255,255,255,0.08);color:var(--text2);border-radius:12px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all 0.2s"
+          id="wa-no-btn">
+          ➕ Non, je veux rejoindre
+        </button>
+      </div>
+    </div>
+
+    <!-- ── WhatsApp join prompt (shown if they said No) ── -->
+    <div id="waJoinPrompt" style="display:none;text-align:center;padding:16px 8px">
+      <div style="font-size:2.5rem;margin-bottom:12px">🌙</div>
+      <div style="font-family:'Amiri',serif;font-size:1.2rem;font-weight:700;color:var(--accent);margin-bottom:8px" id="wa-join-title">
+        Rejoignez le groupe
+      </div>
+      <div style="font-size:0.83rem;color:var(--text2);line-height:1.6;margin-bottom:20px;max-width:320px;margin-left:auto;margin-right:auto" id="wa-join-body">
+        Cliquez ci-dessous pour rejoindre le groupe WhatsApp. Vous y recevrez toutes les annonces concernant la distribution.
+      </div>
+      <a id="waGroupLink" href="https://chat.whatsapp.com/JXP3sRx8alz0wK3Y3XyDt1" target="_blank" rel="noopener"
+        style="display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#fff;font-weight:700;font-size:0.9rem;padding:13px 24px;border-radius:12px;text-decoration:none;margin-bottom:16px;transition:all 0.2s">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        <span id="wa-join-btn-label">Rejoindre le groupe</span>
+      </a>
+      <br/>
+      <div style="margin-top:8px;padding:12px;background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.15);border-radius:10px;max-width:300px;margin-left:auto;margin-right:auto">
+        <div style="font-size:0.72rem;color:var(--text3);margin-bottom:10px" id="wa-done-hint">Après avoir rejoint le groupe, cliquez ici pour continuer :</div>
+        <button onclick="showSuccess()"
+          style="width:100%;padding:12px;background:var(--accent);color:#07080f;font-size:0.88rem;font-weight:700;border:none;border-radius:10px;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px"
+          id="wa-done-btn">
+          ✓ <span id="wa-done-label">J'ai rejoint — Continuer</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Final success (shown after WA question answered) ── -->
+    <div id="successContent" style="display:none;text-align:center;padding:16px 8px">
       <div style="font-size:3.5rem;margin-bottom:14px;animation:pop 0.4s ease">✅</div>
       <div style="font-family:'Amiri',serif;font-size:1.4rem;font-weight:700;color:var(--accent);margin-bottom:10px" id="s3-title">Merci !</div>
       <div style="font-size:0.9rem;color:var(--text2);line-height:1.7;max-width:340px;margin:0 auto 16px" id="s3-body">
-        Vos informations ont bien été reçues et enregistrées. Notre équipe les vérifiera avant la distribution. Nous vous remercions sincèrement pour votre confiance. رمضان مبارك 🌙
+        Vos informations ont bien été reçues et enregistrées. Notre équipe les vérifiera avant la distribution. رمضان مبارك 🌙
       </div>
       <div style="display:inline-flex;align-items:center;gap:6px;background:var(--accent-dim);border:1px solid rgba(201,168,76,0.3);border-radius:20px;padding:6px 16px;font-size:0.78rem;font-weight:600;color:var(--accent)" id="s3-badge">
         ⏳ En attente de validation
       </div>
     </div>
+
   </div>
 
 
@@ -448,9 +498,51 @@ window.setLang=l=>{
   if(yp2&&yp2.options[0]){yp2.options[0].textContent=l==='ar'?'اختر...':l==='en'?'Select...':'Sélectionner...';}
   const yp=document.getElementById('y-placeholder');
   if(yp)yp.textContent=l==='ar'?'اختر...':l==='en'?'Select...':'Sélectionner...';
+  translateWAStrings();
 };
 
 // STEP NAVIGATION
+function translateWAStrings(){
+  const l=lang;
+  const titles={
+    fr:'Êtes-vous dans notre groupe WhatsApp ?',
+    ar:'هل أنت في مجموعة الواتساب الخاصة بنا؟',
+    en:'Are you in our WhatsApp group?'
+  };
+  const subs={
+    fr:'Les annonces importantes (horaires, lieu de distribution) sont partagées uniquement via le groupe.',
+    ar:'تُشارَك الإعلانات المهمة (المواعيد، مكان التوزيع) عبر المجموعة فقط.',
+    en:'Important announcements (schedule, distribution location) are shared only through the group.'
+  };
+  const yess={fr:"✅ Oui, j'y suis déjà",ar:'✅ نعم، أنا فيها',en:"✅ Yes, I'm already in"};
+  const nos={fr:'➕ Non, je veux rejoindre',ar:'➕ لا، أريد الانضمام',en:'➕ No, I want to join'};
+  const jt={fr:'Rejoindre le groupe',ar:'الانضمام للمجموعة',en:'Join the group'};
+  const jb={fr:'Rejoignez le groupe',ar:'انضم إلى المجموعة',en:'Join the group'};
+  const jbd={fr:'Les annonces importantes sont partagées via ce groupe. Cliquez pour rejoindre.',ar:'تُشارَك الإعلانات المهمة عبر هذه المجموعة. انقر للانضمام.',en:'Important announcements are shared via this group. Click to join.'};
+  const done={fr:"J'ai rejoint, continuer →",ar:'انضممت، المتابعة →',en:"I've joined, continue →"};
+  const hints={
+    fr:"Après avoir rejoint le groupe, cliquez ici pour continuer :",
+    ar:"بعد الانضمام للمجموعة، انقر هنا للمتابعة:",
+    en:"After joining the group, click here to continue:"
+  };
+  const doneLabels={
+    fr:"J'ai rejoint — Continuer",
+    ar:"انضممت — متابعة",
+    en:"I've joined — Continue"
+  };
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  set('wa-q-title',titles[l]||titles.fr);
+  set('wa-q-sub',subs[l]||subs.fr);
+  set('wa-yes-btn',yess[l]||yess.fr);
+  set('wa-no-btn',nos[l]||nos.fr);
+  set('wa-join-title',jb[l]||jb.fr);
+  set('wa-join-body',jbd[l]||jbd.fr);
+  set('wa-join-btn-label',jt[l]||jt.fr);
+  set('wa-done-hint',hints[l]||hints.fr);
+  set('wa-done-label',doneLabels[l]||doneLabels.fr);
+  const dir=document.documentElement.dir;
+}
+
 function goStep(n){
   [1,2,3].forEach(i=>{
     const el=document.getElementById('step'+i);
@@ -567,6 +659,7 @@ window.submitProfile=async()=>{
     // Go to step 3 confirmation
     goStep(3);
     document.getElementById('back-to-home').style.display='none';
+    translateWAStrings();
   }catch(err){
     const msg=err.code==='permission-denied'
       ?(lang==='ar'?'⚠️ صلاحيات غير كافية. تحقق من قواعد Firestore.':lang==='en'?'⚠️ Insufficient permissions. Check Firestore rules.':'⚠️ Permissions insuffisantes. Vérifiez les règles Firestore.')
@@ -575,6 +668,31 @@ window.submitProfile=async()=>{
     btn.disabled=false;
     document.getElementById('submit-btn-label').textContent=t('submit-btn-label');
   }
+};
+
+// ── WhatsApp group flow ──
+window.waAnswer=function(inGroup){
+  document.getElementById('waQuestion').style.display='none';
+  if(inGroup){
+    showSuccess();
+  } else {
+    // Load WA link from Firestore settings if available, else use hardcoded
+    try{
+      db.doc('settings/whatsapp').get().then(snap=>{
+        if(snap.exists&&snap.data().groupLink){
+          document.getElementById('waGroupLink').href=snap.data().groupLink;
+        }
+      });
+    }catch(e){}
+    document.getElementById('waJoinPrompt').style.display='block';
+  }
+};
+
+window.showSuccess=function(){
+  document.getElementById('waJoinPrompt').style.display='none';
+  document.getElementById('waQuestion').style.display='none';
+  document.getElementById('successContent').style.display='block';
+  document.getElementById('back-to-home').style.display='block';
 };
 
 function showMsg(id,msg){const el=document.getElementById(id);el.textContent=msg;el.style.display='block';}
