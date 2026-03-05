@@ -689,8 +689,24 @@ window.createAdminAccount=async()=>{const n=document.getElementById('setupName')
 
 window.doLogout=async()=>{[uP,uB,uPend,uV,uInv].forEach(u=>{if(u)u();});uP=uB=uPend=uV=uInv=null;await signOut(auth);window.location.reload();};
 
+let _authInitialized=false;
+let _authTimer=null;
 onAuthStateChanged(auth,async user=>{
-  if(!user){CU=null;CR=null;people=[];await checkFR();return;}
+  if(!user){
+    CU=null;CR=null;people=[];
+    if(!_authInitialized){
+      clearTimeout(_authTimer);
+      _authTimer=setTimeout(async()=>{
+        if(!auth.currentUser&&!_authInitialized){await checkFR();}
+      },2500);
+    } else {
+      clearTimeout(_authTimer);
+      await checkFR();
+    }
+    return;
+  }
+  clearTimeout(_authTimer);
+  _authInitialized=true;
   const ud=await getDoc(doc(db,'users',user.uid));
   if(!ud.exists()){
     // Check if pending
@@ -769,7 +785,19 @@ onAuthStateChanged(auth,async user=>{
 
 function startL(){
   const q=query(collection(db,'people'),orderBy('name'));
-  uP=onSnapshot(q,snap=>{people=snap.docs.map(d=>({id:d.id,...d.data()}));updS();renderL();doSearch();updateExportStats();});
+  uP=onSnapshot(q,snap=>{
+    people=snap.docs.map(d=>({id:d.id,...d.data()}));
+    updS();
+    updateExportStats();
+    // If user is actively typing, defer the visual re-render
+    // so the virtual keyboard doesn't close on mobile
+    if(_userTyping){
+      _pendingRender=true;
+    } else {
+      renderL();
+      doSearch();
+    }
+  });
   uB=onSnapshot(collection(db,'blacklist'),snap=>{BL=snap.docs.map(d=>({id:d.id,...d.data()}));renderBL();updS();});
   uPend=onSnapshot(collection(db,'pending'),snap=>{
     pending=snap.docs.map(d=>({id:d.id,...d.data()})).filter(p=>p.status==='pending');
@@ -820,6 +848,38 @@ function startL(){
 }
 
 const tTitles={search:'Check Person',list:'Full List',pending:'Pending Approvals',add:'Add People',export:'Export Data',blacklist:'Blacklist',users:'Staff',announce:'Announcements'};
+// ── TYPING GUARD — prevents re-renders while user is actively typing ──
+// On mobile, re-rendering innerHTML closes the virtual keyboard even if values are restored.
+// Solution: skip all re-renders when any input/textarea has focus.
+let _userTyping = false;
+let _pendingRender = false; // queued render waiting for user to stop typing
+
+document.addEventListener('focusin', function(e){
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT'){
+    _userTyping = true;
+  }
+});
+document.addEventListener('focusout', function(e){
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT'){
+    // Small delay — on mobile focusout fires before next focusin when tabbing between fields
+    setTimeout(()=>{
+      const active = document.activeElement;
+      if(!active||!(active.tagName==='INPUT'||active.tagName==='TEXTAREA'||active.tagName==='SELECT')){
+        _userTyping = false;
+        // Flush any pending render that was deferred
+        if(_pendingRender){
+          _pendingRender = false;
+          const a = document.querySelector('.pg.active');
+          if(a){
+            if(a.id==='pg-search') doSearch();
+            if(a.id==='pg-list') renderL();
+          }
+        }
+      }
+    }, 200);
+  }
+});
+
 // Prevent Enter key from causing mobile page refresh on any non-special input
 document.addEventListener('keydown',function(e){
   if(e.key==='Enter'){
@@ -835,7 +895,7 @@ document.addEventListener('keydown',function(e){
   }
 },true);
 
-window.sw=name=>{document.querySelectorAll('.ni').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.mt').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.pg').forEach(p=>p.classList.remove('active'));const n=document.getElementById('nav-'+name);const m=document.getElementById('mt-'+name);if(n)n.classList.add('active');if(m)m.classList.add('active');document.getElementById('pg-'+name).classList.add('active');document.getElementById('tbTitle').textContent=tTitles[name]||name;closeSB();if(name==='search')setTimeout(()=>document.getElementById('sInput').focus(),100);if(name==='add'){loadRegSettings();loadInviteList();loadWALink();}if(name==='announce'){loadAnnouncements();}};
+window.sw=name=>{document.querySelectorAll('.ni').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.mt').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.pg').forEach(p=>p.classList.remove('active'));const n=document.getElementById('nav-'+name);const m=document.getElementById('mt-'+name);if(n)n.classList.add('active');if(m)m.classList.add('active');document.getElementById('pg-'+name).classList.add('active');document.getElementById('tbTitle').textContent=tTitles[name]||name;closeSB();if(name==='search')setTimeout(()=>document.getElementById('sInput').focus(),100);if(name==='add'){loadRegSettings();loadInviteList();loadWALink();}if(name==='announce'){loadAnnouncements();}if(name==='pending'){renderPending();}};
 window.openSB=()=>{document.getElementById('sb').classList.add('open');document.getElementById('sbo').classList.add('open');};
 window.closeSB=()=>{document.getElementById('sb').classList.remove('open');document.getElementById('sbo').classList.remove('open');};
 
@@ -947,8 +1007,16 @@ window.doSearch=()=>{
   if(!raw){box.innerHTML='<div class="empty"><div class="ei2">🌙</div><div class="et">Search for a person</div><div class="es">Type a name or phone number</div></div>';return;}
   const q=raw.toLowerCase();
   const qPhone=normPhone(raw);
+  const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const qN=norm(q);
+  const qTokens=qN.split(/\s+/).filter(Boolean);
   const res=people.filter(p=>{
-    const nameMatch=p.name.toLowerCase().includes(q);
+    const nameN=norm(p.name);
+    const nameTokens=nameN.split(/\s+/);
+    // Every query token must appear as start of some name token (any order)
+    const nameMatch=qTokens.length>0&&qTokens.every(qt=>
+      nameTokens.some(nt=>nt.startsWith(qt))
+    );
     const phoneMatch=p.phone&&normPhone(p.phone).includes(qPhone);
     return nameMatch||phoneMatch;
   });
@@ -1070,6 +1138,7 @@ window.approvePending=async id=>{
       });
       await updateDoc(doc(db,'pending',id),{status:'approved',approvedAt:serverTimestamp(),approvedBy:CU.email});
       toast(`✅ Edit for ${p.name} approved and applied!`);
+      _userTyping=false;_pendingRender=false;
     } else {
       await addDoc(collection(db,'people'),{
         name:p.name,phone:p.phone||'',email:p.email||'',note:p.note||'',
@@ -1081,6 +1150,7 @@ window.approvePending=async id=>{
       });
       await updateDoc(doc(db,'pending',id),{status:'approved',approvedAt:serverTimestamp(),approvedBy:CU.email});
       toast(`✅ ${p.name} approved and added to list!`);
+      _userTyping=false;_pendingRender=false;
     }
   } catch(err) {
     console.error('Approve error:',err);
@@ -1094,8 +1164,8 @@ window.rejectPending=async(id,name)=>{if(!confirm(`Reject ${name||'this person'}
 function renderBL(){const box=document.getElementById('blResults');if(!box)return;if(BL.length===0){box.innerHTML='<div class="empty"><div class="ei2">🚫</div><div class="et">Blacklist is empty</div></div>';return;}box.innerHTML=BL.map(b=>`<div class="pc bl"><div class="ctop"><div class="av" style="background:#1e293b;color:var(--text3)">🚫</div><div class="ci"><div class="cnr"><span class="cname">${esc(b.name||'Unknown')}</span><span class="tag b">Blacklisted</span></div><div class="cph">${esc(b.phone||'—')}</div>${b.reason?`<div class="cno">📋 ${esc(b.reason)}</div>`:''}<div class="cst">Added ${ts(b.addedAtMs)}</div></div></div>${CR==='admin'?`<div class="cact"><button class="btn btn-g btn-sm" onclick="window.remBLD('${b.id}')">✓ Remove</button></div>`:''}</div>`).join('');}
 
 function refreshT(){
-  // Don't refresh if any edit form is open
-  if(document.querySelector('.ef.open'))return;
+  // Don't refresh if user is typing or any edit form is open
+  if(_userTyping||document.querySelector('.ef.open'))return;
   const a=document.querySelector('.pg.active');if(!a)return;
   if(a.id==='pg-search')doSearch();
   if(a.id==='pg-list')renderL();
@@ -1817,7 +1887,7 @@ function sErr(id,msg){const el=document.getElementById(id);el.textContent=msg;el
 function hErr(id){document.getElementById(id).style.display='none';}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function fe(code){const m={'auth/invalid-email':'Invalid email.','auth/user-not-found':'No account found.','auth/wrong-password':'Incorrect password.','auth/invalid-credential':'Incorrect email or password.','auth/email-already-in-use':'Email already registered.','auth/weak-password':'Min 6 characters.','auth/too-many-requests':'Too many attempts.'};return m[code]||`Error: ${code}`;}
-showS('authScreen');checkFR();
+showS('authScreen');
 
 // ── PROXY FUNCTIONS ──
 window.toggleProxy = id => {

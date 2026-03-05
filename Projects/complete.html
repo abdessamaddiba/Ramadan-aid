@@ -183,11 +183,13 @@ select.fi option{background:var(--surface)}
 
     <div class="field">
       <label id="l2-name">Nom complet</label>
-      <input type="text" class="fi" id="c2Name" disabled/>
+      <input type="text" class="fi" id="c2Name" autocomplete="off" autocorrect="off" spellcheck="false"/>
+      <div style="font-size:0.68rem;color:var(--text3);margin-top:4px" id="l2-name-hint">Vous pouvez modifier si nécessaire</div>
     </div>
     <div class="field">
       <label id="l2-phone">Téléphone</label>
-      <input type="tel" class="fi" id="c2Phone" disabled/>
+      <input type="tel" class="fi" id="c2Phone" autocomplete="off"/>
+      <div style="font-size:0.68rem;color:var(--text3);margin-top:4px" id="l2-phone-hint">Vérifiez que votre numéro est correct</div>
     </div>
     <div class="field">
       <label id="l2-email">E-mail <span style="font-size:0.65rem;color:var(--text3);font-weight:400">(optionnel)</span></label>
@@ -643,8 +645,8 @@ window.submitProfile=async()=>{
 
   try{
     await addDoc(collection(db,'pending'),{
-      name:foundPerson.name,
-      phone:foundPerson.phone||'',
+      name:document.getElementById('c2Name').value.trim()||foundPerson.name,
+      phone:document.getElementById('c2Phone').value.trim()||foundPerson.phone||'',
       email:email||foundPerson.email||'',
       university:uni,yearOfStudy:year,country,city,
       fasting:fastOn,
