@@ -1290,7 +1290,17 @@ window.bulkAdd=async()=>{
   if(skipped>0)msg+=` | ⚠️ ${skipped} skipped (duplicates): ${skippedNames.slice(0,3).join(', ')}${skippedNames.length>3?'...':''}`;
   toast(msg,4000);
 };
-window.delP=async id=>{const p=people.find(x=>x.id===id);if(!p||!confirm(`Delete ${p.name}?`))return;await deleteDoc(doc(db,'people',id));toast(`🗑 Removed`);};
+window.delP=async id=>{
+  const p=people.find(x=>x.id===id);
+  if(!p||!confirm(`Delete ${p.name}?`))return;
+  await deleteDoc(doc(db,'people',id));
+  // Also remove from registeredPhones so they can re-register if needed
+  if(p.phone){
+    const phoneKey=p.phone.replace(/[^0-9]/g,'');
+    try{await deleteDoc(doc(db,'registeredPhones',phoneKey));}catch(e){}
+  }
+  toast(`🗑 ${p.name} removed`);
+};
 window.confirmReset=async()=>{if(!confirm('Reset ALL served statuses?\nBlacklist stays.'))return;await Promise.all(people.map(p=>updateDoc(doc(db,'people',p.id),{served:false,servedAt:null,servedAtMs:null,servedBy:null,servedViaProxy:null,proxyPickedUpBy:null,proxyPickedUpById:null,proxyFor:[]})));toast('🌙 Ready for new day!');};
 
 // EXPORT
