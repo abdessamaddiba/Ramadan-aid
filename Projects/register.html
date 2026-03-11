@@ -146,7 +146,7 @@ select.fi option{background:var(--surface)}
     <div class="sbox" id="newSuccess"></div>
 
     <div class="field">
-      <label id="l-name">Nom complet</label>
+      <label id="l-name">Nom complet *</label>
       <input type="text" class="fi" id="nName" placeholder="Ahmed Benali"/>
     </div>
     <div class="field">
@@ -229,7 +229,7 @@ select.fi option{background:var(--surface)}
     <!-- EDIT FIELDS (shown if they want to fix) -->
     <div class="hidden" id="editFields">
       <div style="margin-bottom:14px;font-size:0.83rem;color:var(--text2)" id="e-sub">Corrigez les informations incorrectes :</div>
-      <div class="field"><label id="el-name">Nom complet</label><input type="text" class="fi" id="eName" placeholder="Nom complet"/></div>
+      <div class="field"><label id="el-name">Nom complet *</label><input type="text" class="fi" id="eName" placeholder="Nom complet"/></div>
       <div class="field"><label id="el-uni">Université</label><input type="text" class="fi" id="eUni" placeholder="Université..."/></div>
       <div class="field"><label id="el-year">Année d'études</label>
         <select class="fi" id="eYear">
@@ -353,7 +353,7 @@ const T={
     'p-new-title':'Nouveau','p-new-sub':"Je n'ai jamais rempli ce formulaire",
     'p-ret-title':'Déjà inscrit','p-ret-sub':"J'ai déjà donné mes informations",
     'f-title':'📝 Inscription',
-    'l-name':'Nom complet','l-email':'Adresse e-mail','l-phone':'Numéro de téléphone',
+    'l-name':'Nom complet *','l-email':'Adresse e-mail','l-phone':'Numéro de téléphone',
     'l-uni':'Université / École','l-year':"Année d'études",
     'l-country':'Pays','l-city':'Ville actuelle',
     'l-fast':'🌙 Je jeûne (Ramadan)','l-fast-sub':'Cochez si vous êtes musulman et que vous jeûnez',
