@@ -1712,6 +1712,120 @@
         margin: auto;
         padding: 20px;
       }
+
+      /* ── DISTRIBUTION SUMMARY MODAL ── */
+      #summaryModal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 1200;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+      }
+      #summaryModal.open {
+        display: flex;
+      }
+      .sum-box {
+        background: var(--bg2);
+        border: 1px solid var(--border2);
+        border-radius: 18px;
+        padding: 24px;
+        width: 100%;
+        max-width: 360px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      }
+      .sum-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+        text-align: center;
+      }
+      .sum-sub {
+        font-size: 0.75rem;
+        color: var(--text3);
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .sum-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 14px;
+        border-radius: 12px;
+        margin-bottom: 8px;
+      }
+      .sum-row.green {
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.2);
+      }
+      .sum-row.gold {
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+      }
+      .sum-row.blue {
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+      }
+      .sum-row.red {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+      }
+      .sum-row.surface {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+      }
+      .sum-label {
+        font-size: 0.85rem;
+        color: var(--text2);
+      }
+      .sum-val {
+        font-size: 1.4rem;
+        font-weight: 700;
+      }
+      .sum-val.green {
+        color: var(--green);
+      }
+      .sum-val.gold {
+        color: var(--gold);
+      }
+      .sum-val.blue {
+        color: var(--blue);
+      }
+      .sum-val.red {
+        color: var(--danger);
+      }
+      .sum-divider {
+        height: 1px;
+        background: var(--border);
+        margin: 12px 0;
+      }
+      .sum-advice {
+        background: var(--surface2);
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-size: 0.8rem;
+        color: var(--text2);
+        line-height: 1.5;
+        margin-top: 4px;
+        border-left: 3px solid var(--green);
+      }
+      .sum-close {
+        width: 100%;
+        margin-top: 16px;
+        padding: 11px;
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        border-radius: 10px;
+        color: var(--text);
+        font-size: 0.9rem;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .sum-close:hover {
+        background: var(--surface3);
+      }
     </style>
   </head>
   <body>
@@ -2080,6 +2194,14 @@
                 onclick="confirmReset()"
               >
                 🔄 Reset Day
+              </button>
+              <button
+                class="btn btn-g btn-sm"
+                onclick="openSummary()"
+                title="Distribution Summary"
+                style="padding: 6px 10px"
+              >
+                📊
               </button>
               <button
                 class="btn btn-g btn-sm"
@@ -6125,6 +6247,66 @@
       function initChat() {
         startChatListeners();
       }
+
+      // ═══════════════════════════════════════════
+      //  DISTRIBUTION SUMMARY
+      // ═══════════════════════════════════════════
+      window.openSummary = () => {
+        const tot = people.length;
+        const ft = people.filter((p) => p.fasting).length;
+        const srv = people.filter((p) => p.served).length;
+        const ftSrv = people.filter((p) => p.fasting && p.served).length;
+        const remaining = ft - ftSrv;
+        const proxy = people.filter((p) => p.servedViaProxy).length;
+        const bl = BL.length;
+
+        document.getElementById("sumTotal").textContent = tot;
+        document.getElementById("sumFasting").textContent = ft;
+        document.getElementById("sumServed").textContent = srv;
+        document.getElementById("sumRemaining").textContent = Math.max(
+          0,
+          remaining
+        );
+        document.getElementById("sumProxy").textContent = proxy;
+        document.getElementById("sumBL").textContent = bl;
+        document.getElementById("sumDate").textContent =
+          new Date().toLocaleDateString([], {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+
+        // Advice line
+        let advice = "";
+        if (remaining <= 0) {
+          advice = "✅ All fasting students have been served today!";
+        } else if (remaining <= 10) {
+          advice = `⚠️ ${remaining} fasting student${
+            remaining > 1 ? "s" : ""
+          } still waiting — almost done!`;
+        } else {
+          advice = `🍽️ Bring at least ${ft} meals for fasting students (${remaining} still waiting).`;
+        }
+        if (proxy > 0)
+          advice += ` ${proxy} meal${
+            proxy > 1 ? "s were" : " was"
+          } picked up by proxy.`;
+        document.getElementById("sumAdvice").textContent = advice;
+
+        document.getElementById("summaryModal").classList.add("open");
+      };
+
+      window.closeSummary = () => {
+        document.getElementById("summaryModal").classList.remove("open");
+      };
+
+      // Close on backdrop click
+      document
+        .getElementById("summaryModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) closeSummary();
+        });
     </script>
 
     <!-- CHAT OVERLAY -->
@@ -6156,6 +6338,45 @@
           oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,80)+'px'"
         ></textarea>
         <button class="chat-send" onclick="sendChatMsg()">➤</button>
+      </div>
+    </div>
+
+    <!-- DISTRIBUTION SUMMARY MODAL -->
+    <div id="summaryModal">
+      <div class="sum-box">
+        <div class="sum-title">📊 Distribution Summary</div>
+        <div class="sum-sub" id="sumDate"></div>
+
+        <div class="sum-row green">
+          <span class="sum-label">🌙 Fasting — meals needed</span>
+          <span class="sum-val green" id="sumFasting">0</span>
+        </div>
+        <div class="sum-row surface">
+          <span class="sum-label">👥 Total registered</span>
+          <span class="sum-val" id="sumTotal">0</span>
+        </div>
+
+        <div class="sum-divider"></div>
+
+        <div class="sum-row blue">
+          <span class="sum-label">✅ Already served today</span>
+          <span class="sum-val blue" id="sumServed">0</span>
+        </div>
+        <div class="sum-row gold">
+          <span class="sum-label">⏳ Still waiting</span>
+          <span class="sum-val gold" id="sumRemaining">0</span>
+        </div>
+        <div class="sum-row surface">
+          <span class="sum-label">👥 Via proxy pickup</span>
+          <span class="sum-val" id="sumProxy">0</span>
+        </div>
+        <div class="sum-row red">
+          <span class="sum-label">🚫 Blacklisted</span>
+          <span class="sum-val red" id="sumBL">0</span>
+        </div>
+
+        <div class="sum-advice" id="sumAdvice"></div>
+        <button class="sum-close" onclick="closeSummary()">Close</button>
       </div>
     </div>
   </body>
