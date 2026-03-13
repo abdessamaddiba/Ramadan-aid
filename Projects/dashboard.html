@@ -5987,6 +5987,17 @@
         if (box) box.scrollTop = box.scrollHeight;
       }
 
+      window.deleteChatMsg = async (msgId) => {
+        if (!CU?.root) return;
+        if (!confirm("Delete this message?")) return;
+        try {
+          await deleteDoc(doc(db, "chat", msgId));
+          toast("🗑 Message deleted");
+        } catch (e) {
+          toast("⚠️ Could not delete");
+        }
+      };
+
       window.sendChatMsg = async () => {
         if (!CU) return;
         const input = document.getElementById("chatInput");
@@ -6036,11 +6047,14 @@
             hour: "2-digit",
             minute: "2-digit",
           });
+          const delBtn = CU?.root
+            ? `<button onclick="window.deleteChatMsg('${m.id}')" style="background:none;border:none;color:rgba(255,255,255,0.3);cursor:pointer;font-size:0.7rem;padding:0 2px;margin-left:4px;line-height:1" title="Delete">✕</button>`
+            : "";
           html += `<div class="msg-bubble ${mine ? "mine" : "theirs"}">${
             !mine
               ? `<div class="msg-sender">${esc(m.senderName || "?")}</div>`
               : ""
-          }${esc(m.text)}<div class="msg-time">${timeStr}</div></div>`;
+          }${esc(m.text)}<div class="msg-time">${timeStr}${delBtn}</div></div>`;
         });
         box.innerHTML = html;
         if (wasAtBottom || _chatOpen) scrollChatBottom();
