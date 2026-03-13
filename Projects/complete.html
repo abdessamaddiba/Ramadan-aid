@@ -1,1045 +1,336 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#080c14" />
-    <title>Sofra — Compléter votre profil</title>
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap");
-      :root {
-        --bg: #080c14;
-        --bg2: #0d1220;
-        --surface: #111827;
-        --surface2: #1a2438;
-        --border: rgba(255, 255, 255, 0.07);
-        --border2: rgba(255, 255, 255, 0.13);
-        --green: #22c55e;
-        --green2: #16a34a;
-        --green-dim: rgba(34, 197, 94, 0.1);
-        --accent: #22c55e;
-        --accent2: #16a34a;
-        --accent-dim: rgba(34, 197, 94, 0.1);
-        --gold: #22c55e;
-        --gold-dim: rgba(34, 197, 94, 0.1);
-        --danger: #ef4444;
-        --danger-dim: rgba(239, 68, 68, 0.1);
-        --blue: #3b82f6;
-        --blue-dim: rgba(59, 130, 246, 0.1);
-        --text: #f1f5f9;
-        --text2: #94a3b8;
-        --text3: #64748b;
-      }
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-      body {
-        font-family: "Space Grotesk", sans-serif;
-        background: var(--bg);
-        color: var(--text);
-        min-height: 100vh;
-        padding: 24px 16px 48px;
-      }
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background: radial-gradient(
-            ellipse at 15% 25%,
-            rgba(201, 168, 76, 0.06) 0%,
-            transparent 55%
-          ),
-          radial-gradient(
-            ellipse at 85% 75%,
-            rgba(201, 168, 76, 0.04) 0%,
-            transparent 50%
-          );
-        pointer-events: none;
-        z-index: 0;
-      }
-      .wrap {
-        position: relative;
-        z-index: 1;
-      }
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background: radial-gradient(
-            ellipse at 20% 30%,
-            rgba(201, 168, 76, 0.04) 0%,
-            transparent 60%
-          ),
-          radial-gradient(
-            ellipse at 80% 70%,
-            rgba(245, 158, 11, 0.03) 0%,
-            transparent 50%
-          );
-        pointer-events: none;
-        z-index: 0;
-      }
-      .wrap {
-        max-width: 520px;
-        margin: 0 auto;
-        position: relative;
-        z-index: 1;
-      }
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080c14">
+<title>Sofra — Compléter votre profil</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap');
+:root{
+  --bg:#080c14;--bg2:#0d1220;--surface:#111827;--surface2:#1a2438;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --green:#22c55e;--green2:#16a34a;--green-dim:rgba(34,197,94,0.1);--accent:#22c55e;--accent2:#16a34a;--accent-dim:rgba(34,197,94,0.1);
+  --gold:#22c55e;--gold-dim:rgba(34,197,94,0.1);
+  --danger:#ef4444;--danger-dim:rgba(239,68,68,0.1);
+  --blue:#3b82f6;--blue-dim:rgba(59,130,246,0.1);
+  --text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px 16px 48px}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 15% 25%,rgba(201,168,76,0.06) 0%,transparent 55%),radial-gradient(ellipse at 85% 75%,rgba(201,168,76,0.04) 0%,transparent 50%);pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 30%,rgba(201,168,76,0.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 70%,rgba(245,158,11,0.03) 0%,transparent 50%);pointer-events:none;z-index:0}
+.wrap{max-width:520px;margin:0 auto;position:relative;z-index:1}
 
-      /* HEADER */
-      .hdr {
-        text-align: center;
-        margin-bottom: 24px;
-      }
-      .hdr-logo {
-        font-family: "Space Grotesk", sans-serif;
-        font-size: 1.1rem;
-        font-weight: 300;
-        letter-spacing: 0.2em;
-        color: var(--text);
-        margin-bottom: 4px;
-      }
-      .hdr-logo span {
-        color: var(--accent);
-        font-weight: 700;
-      }
-      .hdr-sub {
-        font-size: 0.75rem;
-        color: var(--text3);
-      }
+/* HEADER */
+.hdr{text-align:center;margin-bottom:24px}
+.hdr-logo{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:300;letter-spacing:0.2em;color:var(--text);margin-bottom:4px}
+.hdr-logo span{color:var(--accent);font-weight:700}
+.hdr-sub{font-size:0.75rem;color:var(--text3)}
 
-      /* LANG SWITCHER */
-      .lang-row {
-        display: flex;
-        gap: 8px;
-        justify-content: center;
-        margin-bottom: 22px;
-        direction: ltr;
-      }
-      .lang-btn {
-        padding: 5px 14px;
-        border-radius: 20px;
-        border: 1.5px solid var(--border2);
-        background: var(--surface);
-        color: var(--text2);
-        font-family: "Space Grotesk", sans-serif;
-        font-size: 0.75rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.15s;
-      }
-      .lang-btn.active {
-        background: var(--accent);
-        color: #07080f;
-        border-color: var(--accent);
-      }
+/* LANG SWITCHER */
+.lang-row{display:flex;gap:8px;justify-content:center;margin-bottom:22px;direction:ltr}
+.lang-btn{padding:5px 14px;border-radius:20px;border:1.5px solid var(--border2);background:var(--surface);color:var(--text2);font-family:'Space Grotesk',sans-serif;font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.15s}
+.lang-btn.active{background:var(--accent);color:#07080f;border-color:var(--accent)}
 
-      /* STEP INDICATOR */
-      .steps {
-        display: flex;
-        align-items: center;
-        gap: 0;
-        margin-bottom: 24px;
-      }
-      .step {
-        flex: 1;
-        text-align: center;
-        position: relative;
-      }
-      .step-num {
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        background: var(--surface2);
-        border: 2px solid var(--border2);
-        color: var(--text3);
-        font-size: 0.78rem;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 4px;
-      }
-      .step.active .step-num {
-        background: var(--accent);
-        border-color: var(--accent);
-        color: #07080f;
-      }
-      .step.done .step-num {
-        background: var(--surface);
-        border-color: var(--accent);
-        color: var(--accent);
-      }
-      .step-label {
-        font-size: 0.62rem;
-        color: var(--text3);
-        font-weight: 500;
-        white-space: nowrap;
-      }
-      .step.active .step-label {
-        color: var(--accent);
-      }
-      .step-line {
-        flex: 1;
-        height: 1px;
-        background: var(--border2);
-        margin-top: -14px;
-      }
-      .step.done + .step-line {
-        background: var(--accent);
-      }
+/* STEP INDICATOR */
+.steps{display:flex;align-items:center;gap:0;margin-bottom:24px}
+.step{flex:1;text-align:center;position:relative}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--surface2);border:2px solid var(--border2);color:var(--text3);font-size:0.78rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 4px}
+.step.active .step-num{background:var(--accent);border-color:var(--accent);color:#07080f}
+.step.done .step-num{background:var(--surface);border-color:var(--accent);color:var(--accent)}
+.step-label{font-size:0.62rem;color:var(--text3);font-weight:500;white-space:nowrap}
+.step.active .step-label{color:var(--accent)}
+.step-line{flex:1;height:1px;background:var(--border2);margin-top:-14px}
+.step.done+.step-line{background:var(--accent)}
 
-      /* FORM CARD */
-      .fcard {
-        background: var(--surface);
-        border: 1px solid var(--border2);
-        border-radius: 16px;
-        padding: 24px;
-        position: relative;
-        overflow: hidden;
-        margin-bottom: 14px;
-      }
-      .fcard::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          var(--green),
-          transparent
-        );
-      }
-      .fcard-title {
-        font-size: 1rem;
-        font-weight: 700;
-        margin-bottom: 6px;
-        color: var(--text);
-      }
-      .fcard-sub {
-        font-size: 0.8rem;
-        color: var(--text3);
-        margin-bottom: 18px;
-        line-height: 1.5;
-      }
+/* FORM CARD */
+.fcard{background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:24px;position:relative;overflow:hidden;margin-bottom:14px}
+.fcard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.fcard-title{font-size:1rem;font-weight:700;margin-bottom:6px;color:var(--text)}
+.fcard-sub{font-size:0.8rem;color:var(--text3);margin-bottom:18px;line-height:1.5}
 
-      .field {
-        margin-bottom: 14px;
-      }
-      .field label {
-        display: block;
-        font-size: 0.7rem;
-        font-weight: 700;
-        color: var(--text3);
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-        margin-bottom: 6px;
-      }
-      .fi {
-        width: 100%;
-        background: var(--bg2);
-        border: 1px solid var(--border2);
-        border-radius: 10px;
-        color: var(--text);
-        font-family: "Space Grotesk", sans-serif;
-        font-size: 0.92rem;
-        padding: 12px 14px;
-        outline: none;
-        transition: border-color 0.2s, box-shadow 0.2s;
-      }
-      .fi:focus {
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
-      }
-      .fi::placeholder {
-        color: var(--text3);
-      }
-      .fi:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-      }
-      select.fi {
-        cursor: pointer;
-      }
-      select.fi option {
-        background: var(--surface);
-      }
-      .fi-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-      }
+.field{margin-bottom:14px}
+.field label{display:block;font-size:0.7rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px}
+.fi{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:0.92rem;padding:12px 14px;outline:none;transition:border-color 0.2s,box-shadow 0.2s}
+.fi:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,197,94,0.1)}
+.fi::placeholder{color:var(--text3)}
+.fi:disabled{opacity:0.6;cursor:not-allowed}
+select.fi{cursor:pointer}
+select.fi option{background:var(--surface)}
+.fi-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
-      /* PHONE ROW */
-      .phone-row {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 14px;
-      }
-      .phone-row .fi {
-        flex: 1;
-      }
-      .vbtn {
-        padding: 12px 18px;
-        background: var(--accent);
-        color: #07080f;
-        border: none;
-        border-radius: 10px;
-        font-family: "Space Grotesk", sans-serif;
-        font-size: 0.88rem;
-        font-weight: 600;
-        cursor: pointer;
-        white-space: nowrap;
-        transition: all 0.15s;
-        flex-shrink: 0;
-      }
-      .vbtn:hover {
-        background: var(--accent2);
-      }
-      .vbtn:disabled {
-        background: var(--surface2);
-        color: var(--text3);
-        cursor: not-allowed;
-      }
+/* PHONE ROW */
+.phone-row{display:flex;gap:8px;margin-bottom:14px}
+.phone-row .fi{flex:1}
+.vbtn{padding:12px 18px;background:var(--accent);color:#07080f;border:none;border-radius:10px;font-family:'Space Grotesk',sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all 0.15s;flex-shrink:0}
+.vbtn:hover{background:var(--accent2)}
+.vbtn:disabled{background:var(--surface2);color:var(--text3);cursor:not-allowed}
 
-      /* PROFILE FOUND */
-      .profile-found {
-        background: var(--accent-dim);
-        border: 1.5px solid rgba(201, 168, 76, 0.3);
-        border-radius: 14px;
-        padding: 18px;
-        margin-bottom: 16px;
-        display: none;
-      }
-      .profile-found.show {
-        display: block;
-      }
-      .pf-label {
-        font-size: 0.68rem;
-        font-weight: 700;
-        color: var(--accent);
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-        margin-bottom: 8px;
-      }
-      .pf-name {
-        font-size: 1.1rem;
-        font-weight: 700;
-        margin-bottom: 4px;
-      }
-      .pf-details {
-        font-size: 0.82rem;
-        color: var(--text2);
-        line-height: 1.6;
-      }
+/* PROFILE FOUND */
+.profile-found{background:var(--accent-dim);border:1.5px solid rgba(201,168,76,0.3);border-radius:14px;padding:18px;margin-bottom:16px;display:none}
+.profile-found.show{display:block}
+.pf-label{font-size:0.68rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px}
+.pf-name{font-size:1.1rem;font-weight:700;margin-bottom:4px}
+.pf-details{font-size:0.82rem;color:var(--text2);line-height:1.6}
 
-      /* FASTING TOGGLE */
-      .fast-toggle {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: var(--bg2);
-        border: 1.5px solid var(--border2);
-        border-radius: 12px;
-        padding: 13px 16px;
-        cursor: pointer;
-        transition: all 0.2s;
-        margin-bottom: 14px;
-      }
-      .fast-toggle.on {
-        border-color: rgba(34, 197, 94, 0.4);
-        background: var(--accent-dim);
-      }
-      .fast-toggle-info {
-        font-size: 0.9rem;
-        font-weight: 600;
-      }
-      .fast-toggle-sub {
-        font-size: 0.72rem;
-        color: var(--text3);
-        margin-top: 2px;
-      }
-      .sw {
-        width: 40px;
-        height: 22px;
-        background: var(--surface2);
-        border-radius: 11px;
-        position: relative;
-        transition: background 0.2s;
-        flex-shrink: 0;
-      }
-      .sw.on {
-        background: var(--accent);
-      }
-      .sw::after {
-        content: "";
-        position: absolute;
-        top: 2px;
-        left: 2px;
-        width: 18px;
-        height: 18px;
-        background: #fff;
-        border-radius: 50%;
-        transition: transform 0.2s;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-      }
-      .sw.on::after {
-        transform: translateX(18px);
-      }
+/* FASTING TOGGLE */
+.fast-toggle{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1.5px solid var(--border2);border-radius:12px;padding:13px 16px;cursor:pointer;transition:all 0.2s;margin-bottom:14px}
+.fast-toggle.on{border-color:rgba(34,197,94,0.4);background:var(--accent-dim)}
+.fast-toggle-info{font-size:0.9rem;font-weight:600}
+.fast-toggle-sub{font-size:0.72rem;color:var(--text3);margin-top:2px}
+.sw{width:40px;height:22px;background:var(--surface2);border-radius:11px;position:relative;transition:background 0.2s;flex-shrink:0}
+.sw.on{background:var(--accent)}
+.sw::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.3)}
+.sw.on::after{transform:translateX(18px)}
 
-      /* VERIFY PANEL */
-      .verify-panel {
-        display: none;
-        margin-top: 14px;
-      }
-      .verify-panel.show {
-        display: block;
-      }
+/* VERIFY PANEL */
+.verify-panel{display:none;margin-top:14px}
+.verify-panel.show{display:block}
 
-      /* SUBMIT BTN */
-      .submit-btn {
-        width: 100%;
-        padding: 14px;
-        background: linear-gradient(135deg, #22c55e, #16a34a);
-        color: #07080f;
-        border: none;
-        border-radius: 12px;
-        font-family: "Space Grotesk", sans-serif;
-        font-size: 1rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.2s;
-        margin-top: 6px;
-        letter-spacing: 0.2px;
-      }
-      .submit-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 20px rgba(34, 197, 94, 0.25);
-      }
-      .submit-btn:active {
-        transform: scale(0.98);
-      }
-      .submit-btn:disabled {
-        background: var(--surface2);
-        color: var(--text3);
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: none;
-      }
+/* SUBMIT BTN */
+.submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#07080f;border:none;border-radius:12px;font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:6px;letter-spacing:0.2px}
+.submit-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(34,197,94,0.25)}
+.submit-btn:active{transform:scale(0.98)}
+.submit-btn:disabled{background:var(--surface2);color:var(--text3);cursor:not-allowed;transform:none;box-shadow:none}
 
-      /* ERROR / SUCCESS */
-      .ebox {
-        background: var(--danger-dim);
-        border: 1px solid var(--danger);
-        border-radius: 8px;
-        padding: 10px 14px;
-        font-size: 0.83rem;
-        color: var(--danger);
-        margin-bottom: 14px;
-        display: none;
-      }
-      .sbox {
-        background: var(--accent-dim);
-        border: 1px solid var(--accent);
-        border-radius: 8px;
-        padding: 10px 14px;
-        font-size: 0.83rem;
-        color: var(--accent);
-        margin-bottom: 14px;
-        display: none;
-      }
+/* ERROR / SUCCESS */
+.ebox{background:var(--danger-dim);border:1px solid var(--danger);border-radius:8px;padding:10px 14px;font-size:0.83rem;color:var(--danger);margin-bottom:14px;display:none}
+.sbox{background:var(--accent-dim);border:1px solid var(--accent);border-radius:8px;padding:10px 14px;font-size:0.83rem;color:var(--accent);margin-bottom:14px;display:none}
 
-      /* SUCCESS */
-      .success-screen {
-        display: none;
-        text-align: center;
-        padding: 40px 20px;
-      }
-      .success-screen.show {
-        display: block;
-      }
-      .success-icon {
-        font-size: 4rem;
-        margin-bottom: 16px;
-        animation: pop 0.4s ease;
-      }
-      @keyframes pop {
-        0% {
-          transform: scale(0);
-        }
-        80% {
-          transform: scale(1.1);
-        }
-        100% {
-          transform: scale(1);
-        }
-      }
-      .success-title {
-        font-family: "Amiri", serif;
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--accent);
-        margin-bottom: 8px;
-      }
-      .success-sub {
-        font-size: 0.9rem;
-        color: var(--text2);
-        line-height: 1.6;
-        max-width: 340px;
-        margin: 0 auto 14px;
-      }
-      .success-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: var(--accent-dim);
-        border: 1px solid rgba(201, 168, 76, 0.3);
-        border-radius: 20px;
-        padding: 6px 14px;
-        font-size: 0.78rem;
-        font-weight: 600;
-        color: var(--accent);
-      }
+/* SUCCESS */
+.success-screen{display:none;text-align:center;padding:40px 20px}
+.success-screen.show{display:block}
+.success-icon{font-size:4rem;margin-bottom:16px;animation:pop 0.4s ease}
+@keyframes pop{0%{transform:scale(0)}80%{transform:scale(1.1)}100%{transform:scale(1)}}
+.success-title{font-family:'Amiri',serif;font-size:1.5rem;font-weight:700;color:var(--accent);margin-bottom:8px}
+.success-sub{font-size:0.9rem;color:var(--text2);line-height:1.6;max-width:340px;margin:0 auto 14px}
+.success-badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-dim);border:1px solid rgba(201,168,76,0.3);border-radius:20px;padding:6px 14px;font-size:0.78rem;font-weight:600;color:var(--accent)}
 
-      .hidden {
-        display: none !important;
-      }
-      .footer {
-        text-align: center;
-        margin-top: 28px;
-        font-family: "Amiri", serif;
-        font-size: 0.82rem;
-        color: rgba(201, 168, 76, 0.3);
-        letter-spacing: 1px;
-      }
-      .back-link {
-        display: block;
-        text-align: center;
-        margin-top: 14px;
-        font-size: 0.8rem;
-        color: var(--text3);
-        cursor: pointer;
-        text-decoration: none;
-      }
-      .back-link:hover {
-        color: var(--accent);
-      }
+.hidden{display:none!important}
+.footer{text-align:center;margin-top:28px;font-family:'Amiri',serif;font-size:0.82rem;color:rgba(201,168,76,0.3);letter-spacing:1px}
+.back-link{display:block;text-align:center;margin-top:14px;font-size:0.8rem;color:var(--text3);cursor:pointer;text-decoration:none}
+.back-link:hover{color:var(--accent)}
 
-      .toast {
-        position: fixed;
-        bottom: 28px;
-        right: 28px;
-        background: #1e2d42;
-        color: #f1f5f9;
-        padding: 12px 20px;
-        border-radius: 12px;
-        font-size: 0.86rem;
-        font-weight: 600;
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-        opacity: 0;
-        transform: translateY(10px);
-        transition: all 0.3s;
-        pointer-events: none;
-        z-index: 9999;
-        max-width: 320px;
-      }
-    </style>
-  </head>
-  <body>
-    <canvas
-      id="bgCanvas"
-      style="
-        position: fixed;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 0;
-        opacity: 0.7;
-      "
-    ></canvas>
-    <div class="wrap">
-      <!-- HEADER -->
-      <div class="hdr">
-        <div class="hdr-logo"><span>S</span>OFRA</div>
-        <div class="hdr-sub" id="hdr-sub">Compléter votre profil</div>
+.toast{position:fixed;bottom:28px;right:28px;background:#1e2d42;color:#f1f5f9;padding:12px 20px;border-radius:12px;font-size:0.86rem;font-weight:600;border:1px solid rgba(255,255,255,0.12);box-shadow:0 8px 30px rgba(0,0,0,0.4);opacity:0;transform:translateY(10px);transition:all 0.3s;pointer-events:none;z-index:9999;max-width:320px}
+</style>
+</head>
+<body>
+<canvas id="bgCanvas" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.7"></canvas>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-logo"><span>S</span>OFRA</div>
+    <div class="hdr-sub" id="hdr-sub">Compléter votre profil</div>
+  </div>
+
+  <!-- LANG SWITCHER -->
+  <div class="lang-row">
+    <button class="lang-btn active" onclick="setLang('fr')">🇫🇷 Français</button>
+    <button class="lang-btn" onclick="setLang('ar')">🇲🇦 العربية</button>
+    <button class="lang-btn" onclick="setLang('en')">🇬🇧 English</button>
+  </div>
+
+  <!-- STEP INDICATOR -->
+  <div class="steps" id="stepRow">
+    <div class="step active" id="step1">
+      <div class="step-num">1</div>
+      <div class="step-label" id="step1-label">Trouver</div>
+    </div>
+    <div class="step-line" id="line12"></div>
+    <div class="step" id="step2">
+      <div class="step-num">2</div>
+      <div class="step-label" id="step2-label">Compléter</div>
+    </div>
+    <div class="step-line" id="line23"></div>
+    <div class="step" id="step3">
+      <div class="step-num">3</div>
+      <div class="step-label" id="step3-label">Confirmé</div>
+    </div>
+  </div>
+
+  <!-- STEP 1: PHONE LOOKUP -->
+  <div class="fcard" id="step1Card">
+    <div class="fcard-title" id="s1-title">🔍 Retrouver votre profil</div>
+    <div class="fcard-sub" id="s1-sub">Si vous avez donné votre nom et numéro de téléphone à la FMPC, entrez votre numéro ci-dessous pour retrouver votre profil.</div>
+    <div class="ebox" id="s1Error"></div>
+    <div class="phone-row">
+      <input type="tel" class="fi" id="rPhone" placeholder="+212601234567" onkeydown="if(event.key==='Enter')lookupPhone()"/>
+      <button class="vbtn" id="lookupBtn" onclick="lookupPhone()"><span id="lookup-btn-label">Rechercher</span></button>
+    </div>
+    <div class="profile-found" id="profileFound">
+      <div class="pf-label" id="pf-label-text">C'est vous ?</div>
+      <div class="pf-name" id="pfName"></div>
+      <div class="pf-details" id="pfDetails"></div>
+    </div>
+    <button class="submit-btn hidden" id="confirmBtn" onclick="confirmProfile()">
+      <span id="confirm-btn-label">✅ Oui, c'est moi — Continuer</span>
+    </button>
+    <div style="margin-top:8px;text-align:center">
+      <a href="register.html" class="back-link" id="not-found-link" style="display:none" id="registerLink">
+        <span id="not-found-text">Pas trouvé ? S'inscrire comme nouveau →</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- STEP 2: COMPLETE PROFILE (fill in missing info) -->
+  <div class="fcard hidden" id="step2Card">
+    <div class="fcard-title" id="s2-title">📝 Compléter votre profil</div>
+    <div class="fcard-sub" id="s2-sub">Vérifiez et complétez vos informations. Tous les champs sont obligatoires sauf l'e-mail.</div>
+    <div class="ebox" id="s2Error"></div>
+
+    <div class="field">
+      <label id="l2-name">Nom complet *</label>
+      <input type="text" class="fi" id="c2Name" autocomplete="off" autocorrect="off" spellcheck="false"/>
+      <div style="font-size:0.68rem;color:var(--text3);margin-top:4px" id="l2-name-hint">Vous pouvez modifier si nécessaire</div>
+    </div>
+    <div class="field">
+      <label id="l2-phone">Téléphone</label>
+      <input type="tel" class="fi" id="c2Phone" autocomplete="off"/>
+      <div style="font-size:0.68rem;color:var(--text3);margin-top:4px" id="l2-phone-hint">Vérifiez que votre numéro est correct</div>
+    </div>
+    <div class="field">
+      <label id="l2-email">E-mail <span style="font-size:0.65rem;color:var(--text3);font-weight:400">(optionnel)</span></label>
+      <input type="email" class="fi" id="c2Email" placeholder="ahmed@email.com"/>
+    </div>
+    <div class="field">
+      <label id="l2-uni">Université / École *</label>
+      <select class="fi" id="c2UniSelect" onchange="window.toggleUniOther('c2')">
+        <option value="">Sélectionner...</option>
+        <option value="FMPC">FMPC</option>
+        <option value="FMDC">FMDC</option>
+        <option value="other" id="c2u-other">Autre</option>
+      </select>
+      <input type="text" class="fi" id="c2Uni" placeholder="Nom de votre université..." style="margin-top:8px;display:none"/>
+    </div>
+    <div class="fi-row" style="margin-bottom:14px">
+      <div class="field" style="margin-bottom:0">
+        <label id="l2-year">Année *</label>
+        <select class="fi" id="c2Year">
+          <option value="">Sélectionner...</option>
+          <option value="1">1ère année</option>
+          <option value="2">2ème année</option>
+          <option value="3">3ème année</option>
+          <option value="4">4ème année</option>
+          <option value="5">5ème année</option>
+          <option value="6">6ème année</option>
+          <option value="7">7ème / Master</option>
+          <option value="other">Autre</option>
+        </select>
       </div>
-
-      <!-- LANG SWITCHER -->
-      <div class="lang-row">
-        <button class="lang-btn active" onclick="setLang('fr')">
-          🇫🇷 Français
-        </button>
-        <button class="lang-btn" onclick="setLang('ar')">🇲🇦 العربية</button>
-        <button class="lang-btn" onclick="setLang('en')">🇬🇧 English</button>
+      <div class="field" style="margin-bottom:0">
+        <label id="l2-country">Pays d'origine *</label>
+        <input type="text" class="fi" id="c2Country" placeholder="Maroc..."/>
       </div>
-
-      <!-- STEP INDICATOR -->
-      <div class="steps" id="stepRow">
-        <div class="step active" id="step1">
-          <div class="step-num">1</div>
-          <div class="step-label" id="step1-label">Trouver</div>
-        </div>
-        <div class="step-line" id="line12"></div>
-        <div class="step" id="step2">
-          <div class="step-num">2</div>
-          <div class="step-label" id="step2-label">Compléter</div>
-        </div>
-        <div class="step-line" id="line23"></div>
-        <div class="step" id="step3">
-          <div class="step-num">3</div>
-          <div class="step-label" id="step3-label">Confirmé</div>
-        </div>
-      </div>
-
-      <!-- STEP 1: PHONE LOOKUP -->
-      <div class="fcard" id="step1Card">
-        <div class="fcard-title" id="s1-title">🔍 Retrouver votre profil</div>
-        <div class="fcard-sub" id="s1-sub">
-          Si vous avez donné votre nom et numéro de téléphone à la FMPC, entrez
-          votre numéro ci-dessous pour retrouver votre profil.
-        </div>
-        <div class="ebox" id="s1Error"></div>
-        <div class="phone-row">
-          <input
-            type="tel"
-            class="fi"
-            id="rPhone"
-            placeholder="+212601234567"
-            onkeydown="if(event.key==='Enter')lookupPhone()"
-          />
-          <button class="vbtn" id="lookupBtn" onclick="lookupPhone()">
-            <span id="lookup-btn-label">Rechercher</span>
-          </button>
-        </div>
-        <div class="profile-found" id="profileFound">
-          <div class="pf-label" id="pf-label-text">C'est vous ?</div>
-          <div class="pf-name" id="pfName"></div>
-          <div class="pf-details" id="pfDetails"></div>
-        </div>
-        <button
-          class="submit-btn hidden"
-          id="confirmBtn"
-          onclick="confirmProfile()"
-        >
-          <span id="confirm-btn-label">✅ Oui, c'est moi — Continuer</span>
-        </button>
-        <div style="margin-top: 8px; text-align: center">
-          <a
-            href="register.html"
-            class="back-link"
-            id="not-found-link"
-            style="display: none"
-            id="registerLink"
-          >
-            <span id="not-found-text"
-              >Pas trouvé ? S'inscrire comme nouveau →</span
-            >
-          </a>
-        </div>
-      </div>
-
-      <!-- STEP 2: COMPLETE PROFILE (fill in missing info) -->
-      <div class="fcard hidden" id="step2Card">
-        <div class="fcard-title" id="s2-title">📝 Compléter votre profil</div>
-        <div class="fcard-sub" id="s2-sub">
-          Vérifiez et complétez vos informations. Tous les champs sont
-          obligatoires sauf l'e-mail.
-        </div>
-        <div class="ebox" id="s2Error"></div>
-
-        <div class="field">
-          <label id="l2-name">Nom complet *</label>
-          <input
-            type="text"
-            class="fi"
-            id="c2Name"
-            autocomplete="off"
-            autocorrect="off"
-            spellcheck="false"
-          />
-          <div
-            style="font-size: 0.68rem; color: var(--text3); margin-top: 4px"
-            id="l2-name-hint"
-          >
-            Vous pouvez modifier si nécessaire
-          </div>
-        </div>
-        <div class="field">
-          <label id="l2-phone">Téléphone</label>
-          <input type="tel" class="fi" id="c2Phone" autocomplete="off" />
-          <div
-            style="font-size: 0.68rem; color: var(--text3); margin-top: 4px"
-            id="l2-phone-hint"
-          >
-            Vérifiez que votre numéro est correct
-          </div>
-        </div>
-        <div class="field">
-          <label id="l2-email"
-            >E-mail
-            <span
-              style="font-size: 0.65rem; color: var(--text3); font-weight: 400"
-              >(optionnel)</span
-            ></label
-          >
-          <input
-            type="email"
-            class="fi"
-            id="c2Email"
-            placeholder="ahmed@email.com"
-          />
-        </div>
-        <div class="field">
-          <label id="l2-uni">Université / École *</label>
-          <select
-            class="fi"
-            id="c2UniSelect"
-            onchange="window.toggleUniOther('c2')"
-          >
-            <option value="">Sélectionner...</option>
-            <option value="FMPC">FMPC</option>
-            <option value="FMDC">FMDC</option>
-            <option value="other" id="c2u-other">Autre</option>
-          </select>
-          <input
-            type="text"
-            class="fi"
-            id="c2Uni"
-            placeholder="Nom de votre université..."
-            style="margin-top: 8px; display: none"
-          />
-        </div>
-        <div class="fi-row" style="margin-bottom: 14px">
-          <div class="field" style="margin-bottom: 0">
-            <label id="l2-year">Année *</label>
-            <select class="fi" id="c2Year">
-              <option value="">Sélectionner...</option>
-              <option value="1">1ère année</option>
-              <option value="2">2ème année</option>
-              <option value="3">3ème année</option>
-              <option value="4">4ème année</option>
-              <option value="5">5ème année</option>
-              <option value="6">6ème année</option>
-              <option value="7">7ème / Master</option>
-              <option value="other">Autre</option>
-            </select>
-          </div>
-          <div class="field" style="margin-bottom: 0">
-            <label id="l2-country">Pays d'origine *</label>
-            <input
-              type="text"
-              class="fi"
-              id="c2Country"
-              placeholder="Maroc..."
-            />
-          </div>
-        </div>
-        <div class="field">
-          <label id="l2-city">Ville</label>
-          <input type="text" class="fi" id="c2City" placeholder="Casablanca" />
-        </div>
-
-        <div class="fast-toggle" id="c2FastToggle" onclick="toggleFast()">
-          <div>
-            <div class="fast-toggle-info" id="l2-fast">
-              🌙 Je jeûne (Ramadan)
-            </div>
-            <div class="fast-toggle-sub" id="l2-fast-sub">
-              Cochez si vous êtes musulman et que vous jeûnez
-            </div>
-          </div>
-          <div class="sw" id="c2FastSw"></div>
-        </div>
-
-        <button class="submit-btn" id="submitBtn" onclick="submitProfile()">
-          <span id="submit-btn-label">💾 Confirmer et envoyer</span>
-        </button>
-      </div>
-
-      <!-- STEP 3: SUCCESS CONFIRMATION -->
-      <div class="fcard hidden" id="step3Card">
-        <!-- ── WhatsApp group question (shown first) ── -->
-        <div id="waQuestion" style="text-align: center; padding: 16px 8px">
-          <div style="font-size: 2.8rem; margin-bottom: 12px">💬</div>
-          <div
-            style="
-              font-family: 'Amiri', serif;
-              font-size: 1.3rem;
-              font-weight: 700;
-              color: var(--accent);
-              margin-bottom: 8px;
-            "
-            id="wa-q-title"
-          >
-            Êtes-vous dans notre groupe WhatsApp ?
-          </div>
-          <div
-            style="
-              font-size: 0.85rem;
-              color: var(--text2);
-              line-height: 1.6;
-              margin-bottom: 24px;
-              max-width: 320px;
-              margin-left: auto;
-              margin-right: auto;
-            "
-            id="wa-q-sub"
-          >
-            Les annonces importantes (horaires, lieu de distribution) sont
-            partagées uniquement via le groupe.
-          </div>
-          <div
-            style="
-              display: flex;
-              flex-direction: column;
-              gap: 10px;
-              max-width: 300px;
-              margin: 0 auto;
-            "
-          >
-            <button
-              onclick="waAnswer(true)"
-              style="
-                padding: 13px;
-                background: rgba(37, 211, 102, 0.12);
-                border: 1px solid rgba(37, 211, 102, 0.3);
-                color: #22c55e;
-                border-radius: 12px;
-                font-size: 0.9rem;
-                font-weight: 700;
-                cursor: pointer;
-                font-family: 'Space Grotesk', sans-serif;
-                transition: all 0.2s;
-              "
-              id="wa-yes-btn"
-            >
-              ✅ Oui, j'y suis déjà
-            </button>
-            <button
-              onclick="waAnswer(false)"
-              style="
-                padding: 13px;
-                background: rgba(37, 211, 102, 0.06);
-                border: 1px solid rgba(255, 255, 255, 0.08);
-                color: var(--text2);
-                border-radius: 12px;
-                font-size: 0.9rem;
-                font-weight: 700;
-                cursor: pointer;
-                font-family: 'Space Grotesk', sans-serif;
-                transition: all 0.2s;
-              "
-              id="wa-no-btn"
-            >
-              ➕ Non, je veux rejoindre
-            </button>
-          </div>
-        </div>
-
-        <!-- ── WhatsApp join prompt (shown if they said No) ── -->
-        <div
-          id="waJoinPrompt"
-          style="display: none; text-align: center; padding: 16px 8px"
-        >
-          <div style="font-size: 2.5rem; margin-bottom: 12px">🌙</div>
-          <div
-            style="
-              font-family: 'Amiri', serif;
-              font-size: 1.2rem;
-              font-weight: 700;
-              color: var(--accent);
-              margin-bottom: 8px;
-            "
-            id="wa-join-title"
-          >
-            Rejoignez le groupe
-          </div>
-          <div
-            style="
-              font-size: 0.83rem;
-              color: var(--text2);
-              line-height: 1.6;
-              margin-bottom: 20px;
-              max-width: 320px;
-              margin-left: auto;
-              margin-right: auto;
-            "
-            id="wa-join-body"
-          >
-            Cliquez ci-dessous pour rejoindre le groupe WhatsApp. Vous y
-            recevrez toutes les annonces concernant la distribution.
-          </div>
-          <a
-            id="waGroupLink"
-            href="https://chat.whatsapp.com/JXP3sRx8alz0wK3Y3XyDt1"
-            target="_blank"
-            rel="noopener"
-            style="
-              display: inline-flex;
-              align-items: center;
-              gap: 8px;
-              background: #25d366;
-              color: #fff;
-              font-weight: 700;
-              font-size: 0.9rem;
-              padding: 13px 24px;
-              border-radius: 12px;
-              text-decoration: none;
-              margin-bottom: 16px;
-              transition: all 0.2s;
-            "
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"
-              />
-            </svg>
-            <span id="wa-join-btn-label">Rejoindre le groupe</span>
-          </a>
-          <br />
-          <div
-            style="
-              margin-top: 8px;
-              padding: 12px;
-              background: rgba(34, 197, 94, 0.06);
-              border: 1px solid rgba(34, 197, 94, 0.15);
-              border-radius: 10px;
-              max-width: 300px;
-              margin-left: auto;
-              margin-right: auto;
-            "
-          >
-            <div
-              style="
-                font-size: 0.72rem;
-                color: var(--text3);
-                margin-bottom: 10px;
-              "
-              id="wa-done-hint"
-            >
-              Après avoir rejoint le groupe, cliquez ici pour continuer :
-            </div>
-            <button
-              onclick="showSuccess()"
-              style="
-                width: 100%;
-                padding: 12px;
-                background: var(--accent);
-                color: #07080f;
-                font-size: 0.88rem;
-                font-weight: 700;
-                border: none;
-                border-radius: 10px;
-                cursor: pointer;
-                font-family: 'Space Grotesk', sans-serif;
-                transition: all 0.2s;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 6px;
-              "
-              id="wa-done-btn"
-            >
-              ✓ <span id="wa-done-label">J'ai rejoint — Continuer</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- ── Final success (shown after WA question answered) ── -->
-        <div
-          id="successContent"
-          style="display: none; text-align: center; padding: 16px 8px"
-        >
-          <div
-            style="
-              font-size: 3.5rem;
-              margin-bottom: 14px;
-              animation: pop 0.4s ease;
-            "
-          >
-            ✅
-          </div>
-          <div
-            style="
-              font-family: 'Amiri', serif;
-              font-size: 1.4rem;
-              font-weight: 700;
-              color: var(--accent);
-              margin-bottom: 10px;
-            "
-            id="s3-title"
-          >
-            Merci !
-          </div>
-          <div
-            style="
-              font-size: 0.9rem;
-              color: var(--text2);
-              line-height: 1.7;
-              max-width: 340px;
-              margin: 0 auto 16px;
-            "
-            id="s3-body"
-          >
-            Vos informations ont bien été reçues et enregistrées. Notre équipe
-            les vérifiera avant la distribution. رمضان مبارك 🌙
-          </div>
-          <div
-            style="
-              display: inline-flex;
-              align-items: center;
-              gap: 6px;
-              background: var(--accent-dim);
-              border: 1px solid rgba(201, 168, 76, 0.3);
-              border-radius: 20px;
-              padding: 6px 16px;
-              font-size: 0.78rem;
-              font-weight: 600;
-              color: var(--accent);
-            "
-            id="s3-badge"
-          >
-            ⏳ En attente de validation
-          </div>
-        </div>
-      </div>
-
-      <a href="index.html" class="back-link" id="back-to-home"
-        >← Retour à l'accueil</a
-      >
-      <div class="footer">رمضان كريم ✦ Ramadan Kareem</div>
+    </div>
+    <div class="field">
+      <label id="l2-city">Ville</label>
+      <input type="text" class="fi" id="c2City" placeholder="Casablanca"/>
     </div>
 
-    <div class="toast" id="toast"></div>
+    <div class="fast-toggle" id="c2FastToggle" onclick="toggleFast()">
+      <div>
+        <div class="fast-toggle-info" id="l2-fast">🌙 Je jeûne (Ramadan)</div>
+        <div class="fast-toggle-sub" id="l2-fast-sub">Cochez si vous êtes musulman et que vous jeûnez</div>
+      </div>
+      <div class="sw" id="c2FastSw"></div>
+    </div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-    <script>
-      firebase.initializeApp({
-        apiKey: "AIzaSyB_SeMMk-2mL_XYTKEemoIeh_j2odQ6LNk",
-        authDomain: "ramadan-food-aid.firebaseapp.com",
-        projectId: "ramadan-food-aid",
-        storageBucket: "ramadan-food-aid.firebasestorage.app",
-        messagingSenderId: "836613630009",
-        appId: "1:836613630009:web:c5b3047298224ec82f05e8",
-      });
-      const db = firebase.firestore();
+    <button class="submit-btn" id="submitBtn" onclick="submitProfile()">
+      <span id="submit-btn-label">💾 Confirmer et envoyer</span>
+    </button>
+  </div>
 
-      // ── SERVICE MODE CHECK ──
-      // Reads settings/serviceMode from Firestore.
-      // If active===false, replace page content with a dignified paused screen.
-      (async () => {
-        try {
-          const snap = await db.doc("settings/serviceMode").get();
-          if (snap.exists && snap.data().active === false) {
-            document.body.innerHTML = `
+  <!-- STEP 3: SUCCESS CONFIRMATION -->
+  <div class="fcard hidden" id="step3Card">
+
+    <!-- ── WhatsApp group question (shown first) ── -->
+    <div id="waQuestion" style="text-align:center;padding:16px 8px">
+      <div style="font-size:2.8rem;margin-bottom:12px">💬</div>
+      <div style="font-family:'Amiri',serif;font-size:1.3rem;font-weight:700;color:var(--accent);margin-bottom:8px" id="wa-q-title">
+        Êtes-vous dans notre groupe WhatsApp ?
+      </div>
+      <div style="font-size:0.85rem;color:var(--text2);line-height:1.6;margin-bottom:24px;max-width:320px;margin-left:auto;margin-right:auto" id="wa-q-sub">
+        Les annonces importantes (horaires, lieu de distribution) sont partagées uniquement via le groupe.
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;max-width:300px;margin:0 auto">
+        <button onclick="waAnswer(true)"
+          style="padding:13px;background:rgba(37,211,102,0.12);border:1px solid rgba(37,211,102,0.3);color:#22c55e;border-radius:12px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all 0.2s"
+          id="wa-yes-btn">
+          ✅ Oui, j'y suis déjà
+        </button>
+        <button onclick="waAnswer(false)"
+          style="padding:13px;background:rgba(37,211,102,0.06);border:1px solid rgba(255,255,255,0.08);color:var(--text2);border-radius:12px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all 0.2s"
+          id="wa-no-btn">
+          ➕ Non, je veux rejoindre
+        </button>
+      </div>
+    </div>
+
+    <!-- ── WhatsApp join prompt (shown if they said No) ── -->
+    <div id="waJoinPrompt" style="display:none;text-align:center;padding:16px 8px">
+      <div style="font-size:2.5rem;margin-bottom:12px">🌙</div>
+      <div style="font-family:'Amiri',serif;font-size:1.2rem;font-weight:700;color:var(--accent);margin-bottom:8px" id="wa-join-title">
+        Rejoignez le groupe
+      </div>
+      <div style="font-size:0.83rem;color:var(--text2);line-height:1.6;margin-bottom:20px;max-width:320px;margin-left:auto;margin-right:auto" id="wa-join-body">
+        Cliquez ci-dessous pour rejoindre le groupe WhatsApp. Vous y recevrez toutes les annonces concernant la distribution.
+      </div>
+      <a id="waGroupLink" href="https://chat.whatsapp.com/JXP3sRx8alz0wK3Y3XyDt1" target="_blank" rel="noopener"
+        style="display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#fff;font-weight:700;font-size:0.9rem;padding:13px 24px;border-radius:12px;text-decoration:none;margin-bottom:16px;transition:all 0.2s">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        <span id="wa-join-btn-label">Rejoindre le groupe</span>
+      </a>
+      <br/>
+      <div style="margin-top:8px;padding:12px;background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.15);border-radius:10px;max-width:300px;margin-left:auto;margin-right:auto">
+        <div style="font-size:0.72rem;color:var(--text3);margin-bottom:10px" id="wa-done-hint">Après avoir rejoint le groupe, cliquez ici pour continuer :</div>
+        <button onclick="showSuccess()"
+          style="width:100%;padding:12px;background:var(--accent);color:#07080f;font-size:0.88rem;font-weight:700;border:none;border-radius:10px;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px"
+          id="wa-done-btn">
+          ✓ <span id="wa-done-label">J'ai rejoint — Continuer</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Final success (shown after WA question answered) ── -->
+    <div id="successContent" style="display:none;text-align:center;padding:16px 8px">
+      <div style="font-size:3.5rem;margin-bottom:14px;animation:pop 0.4s ease">✅</div>
+      <div style="font-family:'Amiri',serif;font-size:1.4rem;font-weight:700;color:var(--accent);margin-bottom:10px" id="s3-title">Merci !</div>
+      <div style="font-size:0.9rem;color:var(--text2);line-height:1.7;max-width:340px;margin:0 auto 16px" id="s3-body">
+        Vos informations ont bien été reçues et enregistrées. Notre équipe les vérifiera avant la distribution. رمضان مبارك 🌙
+      </div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:var(--accent-dim);border:1px solid rgba(201,168,76,0.3);border-radius:20px;padding:6px 16px;font-size:0.78rem;font-weight:600;color:var(--accent)" id="s3-badge">
+        ⏳ En attente de validation
+      </div>
+    </div>
+
+  </div>
+
+
+
+  <a href="index.html" class="back-link" id="back-to-home">← Retour à l'accueil</a>
+  <div class="footer">رمضان كريم ✦ Ramadan Kareem</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script>
+firebase.initializeApp({apiKey:"AIzaSyB_SeMMk-2mL_XYTKEemoIeh_j2odQ6LNk",authDomain:"ramadan-food-aid.firebaseapp.com",projectId:"ramadan-food-aid",storageBucket:"ramadan-food-aid.firebasestorage.app",messagingSenderId:"836613630009",appId:"1:836613630009:web:c5b3047298224ec82f05e8"});
+const db   = firebase.firestore();
+
+  // ── SERVICE MODE CHECK ──
+  // Reads settings/serviceMode from Firestore.
+  // If active===false, replace page content with a dignified paused screen.
+  (async()=>{
+    try{
+      const snap=await db.doc('settings/serviceMode').get();
+      if(snap.exists&&snap.data().active===false){
+        document.body.innerHTML=`
           <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;
                       background:#07080f;font-family:'Montserrat',sans-serif;padding:24px">
             <div style="text-align:center;max-width:400px">
@@ -1057,817 +348,561 @@
               </div>
             </div>
           </div>`;
-            return;
-          }
-        } catch (e) {
-          /* if check fails, let the page load normally */
-        }
-      })();
-      const TS = firebase.firestore.FieldValue.serverTimestamp;
-      const collection = (d, c) => d.collection(c);
-      const addDoc = (r, data) => r.add(data);
-      const getDocs = (r) => r.get();
-      const getDoc = (r) => r.get();
-      const doc = (d, ...p) => d.doc(p.join("/"));
-      const updateDoc = (r, data) => r.update(data);
-      const serverTimestamp = () => TS();
-
-      function normPhone(p) {
-        let n = String(p || "").replace(/[\s\-\.\(\)]/g, "");
-        if (n.startsWith("00212")) n = "+212" + n.slice(5);
-        if (n.startsWith("212") && !n.startsWith("+")) n = "+212" + n.slice(3);
-        if (n.startsWith("0") && n.length === 10) n = "+212" + n.slice(1);
-        if (/^[6-7]\d{8}$/.test(n)) n = "+212" + n;
-        return n;
+        return;
       }
+    }catch(e){ /* if check fails, let the page load normally */ }
+  })();
+const TS   = firebase.firestore.FieldValue.serverTimestamp;
+const collection = (d,c)=>d.collection(c);
+const addDoc     = (r,data)=>r.add(data);
+const getDocs    = (r)=>r.get();
+const getDoc     = (r)=>r.get();
+const doc        = (d,...p)=>d.doc(p.join('/'));
+const updateDoc  = (r,data)=>r.update(data);
+const serverTimestamp = ()=>TS();
 
-      let authReady = true; // Always ready - no async auth dependency
-      let foundPerson = null;
-      let fastOn = false;
-      let lang = "fr";
+function normPhone(p){
+  let n=String(p||'').replace(/[\s\-\.\(\)]/g,'');
+  if(n.startsWith('00212'))n='+212'+n.slice(5);
+  if(n.startsWith('212')&&!n.startsWith('+'))n='+212'+n.slice(3);
+  if(n.startsWith('0')&&n.length===10)n='+212'+n.slice(1);
+  if(/^[6-7]\d{8}$/.test(n))n='+212'+n;
+  return n;
+}
 
-      // ─── TRANSLATIONS ───
-      const T = {
-        fr: {
-          "hdr-sub": "Compléter votre profil",
-          "step1-label": "Trouver",
-          "step2-label": "Compléter",
-          "step3-label": "Confirmé",
-          "s1-title": "🔍 Retrouver votre profil",
-          "s1-sub":
-            "Si vous avez donné votre nom et numéro de téléphone à la FMPC, entrez votre numéro ci-dessous.",
-          "pf-label-text": "C'est vous ?",
-          "lookup-btn-label": "Rechercher",
-          "confirm-btn-label": "✅ Oui, c'est moi — Continuer",
-          "not-found-text": "Pas trouvé ? S'inscrire comme nouveau →",
-          "s2-title": "📧 Vérification par e-mail",
-          "s2-sub":
-            "Pour sécuriser votre profil, entrez votre adresse e-mail. Vous recevrez un code à 6 chiffres.",
-          "l-email": "Adresse e-mail",
-          "send-code-label": "📨 Envoyer le code",
-          "code-sent-msg": "📧 Code envoyé !",
-          "code-sent-sub": "Entrez le code à 6 chiffres reçu par e-mail.",
-          "l-vcode": "Code de vérification",
-          "verify-btn-label": "✅ Vérifier",
-          "resend-label": "🔄 Renvoyer le code",
-          "s3-title": "📝 Compléter votre profil",
-          "s3-sub":
-            "Ces informations nous aident à mieux vous servir. Votre nom et téléphone sont pré-remplis.",
-          "l-name": "Nom complet",
-          "l-phone": "Téléphone",
-          "l-uni": "Université / École",
-          "l-year": "Année",
-          "l-country": "Pays d'origine",
-          "l-city": "Ville",
-          "l-fast": "🌙 Je suis en train de jeûner (Ramadan)",
-          "l-fast-sub": "Cochez si vous êtes musulman et que vous jeûnez",
-          "submit-btn-label": "💾 Sauvegarder",
-          "success-title": "Profil complété !",
-          "success-sub":
-            "Vos informations ont été mises à jour. Notre équipe les vérifiera avant validation.",
-          "back-to-home": "← Retour à l'accueil",
-        },
-        ar: {
-          "hdr-sub": "أكمل ملفك الشخصي",
-          "step1-label": "البحث",
-          "step2-label": "الإكمال",
-          "step3-label": "التأكيد",
-          "s1-title": "🔍 البحث عن ملفك",
-          "s1-sub":
-            "إذا أعطيت اسمك ورقم هاتفك في المقصف، أدخل رقمك للعثور على ملفك.",
-          "pf-label-text": "هل هذا أنت؟",
-          "lookup-btn-label": "بحث",
-          "confirm-btn-label": "✅ نعم، هذا أنا — متابعة",
-          "not-found-text": "لم يُعثر عليك؟ سجّل كطالب جديد →",
-          "s2-title": "📧 التحقق عبر البريد الإلكتروني",
-          "s2-sub":
-            "لتأمين ملفك، أدخل عنوان بريدك الإلكتروني. ستتلقى رمزاً مكوناً من 6 أرقام.",
-          "l-email": "البريد الإلكتروني",
-          "send-code-label": "📨 إرسال الرمز",
-          "code-sent-msg": "📧 تم إرسال الرمز!",
-          "code-sent-sub": "أدخل الرمز المكون من 6 أرقام المُرسل إلى بريدك.",
-          "l-vcode": "رمز التحقق",
-          "verify-btn-label": "✅ تحقق",
-          "resend-label": "🔄 إعادة الإرسال",
-          "s3-title": "📝 أكمل ملفك الشخصي",
-          "s3-sub":
-            "هذه المعلومات تساعدنا على خدمتك بشكل أفضل. اسمك وهاتفك معبآن مسبقاً.",
-          "l-name": "الاسم الكامل",
-          "l-phone": "الهاتف",
-          "l-uni": "الجامعة / المدرسة",
-          "l-year": "السنة",
-          "l-country": "بلد الأصل",
-          "l-city": "المدينة الحالية",
-          "l-fast": "🌙 أنا صائم (رمضان)",
-          "l-fast-sub": "ضع علامة إذا كنت مسلماً وصائماً",
-          "submit-btn-label": "💾 حفظ",
-          "success-title": "اكتمل الملف الشخصي!",
-          "success-sub": "تم تحديث معلوماتك. سيتحقق فريقنا منها قبل التأكيد.",
-          "back-to-home": "→ العودة إلى الرئيسية",
-        },
-        en: {
-          "hdr-sub": "Complete your profile",
-          "step1-label": "Find",
-          "step2-label": "Complete",
-          "step3-label": "Confirmed",
-          "s1-title": "🔍 Find your profile",
-          "s1-sub":
-            "If you gave your name and phone number at the FMPC cafeteria, enter your number below.",
-          "pf-label-text": "Is this you?",
-          "lookup-btn-label": "Search",
-          "confirm-btn-label": "✅ Yes, that's me — Continue",
-          "not-found-text": "Not found? Register as a new student →",
-          "s2-title": "📧 Email verification",
-          "s2-sub":
-            "To secure your profile, enter your email address. You will receive a 6-digit code.",
-          "l-email": "Email Address",
-          "send-code-label": "📨 Send code",
-          "code-sent-msg": "📧 Code sent!",
-          "code-sent-sub": "Enter the 6-digit code sent to your email.",
-          "l-vcode": "Verification code",
-          "verify-btn-label": "✅ Verify",
-          "resend-label": "🔄 Resend code",
-          "s3-title": "📝 Complete your profile",
-          "s3-sub":
-            "This information helps us serve you better. Your name and phone are pre-filled.",
-          "l-name": "Full Name",
-          "l-phone": "Phone",
-          "l-uni": "University / School",
-          "l-year": "Year",
-          "l-country": "Country of Origin",
-          "l-city": "Current City",
-          "l-fast": "🌙 I am fasting (Ramadan)",
-          "l-fast-sub": "Check if you are Muslim and fasting",
-          "submit-btn-label": "💾 Save",
-          "success-title": "Profile completed!",
-          "success-sub":
-            "Your information has been updated. Our team will verify it before confirming.",
-          "back-to-home": "← Back to home",
-        },
-      };
+let authReady=true; // Always ready - no async auth dependency
+let foundPerson=null;
+let fastOn=false;
+let lang='fr';
 
-      function t(key) {
-        return (T[lang] && T[lang][key]) || T.fr[key] || key;
+
+// ─── TRANSLATIONS ───
+const T={
+  fr:{
+    'hdr-sub':'Compléter votre profil',
+    'step1-label':'Trouver','step2-label':'Compléter','step3-label':'Confirmé',
+    's1-title':'🔍 Retrouver votre profil',
+    's1-sub':'Si vous avez donné votre nom et numéro de téléphone à la FMPC, entrez votre numéro ci-dessous.',
+    'pf-label-text':"C'est vous ?",
+    'lookup-btn-label':'Rechercher',
+    'confirm-btn-label':'✅ Oui, c\'est moi — Continuer',
+    'not-found-text':'Pas trouvé ? S\'inscrire comme nouveau →',
+    's2-title':'📧 Vérification par e-mail',
+    's2-sub':'Pour sécuriser votre profil, entrez votre adresse e-mail. Vous recevrez un code à 6 chiffres.',
+    'l-email':'Adresse e-mail',
+    'send-code-label':'📨 Envoyer le code',
+    'code-sent-msg':'📧 Code envoyé !',
+    'code-sent-sub':'Entrez le code à 6 chiffres reçu par e-mail.',
+    'l-vcode':'Code de vérification',
+    'verify-btn-label':'✅ Vérifier',
+    'resend-label':'🔄 Renvoyer le code',
+    's3-title':'📝 Compléter votre profil',
+    's3-sub':'Ces informations nous aident à mieux vous servir. Votre nom et téléphone sont pré-remplis.',
+    'l-name':'Nom complet','l-phone':'Téléphone','l-uni':'Université / École',
+    'l-year':'Année','l-country':"Pays d'origine",'l-city':'Ville',
+    'l-fast':'🌙 Je suis en train de jeûner (Ramadan)',
+    'l-fast-sub':'Cochez si vous êtes musulman et que vous jeûnez',
+    'submit-btn-label':'💾 Sauvegarder',
+    'success-title':'Profil complété !',
+    'success-sub':'Vos informations ont été mises à jour. Notre équipe les vérifiera avant validation.',
+    'back-to-home':'← Retour à l\'accueil',
+  },
+  ar:{
+    'hdr-sub':'أكمل ملفك الشخصي',
+    'step1-label':'البحث','step2-label':'الإكمال','step3-label':'التأكيد',
+    's1-title':'🔍 البحث عن ملفك',
+    's1-sub':'إذا أعطيت اسمك ورقم هاتفك في المقصف، أدخل رقمك للعثور على ملفك.',
+    'pf-label-text':'هل هذا أنت؟',
+    'lookup-btn-label':'بحث',
+    'confirm-btn-label':'✅ نعم، هذا أنا — متابعة',
+    'not-found-text':'لم يُعثر عليك؟ سجّل كطالب جديد →',
+    's2-title':'📧 التحقق عبر البريد الإلكتروني',
+    's2-sub':'لتأمين ملفك، أدخل عنوان بريدك الإلكتروني. ستتلقى رمزاً مكوناً من 6 أرقام.',
+    'l-email':'البريد الإلكتروني',
+    'send-code-label':'📨 إرسال الرمز',
+    'code-sent-msg':'📧 تم إرسال الرمز!',
+    'code-sent-sub':'أدخل الرمز المكون من 6 أرقام المُرسل إلى بريدك.',
+    'l-vcode':'رمز التحقق',
+    'verify-btn-label':'✅ تحقق',
+    'resend-label':'🔄 إعادة الإرسال',
+    's3-title':'📝 أكمل ملفك الشخصي',
+    's3-sub':'هذه المعلومات تساعدنا على خدمتك بشكل أفضل. اسمك وهاتفك معبآن مسبقاً.',
+    'l-name':'الاسم الكامل','l-phone':'الهاتف','l-uni':'الجامعة / المدرسة',
+    'l-year':'السنة','l-country':'بلد الأصل','l-city':'المدينة الحالية',
+    'l-fast':'🌙 أنا صائم (رمضان)',
+    'l-fast-sub':'ضع علامة إذا كنت مسلماً وصائماً',
+    'submit-btn-label':'💾 حفظ',
+    'success-title':'اكتمل الملف الشخصي!',
+    'success-sub':'تم تحديث معلوماتك. سيتحقق فريقنا منها قبل التأكيد.',
+    'back-to-home':'→ العودة إلى الرئيسية',
+  },
+  en:{
+    'hdr-sub':'Complete your profile',
+    'step1-label':'Find','step2-label':'Complete','step3-label':'Confirmed',
+    's1-title':'🔍 Find your profile',
+    's1-sub':'If you gave your name and phone number at the FMPC cafeteria, enter your number below.',
+    'pf-label-text':'Is this you?',
+    'lookup-btn-label':'Search',
+    'confirm-btn-label':'✅ Yes, that\'s me — Continue',
+    'not-found-text':'Not found? Register as a new student →',
+    's2-title':'📧 Email verification',
+    's2-sub':'To secure your profile, enter your email address. You will receive a 6-digit code.',
+    'l-email':'Email Address',
+    'send-code-label':'📨 Send code',
+    'code-sent-msg':'📧 Code sent!',
+    'code-sent-sub':'Enter the 6-digit code sent to your email.',
+    'l-vcode':'Verification code',
+    'verify-btn-label':'✅ Verify',
+    'resend-label':'🔄 Resend code',
+    's3-title':'📝 Complete your profile',
+    's3-sub':'This information helps us serve you better. Your name and phone are pre-filled.',
+    'l-name':'Full Name','l-phone':'Phone','l-uni':'University / School',
+    'l-year':'Year','l-country':'Country of Origin','l-city':'Current City',
+    'l-fast':'🌙 I am fasting (Ramadan)',
+    'l-fast-sub':'Check if you are Muslim and fasting',
+    'submit-btn-label':'💾 Save',
+    'success-title':'Profile completed!',
+    'success-sub':'Your information has been updated. Our team will verify it before confirming.',
+    'back-to-home':'← Back to home',
+  }
+};
+
+function t(key){return(T[lang]&&T[lang][key])||T.fr[key]||key;}
+
+window.setLang=l=>{
+  lang=l;
+  document.querySelectorAll('.lang-btn').forEach((b,i)=>{b.classList.toggle('active',['fr','ar','en'][i]===l);});
+  document.documentElement.dir=l==='ar'?'rtl':'ltr';
+  Object.keys(T.fr).forEach(key=>{
+    const el=document.getElementById(key);
+    if(el)el.textContent=t(key);
+  });
+  // Also update step2 card labels
+  const step2Labels={
+    's2-title':{fr:'📝 Compléter votre profil',ar:'📝 أكمل ملفك الشخصي',en:'📝 Complete your profile'},
+    's2-sub':{fr:'Vérifiez et complétez vos informations. Tous les champs sont obligatoires sauf l\'e-mail.',ar:'تحقق من معلوماتك وأكملها. جميع الحقول إلزامية ماعدا البريد الإلكتروني.',en:'Verify and complete your information. All fields are required except email.'},
+    'l2-name':{fr:'Nom complet',ar:'الاسم الكامل',en:'Full name'},
+    'l2-phone':{fr:'Téléphone',ar:'الهاتف',en:'Phone'},
+    'l2-email':{fr:'E-mail',ar:'البريد الإلكتروني',en:'Email'},
+    'l2-uni':{fr:'Université / École *',ar:'الجامعة / المعهد *',en:'University / School *'},
+    'l2-year':{fr:'Année *',ar:'السنة *',en:'Year *'},
+    'l2-country':{fr:'Pays d\'origine *',ar:'بلد الأصل *',en:'Country of origin *'},
+    'l2-city':{fr:'Ville',ar:'المدينة',en:'City'},
+    'l2-fast':{fr:'🌙 Je jeûne (Ramadan)',ar:'🌙 أنا صائم (رمضان)',en:'🌙 I am fasting (Ramadan)'},
+    'l2-fast-sub':{fr:'Cochez si vous êtes musulman et que vous jeûnez',ar:'ضع علامة إذا كنت مسلماً وصائماً',en:'Check if you are Muslim and fasting'},
+    'submit-btn-label':{fr:'💾 Confirmer et envoyer',ar:'💾 تأكيد وإرسال',en:'💾 Confirm and send'},
+    's3-title':{fr:'Merci !',ar:'شكراً !',en:'Thank you!'},
+    's3-body':{fr:'Vos informations ont bien été reçues et enregistrées. Notre équipe les vérifiera avant la distribution. Nous vous remercions sincèrement pour votre confiance. رمضان مبارك 🌙',
+              ar:'تم استلام معلوماتك وتسجيلها. سيتحقق فريقنا منها قبل التوزيع. نشكرك على ثقتك بنا. رمضان مبارك 🌙',
+              en:'Your information has been received and saved. Our team will verify it before distribution. We sincerely thank you for your trust. Ramadan Mubarak 🌙'},
+    's3-badge':{fr:'⏳ En attente de validation',ar:'⏳ في انتظار المراجعة',en:'⏳ Pending review'}
+  };
+  Object.entries(step2Labels).forEach(([id,vals])=>{
+    const el=document.getElementById(id);
+    if(el)el.textContent=vals[l]||vals.fr;
+  });
+  // Update university select options
+  const c2up=document.getElementById('c2UniSelect');
+  if(c2up){
+    c2up.options[0].textContent=l==='ar'?'اختر...':l==='en'?'Select...':'Sélectionner...';
+    const c2uo=document.getElementById('c2u-other');
+    if(c2uo)c2uo.textContent=l==='ar'?'أخرى':l==='en'?'Other':'Autre';
+  }
+  const c2uiPh=document.getElementById('c2Uni');
+  if(c2uiPh&&c2uiPh.style.display!=='none')c2uiPh.placeholder=l==='ar'?'اسم جامعتك...':l==='en'?'Your university name...':'Nom de votre université...';
+  // Update select placeholder
+  const yp2=document.getElementById('c2Year');
+  if(yp2&&yp2.options[0]){yp2.options[0].textContent=l==='ar'?'اختر...':l==='en'?'Select...':'Sélectionner...';}
+  const yp=document.getElementById('y-placeholder');
+  if(yp)yp.textContent=l==='ar'?'اختر...':l==='en'?'Select...':'Sélectionner...';
+  translateWAStrings();
+};
+
+// STEP NAVIGATION
+function translateWAStrings(){
+  const l=lang;
+  const titles={
+    fr:'Êtes-vous dans notre groupe WhatsApp ?',
+    ar:'هل أنت في مجموعة الواتساب الخاصة بنا؟',
+    en:'Are you in our WhatsApp group?'
+  };
+  const subs={
+    fr:'Les annonces importantes (horaires, lieu de distribution) sont partagées uniquement via le groupe.',
+    ar:'تُشارَك الإعلانات المهمة (المواعيد، مكان التوزيع) عبر المجموعة فقط.',
+    en:'Important announcements (schedule, distribution location) are shared only through the group.'
+  };
+  const yess={fr:"✅ Oui, j'y suis déjà",ar:'✅ نعم، أنا فيها',en:"✅ Yes, I'm already in"};
+  const nos={fr:'➕ Non, je veux rejoindre',ar:'➕ لا، أريد الانضمام',en:'➕ No, I want to join'};
+  const jt={fr:'Rejoindre le groupe',ar:'الانضمام للمجموعة',en:'Join the group'};
+  const jb={fr:'Rejoignez le groupe',ar:'انضم إلى المجموعة',en:'Join the group'};
+  const jbd={fr:'Les annonces importantes sont partagées via ce groupe. Cliquez pour rejoindre.',ar:'تُشارَك الإعلانات المهمة عبر هذه المجموعة. انقر للانضمام.',en:'Important announcements are shared via this group. Click to join.'};
+  const done={fr:"J'ai rejoint, continuer →",ar:'انضممت، المتابعة →',en:"I've joined, continue →"};
+  const hints={
+    fr:"Après avoir rejoint le groupe, cliquez ici pour continuer :",
+    ar:"بعد الانضمام للمجموعة، انقر هنا للمتابعة:",
+    en:"After joining the group, click here to continue:"
+  };
+  const doneLabels={
+    fr:"J'ai rejoint — Continuer",
+    ar:"انضممت — متابعة",
+    en:"I've joined — Continue"
+  };
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  set('wa-q-title',titles[l]||titles.fr);
+  set('wa-q-sub',subs[l]||subs.fr);
+  set('wa-yes-btn',yess[l]||yess.fr);
+  set('wa-no-btn',nos[l]||nos.fr);
+  set('wa-join-title',jb[l]||jb.fr);
+  set('wa-join-body',jbd[l]||jbd.fr);
+  set('wa-join-btn-label',jt[l]||jt.fr);
+  set('wa-done-hint',hints[l]||hints.fr);
+  set('wa-done-label',doneLabels[l]||doneLabels.fr);
+  const dir=document.documentElement.dir;
+}
+
+function goStep(n){
+  [1,2,3].forEach(i=>{
+    const el=document.getElementById('step'+i);
+    if(el) el.className='step'+(i===n?' active':i<n?' done':'');
+    const card=document.getElementById('step'+i+'Card');
+    if(card) card.classList.toggle('hidden',i!==n);
+  });
+  const l12=document.getElementById('line12');
+  const l23=document.getElementById('line23');
+  if(l12) l12.style.background=n>1?'var(--accent)':'var(--border2)';
+  if(l23) l23.style.background=n>2?'var(--accent)':'var(--border2)';
+}
+
+// STEP 1: LOOKUP
+window.lookupPhone=async()=>{
+  // authReady check removed - no longer needed
+  const phone=normPhone(document.getElementById('rPhone').value.trim());
+  if(!phone||phone.replace(/[^\d]/g,'').length<7){showMsg('s1Error',lang==='ar'?'رقم هاتف غير صالح':lang==='en'?'Invalid phone number':'Numéro invalide');return;}
+  const btn=document.getElementById('lookupBtn');
+  const span=btn.querySelector('span');
+  btn.disabled=true;span.textContent='...';
+  hideMsg('s1Error');
+  document.getElementById('profileFound').classList.remove('show');
+  document.getElementById('confirmBtn').classList.add('hidden');
+  document.getElementById('not-found-link').style.display='none';
+
+  try{
+    const allSnap=await getDocs(collection(db,'people'));
+    const match=allSnap.docs.find(d=>normPhone(d.data().phone||'')===phone);
+    btn.disabled=false;span.textContent=t('lookup-btn-label');
+
+    if(!match){
+      const msg=lang==='ar'?'الرقم غير موجود في قائمتنا.':lang==='en'?'Number not found in our list.':'Numéro non trouvé dans notre liste.';
+      showMsg('s1Error',msg);
+      document.getElementById('not-found-link').style.display='block';
+      return;
+    }
+    foundPerson={id:match.id,...match.data()};
+    const p=foundPerson;
+    document.getElementById('pfName').textContent=p.name||'—';
+    document.getElementById('pfDetails').innerHTML=
+      `${p.university?'🎓 '+p.university+'<br>':''}${p.yearOfStudy?'📚 Année '+p.yearOfStudy+'<br>':''}${p.city?'📍 '+p.city+'<br>':''}${p.fasting?'🌙 '+(lang==='ar'?'صائم':lang==='en'?'Fasting':'En jeûne'):''}`;
+    document.getElementById('profileFound').classList.add('show');
+    document.getElementById('confirmBtn').classList.remove('hidden');
+  }catch(err){
+    btn.disabled=false;span.textContent=t('lookup-btn-label');
+    const msg=err.code==='permission-denied'
+      ?(lang==='ar'?'⚠️ صلاحيات غير كافية. تحقق من قواعد Firestore.':lang==='en'?'⚠️ Insufficient permissions. Check Firestore rules.':'⚠️ Permissions insuffisantes. Vérifiez les règles Firestore.')
+      :(lang==='ar'?'⚠️ خطأ: ':lang==='en'?'⚠️ Error: ':'⚠️ Erreur: ')+err.message;
+    showMsg('s1Error',msg);
+  }
+};
+
+window.confirmProfile=()=>{
+  if(!foundPerson)return;
+  // Pre-fill step2 fields from found profile
+  document.getElementById('c2Name').value = foundPerson.name||'';
+  document.getElementById('c2Phone').value = foundPerson.phone||'';
+  document.getElementById('c2Email').value = foundPerson.email||'';
+  // Pre-fill university select
+  const uniVal = foundPerson.university||'';
+  const uniSel2 = document.getElementById('c2UniSelect');
+  const uniInp2 = document.getElementById('c2Uni');
+  if(uniVal==='FMPC'||uniVal==='FMDC'){
+    uniSel2.value=uniVal; uniInp2.style.display='none';
+  } else if(uniVal){
+    uniSel2.value='other'; uniInp2.style.display='block'; uniInp2.value=uniVal;
+  } else {
+    uniSel2.value=''; uniInp2.style.display='none'; uniInp2.value='';
+  }
+  document.getElementById('c2Year').value = foundPerson.yearOfStudy||'';
+  document.getElementById('c2Country').value = foundPerson.country||'';
+  document.getElementById('c2City').value = foundPerson.city||'';
+  fastOn = foundPerson.fasting||false;
+  document.getElementById('c2FastSw').classList.toggle('on',fastOn);
+  document.getElementById('c2FastToggle').classList.toggle('on',fastOn);
+  goStep(2);
+};
+
+
+
+
+// STEP 3: SUBMIT
+window.toggleFast=()=>{
+  fastOn=!fastOn;
+  document.getElementById('c2FastSw').classList.toggle('on',fastOn);
+  document.getElementById('c2FastToggle').classList.toggle('on',fastOn);
+};
+
+window.toggleUniOther=function(prefix){
+  const sel=document.getElementById(prefix+'UniSelect');
+  const inp=document.getElementById(prefix+'Uni');
+  if(sel&&inp)inp.style.display=sel.value==='other'?'block':'none';
+};
+
+window.submitProfile=async()=>{
+  if(!foundPerson)return;
+  const uniSel=document.getElementById('c2UniSelect').value;
+  const uni=uniSel==='other'?document.getElementById('c2Uni').value.trim():uniSel;
+  const year=document.getElementById('c2Year').value;
+  const country=document.getElementById('c2Country').value.trim();
+  const city=document.getElementById('c2City').value.trim();
+  const email=document.getElementById('c2Email').value.trim().toLowerCase();
+
+  hideMsg('s2Error');
+  // Mandatory: all except email
+  if(!uni||!year||!country){
+    showMsg('s2Error',lang==='ar'?'يرجى ملء جميع الحقول الإلزامية.':lang==='en'?'Please fill in all required fields.':'Veuillez remplir tous les champs obligatoires.');
+    return;
+  }
+
+  const btn=document.getElementById('submitBtn');
+  btn.disabled=true;
+  document.getElementById('submit-btn-label').textContent='...';
+
+  try{
+    await addDoc(collection(db,'pending'),{
+      name:document.getElementById('c2Name').value.trim()||foundPerson.name,
+      phone:document.getElementById('c2Phone').value.trim()||foundPerson.phone||'',
+      email:email||foundPerson.email||'',
+      university:uni,yearOfStudy:year,country,city,
+      fasting:fastOn,
+      status:'pending',
+      type:'edit-request',
+      targetPersonId:foundPerson.id,
+      originalName:foundPerson.name||'',
+      submittedAt:serverTimestamp(),
+      submittedAtMs:Date.now(),
+      source:'complete-form'
+    });
+    // Go to step 3 confirmation
+    goStep(3);
+    document.getElementById('back-to-home').style.display='none';
+    translateWAStrings();
+  }catch(err){
+    const msg=err.code==='permission-denied'
+      ?(lang==='ar'?'⚠️ صلاحيات غير كافية. تحقق من قواعد Firestore.':lang==='en'?'⚠️ Insufficient permissions. Check Firestore rules.':'⚠️ Permissions insuffisantes. Vérifiez les règles Firestore.')
+      :(lang==='ar'?'⚠️ خطأ: ':lang==='en'?'⚠️ Error: ':'⚠️ Erreur: ')+err.message;
+    showMsg('s2Error',msg);
+    btn.disabled=false;
+    document.getElementById('submit-btn-label').textContent=t('submit-btn-label');
+  }
+};
+
+// ── WhatsApp group flow ──
+window.waAnswer=function(inGroup){
+  document.getElementById('waQuestion').style.display='none';
+  if(inGroup){
+    showSuccess();
+  } else {
+    // Load WA link from Firestore settings if available, else use hardcoded
+    try{
+      db.doc('settings/whatsapp').get().then(snap=>{
+        if(snap.exists&&snap.data().groupLink){
+          document.getElementById('waGroupLink').href=snap.data().groupLink;
+        }
+      });
+    }catch(e){}
+    document.getElementById('waJoinPrompt').style.display='block';
+  }
+};
+
+window.showSuccess=function(){
+  document.getElementById('waJoinPrompt').style.display='none';
+  document.getElementById('waQuestion').style.display='none';
+  document.getElementById('successContent').style.display='block';
+  document.getElementById('back-to-home').style.display='block';
+};
+
+function showMsg(id,msg){const el=document.getElementById(id);el.textContent=msg;el.style.display='block';}
+function hideMsg(id){document.getElementById(id).style.display='none';}
+function toast(msg,dur=3000){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.style.opacity='1';el.style.transform='translateY(0)';
+  clearTimeout(el._t);el._t=setTimeout(()=>{el.style.opacity='0';el.style.transform='translateY(10px)'},dur);
+}
+</script>
+<script>
+(function(){
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  const G = '#c9a84c';
+  let W, H, t = 0;
+
+  function resize(){
+    W = canvas.offsetWidth; H = canvas.offsetHeight;
+    canvas.width = W; canvas.height = H;
+  }
+
+  // Draw crescent moon
+  function crescent(cx, cy, R, rot, alpha){
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = G;
+    ctx.lineWidth = 1.4;
+    ctx.translate(cx, cy); ctx.rotate(rot);
+    ctx.beginPath();
+    ctx.arc(0, 0, R, 0, Math.PI * 2);
+    ctx.stroke();
+    // inner circle to cut crescent shape
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.fillStyle = 'rgba(0,0,0,1)';
+    ctx.beginPath();
+    ctx.arc(R * 0.32, 0, R * 0.78, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.restore();
+  }
+
+  // Small 6-pointed star
+  function star6(cx, cy, r, rot, alpha){
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = G;
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    for(let i = 0; i < 6; i++){
+      const a = (i * Math.PI / 3) + rot;
+      const a2 = ((i + 0.5) * Math.PI / 3) + rot;
+      if(i === 0) ctx.moveTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
+      else ctx.lineTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
+      ctx.lineTo(cx + r * 0.45 * Math.cos(a2), cy + r * 0.45 * Math.sin(a2));
+    }
+    ctx.closePath(); ctx.stroke();
+    ctx.restore();
+  }
+
+  // 8-pointed star
+  function star8(cx, cy, r, rot, alpha){
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = G;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for(let i = 0; i < 16; i++){
+      const a = (i * Math.PI / 8) + rot;
+      const rr = i % 2 === 0 ? r : r * 0.4;
+      if(i === 0) ctx.moveTo(cx + rr * Math.cos(a), cy + rr * Math.sin(a));
+      else ctx.lineTo(cx + rr * Math.cos(a), cy + rr * Math.sin(a));
+    }
+    ctx.closePath(); ctx.stroke();
+    // small inner circle
+    ctx.beginPath();
+    ctx.arc(cx, cy, r * 0.22, 0, Math.PI * 2);
+    ctx.globalAlpha = alpha * 0.5;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // Geometric dotted ring (like the crescent EPS dots)
+  function dotRing(cx, cy, r, n, dotR, rot, alpha){
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = G;
+    for(let i = 0; i < n; i++){
+      const a = (i / n) * Math.PI * 2 + rot;
+      ctx.beginPath();
+      ctx.arc(cx + r * Math.cos(a), cy + r * Math.sin(a), dotR, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // Radial glow
+  function glow(cx, cy, r, alpha){
+    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+    g.addColorStop(0, `rgba(201,168,76,${alpha})`);
+    g.addColorStop(1, 'rgba(201,168,76,0)');
+    ctx.save();
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+
+  function draw(){
+    ctx.clearRect(0, 0, W, H);
+    const breathe = Math.sin(t * 0.018);
+
+    // Background glow — top-left and bottom-right
+    glow(W * 0.12, H * 0.15, W * 0.35, 0.06 + breathe * 0.02);
+    glow(W * 0.88, H * 0.85, W * 0.3,  0.05 + breathe * 0.015);
+
+    // Large crescent — top right, slowly rotating
+    const CR = Math.min(W, H) * 0.18;
+    crescent(W * 0.82, H * 0.14, CR, t * 0.004, 0.18 + breathe * 0.05);
+
+    // Dot ring around crescent area
+    dotRing(W * 0.82, H * 0.14, CR * 1.5, 18, 1.8, t * 0.003, 0.12 + breathe * 0.04);
+
+    // Central 8-star — very subtle
+    const SR = Math.min(W, H) * 0.12;
+    star8(W * 0.5, H * 0.38, SR, t * 0.006, 0.07 + breathe * 0.02);
+    dotRing(W * 0.5, H * 0.38, SR * 1.6, 8, 1.5, -t * 0.006, 0.08);
+
+    // Small crescent — bottom left
+    crescent(W * 0.12, H * 0.82, CR * 0.55, -t * 0.005 + 1, 0.12 + breathe * 0.04);
+
+    // Orbiting 6-stars around main crescent
+    const orbit = CR * 2.2;
+    for(let i = 0; i < 5; i++){
+      const a = (i / 5) * Math.PI * 2 + t * 0.012;
+      const ox = W * 0.82 + orbit * Math.cos(a);
+      const oy = H * 0.14 + orbit * Math.sin(a);
+      if(ox > 0 && ox < W && oy > 0 && oy < H){
+        star6(ox, oy, CR * 0.22, t * 0.04 + i, 0.1 + 0.06 * Math.sin(t * 0.04 + i));
       }
+    }
 
-      window.setLang = (l) => {
-        lang = l;
-        document.querySelectorAll(".lang-btn").forEach((b, i) => {
-          b.classList.toggle("active", ["fr", "ar", "en"][i] === l);
-        });
-        document.documentElement.dir = l === "ar" ? "rtl" : "ltr";
-        Object.keys(T.fr).forEach((key) => {
-          const el = document.getElementById(key);
-          if (el) el.textContent = t(key);
-        });
-        // Also update step2 card labels
-        const step2Labels = {
-          "s2-title": {
-            fr: "📝 Compléter votre profil",
-            ar: "📝 أكمل ملفك الشخصي",
-            en: "📝 Complete your profile",
-          },
-          "s2-sub": {
-            fr: "Vérifiez et complétez vos informations. Tous les champs sont obligatoires sauf l'e-mail.",
-            ar: "تحقق من معلوماتك وأكملها. جميع الحقول إلزامية ماعدا البريد الإلكتروني.",
-            en: "Verify and complete your information. All fields are required except email.",
-          },
-          "l2-name": { fr: "Nom complet", ar: "الاسم الكامل", en: "Full name" },
-          "l2-phone": { fr: "Téléphone", ar: "الهاتف", en: "Phone" },
-          "l2-email": { fr: "E-mail", ar: "البريد الإلكتروني", en: "Email" },
-          "l2-uni": {
-            fr: "Université / École *",
-            ar: "الجامعة / المعهد *",
-            en: "University / School *",
-          },
-          "l2-year": { fr: "Année *", ar: "السنة *", en: "Year *" },
-          "l2-country": {
-            fr: "Pays d'origine *",
-            ar: "بلد الأصل *",
-            en: "Country of origin *",
-          },
-          "l2-city": { fr: "Ville", ar: "المدينة", en: "City" },
-          "l2-fast": {
-            fr: "🌙 Je jeûne (Ramadan)",
-            ar: "🌙 أنا صائم (رمضان)",
-            en: "🌙 I am fasting (Ramadan)",
-          },
-          "l2-fast-sub": {
-            fr: "Cochez si vous êtes musulman et que vous jeûnez",
-            ar: "ضع علامة إذا كنت مسلماً وصائماً",
-            en: "Check if you are Muslim and fasting",
-          },
-          "submit-btn-label": {
-            fr: "💾 Confirmer et envoyer",
-            ar: "💾 تأكيد وإرسال",
-            en: "💾 Confirm and send",
-          },
-          "s3-title": { fr: "Merci !", ar: "شكراً !", en: "Thank you!" },
-          "s3-body": {
-            fr: "Vos informations ont bien été reçues et enregistrées. Notre équipe les vérifiera avant la distribution. Nous vous remercions sincèrement pour votre confiance. رمضان مبارك 🌙",
-            ar: "تم استلام معلوماتك وتسجيلها. سيتحقق فريقنا منها قبل التوزيع. نشكرك على ثقتك بنا. رمضان مبارك 🌙",
-            en: "Your information has been received and saved. Our team will verify it before distribution. We sincerely thank you for your trust. Ramadan Mubarak 🌙",
-          },
-          "s3-badge": {
-            fr: "⏳ En attente de validation",
-            ar: "⏳ في انتظار المراجعة",
-            en: "⏳ Pending review",
-          },
-        };
-        Object.entries(step2Labels).forEach(([id, vals]) => {
-          const el = document.getElementById(id);
-          if (el) el.textContent = vals[l] || vals.fr;
-        });
-        // Update university select options
-        const c2up = document.getElementById("c2UniSelect");
-        if (c2up) {
-          c2up.options[0].textContent =
-            l === "ar"
-              ? "اختر..."
-              : l === "en"
-              ? "Select..."
-              : "Sélectionner...";
-          const c2uo = document.getElementById("c2u-other");
-          if (c2uo)
-            c2uo.textContent =
-              l === "ar" ? "أخرى" : l === "en" ? "Other" : "Autre";
-        }
-        const c2uiPh = document.getElementById("c2Uni");
-        if (c2uiPh && c2uiPh.style.display !== "none")
-          c2uiPh.placeholder =
-            l === "ar"
-              ? "اسم جامعتك..."
-              : l === "en"
-              ? "Your university name..."
-              : "Nom de votre université...";
-        // Update select placeholder
-        const yp2 = document.getElementById("c2Year");
-        if (yp2 && yp2.options[0]) {
-          yp2.options[0].textContent =
-            l === "ar"
-              ? "اختر..."
-              : l === "en"
-              ? "Select..."
-              : "Sélectionner...";
-        }
-        const yp = document.getElementById("y-placeholder");
-        if (yp)
-          yp.textContent =
-            l === "ar"
-              ? "اختر..."
-              : l === "en"
-              ? "Select..."
-              : "Sélectionner...";
-        translateWAStrings();
-      };
+    // Scattered dots — like EPS texture
+    for(let i = 0; i < 20; i++){
+      const x = W * (0.1 + 0.8 * ((i * 0.618033) % 1));
+      const y = H * (0.1 + 0.8 * ((i * 0.381966) % 1));
+      const pulse = 0.08 + 0.06 * Math.sin(t * 0.03 + i * 0.7);
+      ctx.save();
+      ctx.globalAlpha = pulse;
+      ctx.fillStyle = G;
+      ctx.beginPath();
+      ctx.arc(x, y, 1.2 + Math.sin(t * 0.05 + i) * 0.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
 
-      // STEP NAVIGATION
-      function translateWAStrings() {
-        const l = lang;
-        const titles = {
-          fr: "Êtes-vous dans notre groupe WhatsApp ?",
-          ar: "هل أنت في مجموعة الواتساب الخاصة بنا؟",
-          en: "Are you in our WhatsApp group?",
-        };
-        const subs = {
-          fr: "Les annonces importantes (horaires, lieu de distribution) sont partagées uniquement via le groupe.",
-          ar: "تُشارَك الإعلانات المهمة (المواعيد، مكان التوزيع) عبر المجموعة فقط.",
-          en: "Important announcements (schedule, distribution location) are shared only through the group.",
-        };
-        const yess = {
-          fr: "✅ Oui, j'y suis déjà",
-          ar: "✅ نعم، أنا فيها",
-          en: "✅ Yes, I'm already in",
-        };
-        const nos = {
-          fr: "➕ Non, je veux rejoindre",
-          ar: "➕ لا، أريد الانضمام",
-          en: "➕ No, I want to join",
-        };
-        const jt = {
-          fr: "Rejoindre le groupe",
-          ar: "الانضمام للمجموعة",
-          en: "Join the group",
-        };
-        const jb = {
-          fr: "Rejoignez le groupe",
-          ar: "انضم إلى المجموعة",
-          en: "Join the group",
-        };
-        const jbd = {
-          fr: "Les annonces importantes sont partagées via ce groupe. Cliquez pour rejoindre.",
-          ar: "تُشارَك الإعلانات المهمة عبر هذه المجموعة. انقر للانضمام.",
-          en: "Important announcements are shared via this group. Click to join.",
-        };
-        const done = {
-          fr: "J'ai rejoint, continuer →",
-          ar: "انضممت، المتابعة →",
-          en: "I've joined, continue →",
-        };
-        const hints = {
-          fr: "Après avoir rejoint le groupe, cliquez ici pour continuer :",
-          ar: "بعد الانضمام للمجموعة، انقر هنا للمتابعة:",
-          en: "After joining the group, click here to continue:",
-        };
-        const doneLabels = {
-          fr: "J'ai rejoint — Continuer",
-          ar: "انضممت — متابعة",
-          en: "I've joined — Continue",
-        };
-        const set = (id, v) => {
-          const el = document.getElementById(id);
-          if (el) el.textContent = v;
-        };
-        set("wa-q-title", titles[l] || titles.fr);
-        set("wa-q-sub", subs[l] || subs.fr);
-        set("wa-yes-btn", yess[l] || yess.fr);
-        set("wa-no-btn", nos[l] || nos.fr);
-        set("wa-join-title", jb[l] || jb.fr);
-        set("wa-join-body", jbd[l] || jbd.fr);
-        set("wa-join-btn-label", jt[l] || jt.fr);
-        set("wa-done-hint", hints[l] || hints.fr);
-        set("wa-done-label", doneLabels[l] || doneLabels.fr);
-        const dir = document.documentElement.dir;
-      }
+    // Thin geometric lines connecting dots (sparse)
+    ctx.save();
+    ctx.strokeStyle = G;
+    ctx.lineWidth = 0.4;
+    ctx.globalAlpha = 0.06 + breathe * 0.02;
+    ctx.beginPath();
+    ctx.arc(W * 0.5, H * 0.5, Math.min(W,H) * 0.42, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(W * 0.5, H * 0.5, Math.min(W,H) * 0.35, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
 
-      function goStep(n) {
-        [1, 2, 3].forEach((i) => {
-          const el = document.getElementById("step" + i);
-          if (el)
-            el.className =
-              "step" + (i === n ? " active" : i < n ? " done" : "");
-          const card = document.getElementById("step" + i + "Card");
-          if (card) card.classList.toggle("hidden", i !== n);
-        });
-        const l12 = document.getElementById("line12");
-        const l23 = document.getElementById("line23");
-        if (l12)
-          l12.style.background = n > 1 ? "var(--accent)" : "var(--border2)";
-        if (l23)
-          l23.style.background = n > 2 ? "var(--accent)" : "var(--border2)";
-      }
+    t++;
+    requestAnimationFrame(draw);
+  }
 
-      // STEP 1: LOOKUP
-      window.lookupPhone = async () => {
-        // authReady check removed - no longer needed
-        const phone = normPhone(document.getElementById("rPhone").value.trim());
-        if (!phone || phone.replace(/[^\d]/g, "").length < 7) {
-          showMsg(
-            "s1Error",
-            lang === "ar"
-              ? "رقم هاتف غير صالح"
-              : lang === "en"
-              ? "Invalid phone number"
-              : "Numéro invalide"
-          );
-          return;
-        }
-        const btn = document.getElementById("lookupBtn");
-        const span = btn.querySelector("span");
-        btn.disabled = true;
-        span.textContent = "...";
-        hideMsg("s1Error");
-        document.getElementById("profileFound").classList.remove("show");
-        document.getElementById("confirmBtn").classList.add("hidden");
-        document.getElementById("not-found-link").style.display = "none";
-
-        try {
-          const allSnap = await getDocs(collection(db, "people"));
-          const match = allSnap.docs.find(
-            (d) => normPhone(d.data().phone || "") === phone
-          );
-          btn.disabled = false;
-          span.textContent = t("lookup-btn-label");
-
-          if (!match) {
-            const msg =
-              lang === "ar"
-                ? "الرقم غير موجود في قائمتنا."
-                : lang === "en"
-                ? "Number not found in our list."
-                : "Numéro non trouvé dans notre liste.";
-            showMsg("s1Error", msg);
-            document.getElementById("not-found-link").style.display = "block";
-            return;
-          }
-          foundPerson = { id: match.id, ...match.data() };
-          const p = foundPerson;
-          document.getElementById("pfName").textContent = p.name || "—";
-          document.getElementById("pfDetails").innerHTML = `${
-            p.university ? "🎓 " + p.university + "<br>" : ""
-          }${p.yearOfStudy ? "📚 Année " + p.yearOfStudy + "<br>" : ""}${
-            p.city ? "📍 " + p.city + "<br>" : ""
-          }${
-            p.fasting
-              ? "🌙 " +
-                (lang === "ar"
-                  ? "صائم"
-                  : lang === "en"
-                  ? "Fasting"
-                  : "En jeûne")
-              : ""
-          }`;
-          document.getElementById("profileFound").classList.add("show");
-          document.getElementById("confirmBtn").classList.remove("hidden");
-        } catch (err) {
-          btn.disabled = false;
-          span.textContent = t("lookup-btn-label");
-          const msg =
-            err.code === "permission-denied"
-              ? lang === "ar"
-                ? "⚠️ صلاحيات غير كافية. تحقق من قواعد Firestore."
-                : lang === "en"
-                ? "⚠️ Insufficient permissions. Check Firestore rules."
-                : "⚠️ Permissions insuffisantes. Vérifiez les règles Firestore."
-              : (lang === "ar"
-                  ? "⚠️ خطأ: "
-                  : lang === "en"
-                  ? "⚠️ Error: "
-                  : "⚠️ Erreur: ") + err.message;
-          showMsg("s1Error", msg);
-        }
-      };
-
-      window.confirmProfile = () => {
-        if (!foundPerson) return;
-        // Pre-fill step2 fields from found profile
-        document.getElementById("c2Name").value = foundPerson.name || "";
-        document.getElementById("c2Phone").value = foundPerson.phone || "";
-        document.getElementById("c2Email").value = foundPerson.email || "";
-        // Pre-fill university select
-        const uniVal = foundPerson.university || "";
-        const uniSel2 = document.getElementById("c2UniSelect");
-        const uniInp2 = document.getElementById("c2Uni");
-        if (uniVal === "FMPC" || uniVal === "FMDC") {
-          uniSel2.value = uniVal;
-          uniInp2.style.display = "none";
-        } else if (uniVal) {
-          uniSel2.value = "other";
-          uniInp2.style.display = "block";
-          uniInp2.value = uniVal;
-        } else {
-          uniSel2.value = "";
-          uniInp2.style.display = "none";
-          uniInp2.value = "";
-        }
-        document.getElementById("c2Year").value = foundPerson.yearOfStudy || "";
-        document.getElementById("c2Country").value = foundPerson.country || "";
-        document.getElementById("c2City").value = foundPerson.city || "";
-        fastOn = foundPerson.fasting || false;
-        document.getElementById("c2FastSw").classList.toggle("on", fastOn);
-        document.getElementById("c2FastToggle").classList.toggle("on", fastOn);
-        goStep(2);
-      };
-
-      // STEP 3: SUBMIT
-      window.toggleFast = () => {
-        fastOn = !fastOn;
-        document.getElementById("c2FastSw").classList.toggle("on", fastOn);
-        document.getElementById("c2FastToggle").classList.toggle("on", fastOn);
-      };
-
-      window.toggleUniOther = function (prefix) {
-        const sel = document.getElementById(prefix + "UniSelect");
-        const inp = document.getElementById(prefix + "Uni");
-        if (sel && inp)
-          inp.style.display = sel.value === "other" ? "block" : "none";
-      };
-
-      window.submitProfile = async () => {
-        if (!foundPerson) return;
-        const uniSel = document.getElementById("c2UniSelect").value;
-        const uni =
-          uniSel === "other"
-            ? document.getElementById("c2Uni").value.trim()
-            : uniSel;
-        const year = document.getElementById("c2Year").value;
-        const country = document.getElementById("c2Country").value.trim();
-        const city = document.getElementById("c2City").value.trim();
-        const email = document
-          .getElementById("c2Email")
-          .value.trim()
-          .toLowerCase();
-
-        hideMsg("s2Error");
-        // Mandatory: all except email
-        if (!uni || !year || !country) {
-          showMsg(
-            "s2Error",
-            lang === "ar"
-              ? "يرجى ملء جميع الحقول الإلزامية."
-              : lang === "en"
-              ? "Please fill in all required fields."
-              : "Veuillez remplir tous les champs obligatoires."
-          );
-          return;
-        }
-
-        const btn = document.getElementById("submitBtn");
-        btn.disabled = true;
-        document.getElementById("submit-btn-label").textContent = "...";
-
-        try {
-          await addDoc(collection(db, "pending"), {
-            name:
-              document.getElementById("c2Name").value.trim() ||
-              foundPerson.name,
-            phone:
-              document.getElementById("c2Phone").value.trim() ||
-              foundPerson.phone ||
-              "",
-            email: email || foundPerson.email || "",
-            university: uni,
-            yearOfStudy: year,
-            country,
-            city,
-            fasting: fastOn,
-            status: "pending",
-            type: "edit-request",
-            targetPersonId: foundPerson.id,
-            originalName: foundPerson.name || "",
-            submittedAt: serverTimestamp(),
-            submittedAtMs: Date.now(),
-            source: "complete-form",
-          });
-          // Go to step 3 confirmation
-          goStep(3);
-          document.getElementById("back-to-home").style.display = "none";
-          translateWAStrings();
-        } catch (err) {
-          const msg =
-            err.code === "permission-denied"
-              ? lang === "ar"
-                ? "⚠️ صلاحيات غير كافية. تحقق من قواعد Firestore."
-                : lang === "en"
-                ? "⚠️ Insufficient permissions. Check Firestore rules."
-                : "⚠️ Permissions insuffisantes. Vérifiez les règles Firestore."
-              : (lang === "ar"
-                  ? "⚠️ خطأ: "
-                  : lang === "en"
-                  ? "⚠️ Error: "
-                  : "⚠️ Erreur: ") + err.message;
-          showMsg("s2Error", msg);
-          btn.disabled = false;
-          document.getElementById("submit-btn-label").textContent =
-            t("submit-btn-label");
-        }
-      };
-
-      // ── WhatsApp group flow ──
-      window.waAnswer = function (inGroup) {
-        document.getElementById("waQuestion").style.display = "none";
-        if (inGroup) {
-          showSuccess();
-        } else {
-          // Load WA link from Firestore settings if available, else use hardcoded
-          try {
-            db.doc("settings/whatsapp")
-              .get()
-              .then((snap) => {
-                if (snap.exists && snap.data().groupLink) {
-                  document.getElementById("waGroupLink").href =
-                    snap.data().groupLink;
-                }
-              });
-          } catch (e) {}
-          document.getElementById("waJoinPrompt").style.display = "block";
-        }
-      };
-
-      window.showSuccess = function () {
-        document.getElementById("waJoinPrompt").style.display = "none";
-        document.getElementById("waQuestion").style.display = "none";
-        document.getElementById("successContent").style.display = "block";
-        document.getElementById("back-to-home").style.display = "block";
-      };
-
-      function showMsg(id, msg) {
-        const el = document.getElementById(id);
-        el.textContent = msg;
-        el.style.display = "block";
-      }
-      function hideMsg(id) {
-        document.getElementById(id).style.display = "none";
-      }
-      function toast(msg, dur = 3000) {
-        const el = document.getElementById("toast");
-        el.textContent = msg;
-        el.style.opacity = "1";
-        el.style.transform = "translateY(0)";
-        clearTimeout(el._t);
-        el._t = setTimeout(() => {
-          el.style.opacity = "0";
-          el.style.transform = "translateY(10px)";
-        }, dur);
-      }
-    </script>
-    <script>
-      (function () {
-        const canvas = document.getElementById("bgCanvas");
-        const ctx = canvas.getContext("2d");
-        const G = "#c9a84c";
-        let W,
-          H,
-          t = 0;
-
-        function resize() {
-          W = canvas.offsetWidth;
-          H = canvas.offsetHeight;
-          canvas.width = W;
-          canvas.height = H;
-        }
-
-        // Draw crescent moon
-        function crescent(cx, cy, R, rot, alpha) {
-          ctx.save();
-          ctx.globalAlpha = alpha;
-          ctx.strokeStyle = G;
-          ctx.lineWidth = 1.4;
-          ctx.translate(cx, cy);
-          ctx.rotate(rot);
-          ctx.beginPath();
-          ctx.arc(0, 0, R, 0, Math.PI * 2);
-          ctx.stroke();
-          // inner circle to cut crescent shape
-          ctx.globalCompositeOperation = "destination-out";
-          ctx.fillStyle = "rgba(0,0,0,1)";
-          ctx.beginPath();
-          ctx.arc(R * 0.32, 0, R * 0.78, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.globalCompositeOperation = "source-over";
-          ctx.restore();
-        }
-
-        // Small 6-pointed star
-        function star6(cx, cy, r, rot, alpha) {
-          ctx.save();
-          ctx.globalAlpha = alpha;
-          ctx.strokeStyle = G;
-          ctx.lineWidth = 0.8;
-          ctx.beginPath();
-          for (let i = 0; i < 6; i++) {
-            const a = (i * Math.PI) / 3 + rot;
-            const a2 = ((i + 0.5) * Math.PI) / 3 + rot;
-            if (i === 0) ctx.moveTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
-            else ctx.lineTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
-            ctx.lineTo(
-              cx + r * 0.45 * Math.cos(a2),
-              cy + r * 0.45 * Math.sin(a2)
-            );
-          }
-          ctx.closePath();
-          ctx.stroke();
-          ctx.restore();
-        }
-
-        // 8-pointed star
-        function star8(cx, cy, r, rot, alpha) {
-          ctx.save();
-          ctx.globalAlpha = alpha;
-          ctx.strokeStyle = G;
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          for (let i = 0; i < 16; i++) {
-            const a = (i * Math.PI) / 8 + rot;
-            const rr = i % 2 === 0 ? r : r * 0.4;
-            if (i === 0)
-              ctx.moveTo(cx + rr * Math.cos(a), cy + rr * Math.sin(a));
-            else ctx.lineTo(cx + rr * Math.cos(a), cy + rr * Math.sin(a));
-          }
-          ctx.closePath();
-          ctx.stroke();
-          // small inner circle
-          ctx.beginPath();
-          ctx.arc(cx, cy, r * 0.22, 0, Math.PI * 2);
-          ctx.globalAlpha = alpha * 0.5;
-          ctx.stroke();
-          ctx.restore();
-        }
-
-        // Geometric dotted ring (like the crescent EPS dots)
-        function dotRing(cx, cy, r, n, dotR, rot, alpha) {
-          ctx.save();
-          ctx.globalAlpha = alpha;
-          ctx.fillStyle = G;
-          for (let i = 0; i < n; i++) {
-            const a = (i / n) * Math.PI * 2 + rot;
-            ctx.beginPath();
-            ctx.arc(
-              cx + r * Math.cos(a),
-              cy + r * Math.sin(a),
-              dotR,
-              0,
-              Math.PI * 2
-            );
-            ctx.fill();
-          }
-          ctx.restore();
-        }
-
-        // Radial glow
-        function glow(cx, cy, r, alpha) {
-          const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
-          g.addColorStop(0, `rgba(201,168,76,${alpha})`);
-          g.addColorStop(1, "rgba(201,168,76,0)");
-          ctx.save();
-          ctx.fillStyle = g;
-          ctx.beginPath();
-          ctx.arc(cx, cy, r, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
-        }
-
-        function draw() {
-          ctx.clearRect(0, 0, W, H);
-          const breathe = Math.sin(t * 0.018);
-
-          // Background glow — top-left and bottom-right
-          glow(W * 0.12, H * 0.15, W * 0.35, 0.06 + breathe * 0.02);
-          glow(W * 0.88, H * 0.85, W * 0.3, 0.05 + breathe * 0.015);
-
-          // Large crescent — top right, slowly rotating
-          const CR = Math.min(W, H) * 0.18;
-          crescent(W * 0.82, H * 0.14, CR, t * 0.004, 0.18 + breathe * 0.05);
-
-          // Dot ring around crescent area
-          dotRing(
-            W * 0.82,
-            H * 0.14,
-            CR * 1.5,
-            18,
-            1.8,
-            t * 0.003,
-            0.12 + breathe * 0.04
-          );
-
-          // Central 8-star — very subtle
-          const SR = Math.min(W, H) * 0.12;
-          star8(W * 0.5, H * 0.38, SR, t * 0.006, 0.07 + breathe * 0.02);
-          dotRing(W * 0.5, H * 0.38, SR * 1.6, 8, 1.5, -t * 0.006, 0.08);
-
-          // Small crescent — bottom left
-          crescent(
-            W * 0.12,
-            H * 0.82,
-            CR * 0.55,
-            -t * 0.005 + 1,
-            0.12 + breathe * 0.04
-          );
-
-          // Orbiting 6-stars around main crescent
-          const orbit = CR * 2.2;
-          for (let i = 0; i < 5; i++) {
-            const a = (i / 5) * Math.PI * 2 + t * 0.012;
-            const ox = W * 0.82 + orbit * Math.cos(a);
-            const oy = H * 0.14 + orbit * Math.sin(a);
-            if (ox > 0 && ox < W && oy > 0 && oy < H) {
-              star6(
-                ox,
-                oy,
-                CR * 0.22,
-                t * 0.04 + i,
-                0.1 + 0.06 * Math.sin(t * 0.04 + i)
-              );
-            }
-          }
-
-          // Scattered dots — like EPS texture
-          for (let i = 0; i < 20; i++) {
-            const x = W * (0.1 + 0.8 * ((i * 0.618033) % 1));
-            const y = H * (0.1 + 0.8 * ((i * 0.381966) % 1));
-            const pulse = 0.08 + 0.06 * Math.sin(t * 0.03 + i * 0.7);
-            ctx.save();
-            ctx.globalAlpha = pulse;
-            ctx.fillStyle = G;
-            ctx.beginPath();
-            ctx.arc(x, y, 1.2 + Math.sin(t * 0.05 + i) * 0.5, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-          }
-
-          // Thin geometric lines connecting dots (sparse)
-          ctx.save();
-          ctx.strokeStyle = G;
-          ctx.lineWidth = 0.4;
-          ctx.globalAlpha = 0.06 + breathe * 0.02;
-          ctx.beginPath();
-          ctx.arc(W * 0.5, H * 0.5, Math.min(W, H) * 0.42, 0, Math.PI * 2);
-          ctx.stroke();
-          ctx.beginPath();
-          ctx.arc(W * 0.5, H * 0.5, Math.min(W, H) * 0.35, 0, Math.PI * 2);
-          ctx.stroke();
-          ctx.restore();
-
-          t++;
-          requestAnimationFrame(draw);
-        }
-
-        resize();
-        window.addEventListener("resize", () => {
-          resize();
-        });
-        draw();
-      })();
-    </script>
-  </body>
+  resize();
+  window.addEventListener('resize', ()=>{ resize(); });
+  draw();
+})();
+</script>
+</body>
 </html>
