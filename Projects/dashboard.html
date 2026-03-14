@@ -1521,6 +1521,7 @@
         right: -340px;
         width: 320px;
         height: 100vh;
+        height: 100dvh;
         background: var(--bg2);
         border-left: 1px solid var(--border2);
         z-index: 1100;
@@ -1711,6 +1712,16 @@
         font-size: 0.82rem;
         margin: auto;
         padding: 20px;
+      }
+      @media (max-width: 480px) {
+        #chatPanel {
+          width: 100vw;
+          right: -100vw;
+        }
+        .chat-input-row {
+          padding: 10px;
+          padding-bottom: max(10px, env(safe-area-inset-bottom));
+        }
       }
 
       /* ── DISTRIBUTION SUMMARY MODAL ── */
@@ -2165,6 +2176,16 @@
                   —
                 </div>
                 <span class="rtag" id="rBadge">—</span>
+                <div
+                  id="uJobTitle"
+                  style="
+                    font-size: 0.68rem;
+                    color: var(--gold);
+                    font-style: italic;
+                    margin-top: 1px;
+                    display: none;
+                  "
+                ></div>
               </div>
             </div>
             <button
@@ -3499,6 +3520,12 @@
           : "Staff";
         document.getElementById("rBadge").className =
           "rtag " + (CU.root ? "root" : CR === "admin" ? "admin" : "staff");
+        const uJT = document.getElementById("uJobTitle");
+        if (uJT && CU.jobTitle) {
+          uJT.textContent = CU.jobTitle;
+          uJT.style.display = "block";
+        }
+
         // Show Root-only UI sections
         if (CU.root) {
           const rs = document.getElementById("rootExportSection");
@@ -5713,6 +5740,7 @@
             }
             if (hasTimed && !isAdmin)
               actions += `<button class="btn btn-g btn-sm" style="color:var(--text3);font-size:0.72rem" onclick="window.clearTimedAccess('${v.id}')">✕ Clear Timer</button>`;
+
             return `<div class="vc" style="flex-wrap:wrap;gap:10px">
       <div style="flex:1;min-width:0">
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:2px">
@@ -6300,13 +6328,6 @@
       window.closeSummary = () => {
         document.getElementById("summaryModal").classList.remove("open");
       };
-
-      // Close on backdrop click
-      document
-        .getElementById("summaryModal")
-        .addEventListener("click", function (e) {
-          if (e.target === this) closeSummary();
-        });
     </script>
 
     <!-- CHAT OVERLAY -->
@@ -6335,6 +6356,7 @@
           placeholder="Type a message..."
           rows="1"
           onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMsg()}"
+          onfocus="setTimeout(()=>this.scrollIntoView({block:'nearest'}),300)"
           oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,80)+'px'"
         ></textarea>
         <button class="chat-send" onclick="sendChatMsg()">➤</button>
