@@ -1036,7 +1036,7 @@
         border-radius: 8px;
         border: 1px solid var(--border2);
         background: var(--surface2);
-        color: var(--text1);
+        color: var(--text);
         font-size: 0.8rem;
       }
       .tag-filter-row {
@@ -1059,9 +1059,9 @@
         transition: all 0.15s;
       }
       .tpill.active {
-        background: var(--accent);
+        background: var(--gold);
         color: #fff;
-        border-color: var(--accent);
+        border-color: var(--gold);
       }
       .reg-toggle-box {
         background: var(--surface2);
@@ -1126,7 +1126,7 @@
       .invite-item .inv-phone {
         font-size: 0.85rem;
         font-weight: 600;
-        color: var(--text1);
+        color: var(--text);
       }
       .invite-item .inv-status {
         font-size: 0.72rem;
@@ -2131,6 +2131,17 @@
             <div class="ni" id="nav-list" onclick="sw('list')">
               <span class="nicon">📋</span>Full List
             </div>
+            <div
+              class="ni hidden"
+              id="nav-incomplete"
+              onclick="sw('incomplete')"
+            >
+              <span class="nicon">⚠️</span>Incomplete<span
+                class="nbadge hidden"
+                id="incompleteBadge"
+                >0</span
+              >
+            </div>
             <div class="ni hidden" id="nav-pending" onclick="sw('pending')">
               <span class="nicon">⏳</span>Pending<span
                 class="nbadge hidden"
@@ -2156,7 +2167,11 @@
               >
             </div>
             <div class="ni hidden" id="nav-users" onclick="sw('users')">
-              <span class="nicon">👥</span>Staff
+              <span class="nicon">👥</span>Staff<span
+                class="nbadge hidden"
+                id="staffNavBadge"
+                >0</span
+              >
             </div>
           </div>
           <div class="sb-foot">
@@ -2310,6 +2325,24 @@
           </div>
 
           <!-- ADD -->
+          <div class="pg" id="pg-incomplete">
+            <div style="max-width: 600px">
+              <div class="stitle">⚠️ Incomplete Profiles</div>
+              <div
+                style="
+                  font-size: 0.8rem;
+                  color: var(--text2);
+                  margin-bottom: 16px;
+                  line-height: 1.5;
+                "
+              >
+                Students who registered but haven't completed their profile yet
+                (missing university or year of study).
+              </div>
+              <div id="incompleteList"></div>
+            </div>
+          </div>
+
           <div class="pg" id="pg-add">
             <div style="max-width: 600px">
               <div class="stitle">Add One Person</div>
@@ -2496,7 +2529,7 @@
                     background: var(--bg2);
                     border: 1px solid var(--border2);
                     border-radius: 10px;
-                    color: var(--text1);
+                    color: var(--text);
                     font-size: 0.92rem;
                     padding: 11px 14px;
                     outline: none;
@@ -2538,7 +2571,7 @@
                     style="
                       font-size: 0.75rem;
                       word-break: break-all;
-                      color: var(--accent);
+                      color: var(--gold);
                       margin-bottom: 8px;
                     "
                   ></div>
@@ -3543,12 +3576,14 @@
           "mt-pending",
           "nav-announce",
           "mt-announce",
+          "nav-incomplete",
         ];
         const timedAdminEls = [
           "nav-export",
           "mt-export",
           "nav-pending",
           "mt-pending",
+          "nav-incomplete",
         ]; // no staff tab for timed
         const volEls = ["nav-add", "nav-blacklist", "mt-add", "mt-blacklist"];
         if (CR === "admin" && !CU._timedAccess) {
@@ -3603,6 +3638,12 @@
         uP = onSnapshot(q, (snap) => {
           people = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
           updS();
+          if (
+            document
+              .getElementById("pg-incomplete")
+              ?.classList.contains("active")
+          )
+            renderIncomplete();
           updateExportStats();
           // If user is actively typing, defer the visual re-render
           // so the virtual keyboard doesn't close on mobile
@@ -3811,6 +3852,9 @@
         if (name === "pending") {
           renderPending();
         }
+        if (name === "incomplete") {
+          renderIncomplete();
+        }
       };
       window.openSB = () => {
         document.getElementById("sb").classList.add("open");
@@ -3820,6 +3864,60 @@
         document.getElementById("sb").classList.remove("open");
         document.getElementById("sbo").classList.remove("open");
       };
+
+      function renderIncomplete() {
+        const box = document.getElementById("incompleteList");
+        if (!box) return;
+        const looksLikePhone = (n) => !n || /^[+\d\s\-()]{6,}$/.test(n.trim());
+        const inc = people.filter(
+          (p) =>
+            looksLikePhone(p.name) ||
+            !p.university ||
+            !p.yearOfStudy ||
+            !p.country
+        );
+        if (inc.length === 0) {
+          box.innerHTML =
+            '<div class="empty"><div class="ei2">✅</div><div class="et">All profiles complete!</div></div>';
+          return;
+        }
+        const copyLink = `https://ramadan-aid.pages.dev/complete.html`;
+        box.innerHTML = inc
+          .map(
+            (p) => `
+    <div class="vc" style="gap:10px">
+      <div style="flex:1;min-width:0">
+        <div class="vn">${esc(
+          p.name && !looksLikePhone(p.name) ? p.name : "—"
+        )}</div>
+        <div class="ve">${esc(p.phone || "—")}</div>
+        <div style="font-size:0.7rem;margin-top:4px;display:flex;flex-wrap:wrap;gap:6px">
+          <span style="color:${
+            p.name && !looksLikePhone(p.name) ? "var(--green)" : "var(--danger)"
+          }">${p.name && !looksLikePhone(p.name) ? "✅ Name" : "❌ Name"}</span>
+          <span style="color:${
+            p.university ? "var(--green)" : "var(--danger)"
+          }">${
+              p.university ? "✅ " + esc(p.university) : "❌ University"
+            }</span>
+          <span style="color:${
+            p.yearOfStudy ? "var(--green)" : "var(--danger)"
+          }">${
+              p.yearOfStudy ? "✅ Year " + esc(p.yearOfStudy) : "❌ Year"
+            }</span>
+          <span style="color:${p.country ? "var(--green)" : "var(--danger)"}">${
+              p.country ? "✅ " + esc(p.country) : "❌ Country"
+            }</span>
+        </div>
+      </div>
+      <button class="btn btn-g btn-sm" style="color:var(--gold);font-size:0.72rem" onclick="
+        if(navigator.clipboard){navigator.clipboard.writeText('${copyLink}').then(()=>toast('📋 Link copied!')).catch(()=>{prompt('Copy this link:','${copyLink}')});}
+        else{prompt('Copy this link:','${copyLink}');}
+      ">📋 Link</button>
+    </div>`
+          )
+          .join("");
+      }
 
       function updS() {
         const tot = people.length,
@@ -3834,6 +3932,19 @@
         document.getElementById("fastTotal").textContent = ft;
         document.getElementById("fastServed").textContent = fs;
         document.getElementById("fastLeft").textContent = ft - fs;
+        const _looksLikePhone = (n) => !n || /^[+\d\s\-()]{6,}$/.test(n.trim());
+        const incC = people.filter(
+          (p) =>
+            _looksLikePhone(p.name) ||
+            !p.university ||
+            !p.yearOfStudy ||
+            !p.country
+        ).length;
+        const ib = document.getElementById("incompleteBadge");
+        if (ib) {
+          ib.textContent = incC;
+          ib.classList.toggle("hidden", incC === 0);
+        }
       }
 
       function isBL(p) {
