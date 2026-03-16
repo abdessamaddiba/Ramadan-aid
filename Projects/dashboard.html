@@ -1837,6 +1837,147 @@
       .sum-close:hover {
         background: var(--surface3);
       }
+
+      /* ── CONTROL PANEL ── */
+      #cpPanel {
+        position: fixed;
+        top: 0;
+        right: -340px;
+        width: 320px;
+        height: 100vh;
+        height: 100dvh;
+        background: var(--bg2);
+        border-left: 1px solid var(--border2);
+        z-index: 1100;
+        display: flex;
+        flex-direction: column;
+        transition: right 0.25s ease;
+        box-shadow: -4px 0 20px rgba(0, 0, 0, 0.4);
+      }
+      #cpPanel.open {
+        right: 0;
+      }
+      #cpOverlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 1099;
+        display: none;
+      }
+      #cpOverlay.open {
+        display: block;
+      }
+      .cp-header {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-shrink: 0;
+      }
+      .cp-header-title {
+        font-weight: 700;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .cp-close {
+        background: none;
+        border: none;
+        color: var(--text2);
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 6px;
+      }
+      .cp-close:hover {
+        background: var(--surface2);
+      }
+      .cp-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+      }
+      .cp-section {
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        border-radius: 14px;
+        padding: 16px;
+        margin-bottom: 14px;
+      }
+      .cp-section-title {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--text3);
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .cp-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .cp-row-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+      .cp-row-sub {
+        font-size: 0.72rem;
+        color: var(--text3);
+        margin-top: 2px;
+        line-height: 1.4;
+      }
+      /* Toggle switch */
+      .cp-toggle {
+        position: relative;
+        width: 44px;
+        height: 24px;
+        flex-shrink: 0;
+      }
+      .cp-toggle input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .cp-slider {
+        position: absolute;
+        cursor: pointer;
+        inset: 0;
+        background: var(--surface3);
+        border-radius: 24px;
+        transition: 0.2s;
+        border: 1px solid var(--border2);
+      }
+      .cp-slider:before {
+        content: "";
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        left: 2px;
+        top: 2px;
+        background: #fff;
+        border-radius: 50%;
+        transition: 0.2s;
+      }
+      .cp-toggle input:checked + .cp-slider {
+        background: var(--green);
+        border-color: var(--green);
+      }
+      .cp-toggle input:checked + .cp-slider:before {
+        transform: translateX(20px);
+      }
+      @media (max-width: 480px) {
+        #cpPanel {
+          width: 100vw;
+          right: -100vw;
+        }
+      }
     </style>
   </head>
   <body>
@@ -2240,6 +2381,15 @@
                 📊
               </button>
               <button
+                class="btn btn-g btn-sm hidden"
+                id="cpBtn"
+                onclick="window.openCP()"
+                title="Control Panel"
+                style="padding: 6px 10px"
+              >
+                ⚙️
+              </button>
+              <button
                 class="btn btn-g btn-sm"
                 id="chatBtn"
                 onclick="openChat()"
@@ -2612,7 +2762,7 @@
               <!-- ROOT ONLY: KILL SWITCH -->
               <div
                 id="killSwitchSection"
-                style="display: none; margin-top: 28px"
+                style="display: none !important; margin-top: 28px"
               >
                 <div class="div"></div>
                 <div
@@ -3566,6 +3716,8 @@
           if (rs) rs.style.display = "block";
           if (ks) ks.style.display = "block";
           loadKillSwitchState();
+          const cpb = document.getElementById("cpBtn");
+          if (cpb) cpb.classList.remove("hidden");
         }
         const adminOnlyEls = [
           "nav-export",
@@ -3592,6 +3744,12 @@
             const el = document.getElementById(id);
             if (el) el.classList.remove("hidden");
           });
+          if (sessionStorage.getItem("incompleteSnooze") === "1") {
+            const ni = document.getElementById("nav-incomplete");
+            if (ni) ni.classList.add("hidden");
+            const ib = document.getElementById("incToggleBtn");
+            if (ib) ib.style.opacity = "0.4";
+          }
           document.getElementById("resetBtn").classList.remove("hidden");
         } else if (CR === "admin" && CU._timedAccess) {
           // Timed promoted staff: gets most things but NOT the staff management tab
@@ -3599,6 +3757,12 @@
             const el = document.getElementById(id);
             if (el) el.classList.remove("hidden");
           });
+          if (sessionStorage.getItem("incompleteSnooze") === "1") {
+            const ni = document.getElementById("nav-incomplete");
+            if (ni) ni.classList.add("hidden");
+            const ib = document.getElementById("incToggleBtn");
+            if (ib) ib.style.opacity = "0.4";
+          }
           document.getElementById("resetBtn").classList.remove("hidden");
         } else {
           volEls.forEach((id) => {
@@ -3863,6 +4027,32 @@
       window.closeSB = () => {
         document.getElementById("sb").classList.remove("open");
         document.getElementById("sbo").classList.remove("open");
+      };
+
+      window.toggleIncomplete = () => {
+        const nav = document.getElementById("nav-incomplete");
+        const btn = document.getElementById("incToggleBtn");
+        if (!nav) return;
+        const snoozed = sessionStorage.getItem("incompleteSnooze") === "1";
+        if (snoozed) {
+          // Un-snooze
+          nav.classList.remove("hidden");
+          sessionStorage.removeItem("incompleteSnooze");
+          btn && (btn.style.opacity = "1");
+          toast("⚠️ Incomplete tab visible");
+        } else {
+          // Snooze
+          nav.classList.add("hidden");
+          sessionStorage.setItem("incompleteSnooze", "1");
+          btn && (btn.style.opacity = "0.4");
+          if (
+            document
+              .getElementById("pg-incomplete")
+              ?.classList.contains("active")
+          )
+            sw("search");
+          toast("🔕 Incomplete tab hidden");
+        }
       };
 
       function renderIncomplete() {
@@ -6439,6 +6629,61 @@
       window.closeSummary = () => {
         document.getElementById("summaryModal").classList.remove("open");
       };
+
+      // ═══════════════════════════════════════════
+      //  CONTROL PANEL
+      // ═══════════════════════════════════════════
+      window.openCP = () => {
+        const svcChk = document.getElementById("cpServiceToggle");
+        if (svcChk) svcChk.checked = serviceActive;
+        const lbl = document.getElementById("cpServiceLabel");
+        const sub = document.getElementById("cpServiceSub");
+        if (lbl)
+          lbl.textContent = serviceActive ? "Service Active" : "Service Paused";
+        if (sub)
+          sub.textContent = serviceActive
+            ? "Public pages are accessible"
+            : "Public pages are disabled";
+        const incChk = document.getElementById("cpIncompleteToggle");
+        if (incChk)
+          incChk.checked = sessionStorage.getItem("incompleteSnooze") !== "1";
+        document.getElementById("cpPanel").classList.add("open");
+        document.getElementById("cpOverlay").classList.add("open");
+      };
+
+      window.closeCP = () => {
+        document.getElementById("cpPanel").classList.remove("open");
+        document.getElementById("cpOverlay").classList.remove("open");
+      };
+
+      window.cpToggleService = async () => {
+        const chk = document.getElementById("cpServiceToggle");
+        chk.checked = serviceActive; // revert — let toggleKillSwitch handle state
+        await window.toggleKillSwitch();
+        setTimeout(() => {
+          const chk2 = document.getElementById("cpServiceToggle");
+          if (chk2) chk2.checked = serviceActive;
+          const lbl = document.getElementById("cpServiceLabel");
+          const sub = document.getElementById("cpServiceSub");
+          if (lbl)
+            lbl.textContent = serviceActive
+              ? "Service Active"
+              : "Service Paused";
+          if (sub)
+            sub.textContent = serviceActive
+              ? "Public pages are accessible"
+              : "Public pages are disabled";
+        }, 600);
+      };
+
+      window.cpToggleIncomplete = () => {
+        window.toggleIncomplete();
+        setTimeout(() => {
+          const chk = document.getElementById("cpIncompleteToggle");
+          if (chk)
+            chk.checked = sessionStorage.getItem("incompleteSnooze") !== "1";
+        }, 100);
+      };
     </script>
 
     <!-- CHAT OVERLAY -->
@@ -6510,6 +6755,61 @@
 
         <div class="sum-advice" id="sumAdvice"></div>
         <button class="sum-close" onclick="closeSummary()">Close</button>
+      </div>
+    </div>
+
+    <!-- CONTROL PANEL OVERLAY -->
+    <div id="cpOverlay" onclick="window.closeCP()"></div>
+
+    <!-- CONTROL PANEL -->
+    <div id="cpPanel">
+      <div class="cp-header">
+        <div class="cp-header-title">
+          ⚙️ Control Panel
+          <span class="rtag root" style="font-size: 0.6rem">Root only</span>
+        </div>
+        <button class="cp-close" onclick="window.closeCP()">✕</button>
+      </div>
+      <div class="cp-body">
+        <!-- Service Control -->
+        <div class="cp-section">
+          <div class="cp-section-title">🔴 Service Control</div>
+          <div class="cp-row">
+            <div>
+              <div class="cp-row-label" id="cpServiceLabel">Service Active</div>
+              <div class="cp-row-sub" id="cpServiceSub">
+                Public pages are accessible
+              </div>
+            </div>
+            <label class="cp-toggle">
+              <input
+                type="checkbox"
+                id="cpServiceToggle"
+                onchange="window.cpToggleService()"
+              />
+              <span class="cp-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Incomplete Tab -->
+        <div class="cp-section">
+          <div class="cp-section-title">⚠️ Incomplete Tab</div>
+          <div class="cp-row">
+            <div>
+              <div class="cp-row-label">Show Incomplete tab</div>
+              <div class="cp-row-sub">Visible in the sidebar navigation</div>
+            </div>
+            <label class="cp-toggle">
+              <input
+                type="checkbox"
+                id="cpIncompleteToggle"
+                onchange="window.cpToggleIncomplete()"
+              />
+              <span class="cp-slider"></span>
+            </label>
+          </div>
+        </div>
       </div>
     </div>
   </body>
