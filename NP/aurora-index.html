@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Aurora — Distribution OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>
+:root{--void:#0B0E11;--s-mid:#0D1520;--s-hi:#1c2024;--accent:#2DD4BF;--violet:#A78BFA;--text:#f1f5f9;--text2:#94a3b8;--text3:#45484c;--border:rgba(255,255,255,0.06);}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Inter',sans-serif;background:var(--void);color:var(--text);-webkit-font-smoothing:antialiased;}
+.hl{font-family:'Manrope',sans-serif;}
+.ms{font-family:'Material Symbols Outlined';font-weight:normal;font-style:normal;font-size:20px;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;direction:ltr;font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 20;}
+@media(max-height:700px){html,body{overflow:auto;height:auto;}}
+.grid{position:fixed;inset:0;background-image:linear-gradient(to right,rgba(45,212,191,0.04) 1px,transparent 1px),linear-gradient(to bottom,rgba(45,212,191,0.04) 1px,transparent 1px);background-size:56px 56px;pointer-events:none;}
+.g1{position:fixed;top:-150px;left:50%;transform:translateX(-50%);width:800px;height:500px;background:radial-gradient(ellipse,rgba(45,212,191,0.07),transparent 70%);pointer-events:none;}
+.g2{position:fixed;bottom:-200px;right:-100px;width:500px;height:500px;background:radial-gradient(ellipse,rgba(167,139,250,0.05),transparent 70%);pointer-events:none;}
+nav{position:fixed;top:0;left:0;right:0;height:60px;z-index:100;background:rgba(11,14,17,0.8);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:space-between;padding:0 32px;}
+.nav-logo{display:flex;align-items:center;gap:9px;font-family:'Manrope',sans-serif;font-weight:900;font-size:16px;}
+.logo-icon{width:30px;height:30px;border-radius:9px;background:rgba(45,212,191,0.1);border:1px solid rgba(45,212,191,0.2);display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px rgba(45,212,191,0.1);}
+.logo-txt span{color:var(--accent);}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.nav-link{font-size:12px;font-weight:500;color:var(--text3);text-decoration:none;letter-spacing:.02em;transition:color .15s;padding:4px 2px;}
+.nav-link:hover{color:var(--text2);}
+.nav-sep{width:1px;height:18px;background:rgba(255,255,255,0.07);}
+.btn-login{background:var(--accent);color:#0B0E11;font-family:'Manrope',sans-serif;font-weight:800;font-size:13px;padding:8px 20px;border-radius:999px;border:none;cursor:pointer;transition:filter .15s,box-shadow .15s;text-decoration:none;display:inline-flex;align-items:center;gap:6px;letter-spacing:.01em;}
+.btn-login:hover{filter:brightness(1.08);box-shadow:0 0 20px rgba(45,212,191,0.28);}
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px 60px;text-align:center;}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.18);border-radius:999px;padding:5px 14px;margin-bottom:28px;font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;}
+.eyebrow-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero-title{font-family:'Manrope',sans-serif;font-size:clamp(48px,7vw,88px);font-weight:900;line-height:.9;letter-spacing:-3px;margin-bottom:22px;color:var(--text);}
+.grad{background:linear-gradient(135deg,#2DD4BF,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:clamp(15px,2vw,19px);color:var(--text2);line-height:1.6;max-width:480px;margin:0 auto 44px;font-weight:400;}
+.cta-group{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;margin-bottom:60px;}
+.cta-primary{background:var(--accent);color:#0B0E11;font-family:'Manrope',sans-serif;font-weight:900;font-size:15px;padding:14px 32px;border-radius:999px;border:none;cursor:pointer;transition:filter .15s,box-shadow .15s;text-decoration:none;display:inline-flex;align-items:center;gap:8px;letter-spacing:.01em;animation:glow 3s ease infinite;}
+@keyframes glow{0%,100%{box-shadow:0 0 24px rgba(45,212,191,0.3);}50%{box-shadow:0 0 40px rgba(45,212,191,0.5);}}
+.cta-primary:hover{filter:brightness(1.08);}
+.trust{display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:center;margin-bottom:64px;}
+.trust-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);}
+.trust-item span{color:var(--accent);}
+.stats-bar{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:rgba(13,21,32,0.5);backdrop-filter:blur(20px);width:100%;max-width:620px;}
+.stat-item{flex:1;min-width:120px;padding:18px 20px;text-align:center;border-right:1px solid var(--border);}
+.stat-item:last-child{border-right:none;}
+.stat-n{font-family:'Manrope',sans-serif;font-size:22px;font-weight:900;color:var(--accent);line-height:1;}
+.stat-l{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-top:4px;}
+footer{position:fixed;bottom:0;left:0;right:0;height:48px;background:rgba(11,14,17,0.6);backdrop-filter:blur(16px);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:24px;z-index:100;}
+.f-link{font-size:11px;color:var(--text3);text-decoration:none;transition:color .15s;}
+.f-link:hover{color:var(--text2);}
+</style>
+</head>
+<body>
+<div class="grid"></div>
+<div class="g1"></div>
+<div class="g2"></div>
+
+<nav>
+  <div class="nav-logo">
+    <div class="logo-icon">
+      <span class="ms" style="font-size:16px;color:#2DD4BF;">bolt</span>
+    </div>
+    <div class="logo-txt hl">Eon <span>Aurora</span></div>
+  </div>
+  <div class="nav-right">
+    <a href="#" class="nav-link">Features</a>
+    <a href="#" class="nav-link">Docs</a>
+    <div class="nav-sep"></div>
+    <a href="aurora.html" class="btn-login">
+      Sign in
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="eyebrow"><div class="eyebrow-dot"></div>Real-time Distribution OS</div>
+
+  <h1 class="hero-title">
+    Distribute.<br/><span class="grad">Effortlessly.</span>
+  </h1>
+
+  <p class="hero-sub">
+    The dashboard for real-time event distribution. Check in participants, track who is served, manage your team. One file, zero build tools.
+  </p>
+
+  <div class="cta-group">
+    <a href="aurora.html" class="cta-primary">
+      Get started
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+
+  <div class="trust">
+    <div class="trust-item"><span>⚡</span>Zero build tools</div>
+    <div class="trust-item"><span>🔥</span>Firebase real-time sync</div>
+    <div class="trust-item"><span>📱</span>Mobile-first</div>
+    <div class="trust-item"><span>☁️</span>Cloudflare Pages</div>
+    <div class="trust-item"><span>🔒</span>Role-based access</div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-n">2</div><div class="stat-l">HTML Files</div></div>
+    <div class="stat-item"><div class="stat-n">+2</div><div class="stat-l">Config Files</div></div>
+    <div class="stat-item"><div class="stat-n">3</div><div class="stat-l">Role levels</div></div>
+    <div class="stat-item"><div class="stat-n">$0</div><div class="stat-l">Monthly cost</div></div>
+  </div>
+</div>
+
+<footer>
+  <a href="#" class="f-link">Privacy</a>
+  <a href="#" class="f-link">Terms</a>
+  <a href="mailto:abid99abdo@outlook.fr" class="f-link">Support</a>
+</footer>
+</body>
+</html>
+:root{--void:#0B0E11;--s-mid:#0D1520;--s-hi:#1c2024;--accent:#2DD4BF;--violet:#A78BFA;--text:#f1f5f9;--text2:#94a3b8;--text3:#45484c;--border:rgba(255,255,255,0.06);}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Inter',sans-serif;background:var(--void);color:var(--text);-webkit-font-smoothing:antialiased;}
+.hl{font-family:'Manrope',sans-serif;}
+@media(max-height:700px){html,body{overflow:auto;height:auto;}}
+/* Grid */
+.grid{position:fixed;inset:0;background-image:linear-gradient(to right,rgba(45,212,191,0.04) 1px,transparent 1px),linear-gradient(to bottom,rgba(45,212,191,0.04) 1px,transparent 1px);background-size:56px 56px;pointer-events:none;}
+.g1{position:fixed;top:-150px;left:50%;transform:translateX(-50%);width:800px;height:500px;background:radial-gradient(ellipse,rgba(45,212,191,0.07),transparent 70%);pointer-events:none;}
+.g2{position:fixed;bottom:-200px;right:-100px;width:500px;height:500px;background:radial-gradient(ellipse,rgba(167,139,250,0.05),transparent 70%);pointer-events:none;}
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;height:60px;z-index:100;background:rgba(11,14,17,0.8);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:space-between;padding:0 32px;}
+.nav-logo{display:flex;align-items:center;gap:9px;font-family:'Manrope',sans-serif;font-weight:900;font-size:16px;}
+.logo-icon{width:30px;height:30px;border-radius:9px;background:rgba(45,212,191,0.1);border:1px solid rgba(45,212,191,0.2);display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 14px rgba(45,212,191,0.1);}
+.logo-txt span{color:var(--accent);}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.nav-link{font-size:12px;font-weight:500;color:var(--text3);text-decoration:none;letter-spacing:.02em;transition:color .15s;padding:4px 2px;}
+.nav-link:hover{color:var(--text2);}
+.nav-sep{width:1px;height:18px;background:rgba(255,255,255,0.07);}
+.btn-login{background:var(--accent);color:#0B0E11;font-family:'Manrope',sans-serif;font-weight:800;font-size:13px;padding:8px 20px;border-radius:999px;border:none;cursor:pointer;transition:filter .15s,box-shadow .15s;text-decoration:none;display:inline-flex;align-items:center;gap:6px;letter-spacing:.01em;}
+.btn-login:hover{filter:brightness(1.08);box-shadow:0 0 20px rgba(45,212,191,0.28);}
+/* Hero */
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px 60px;text-align:center;}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.18);border-radius:999px;padding:5px 14px;margin-bottom:28px;font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;}
+.eyebrow-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero-title{font-family:'Manrope',sans-serif;font-size:clamp(48px,7vw,88px);font-weight:900;line-height:.9;letter-spacing:-3px;margin-bottom:22px;color:var(--text);}
+.grad{background:linear-gradient(135deg,#2DD4BF,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:clamp(15px,2vw,19px);color:var(--text2);line-height:1.6;max-width:480px;margin:0 auto 44px;font-weight:400;}
+/* CTA group */
+.cta-group{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;margin-bottom:60px;}
+.cta-primary{background:var(--accent);color:#0B0E11;font-family:'Manrope',sans-serif;font-weight:900;font-size:15px;padding:14px 32px;border-radius:999px;border:none;cursor:pointer;transition:filter .15s,box-shadow .15s;text-decoration:none;display:inline-flex;align-items:center;gap:8px;letter-spacing:.01em;animation:glow 3s ease infinite;}
+@keyframes glow{0%,100%{box-shadow:0 0 24px rgba(45,212,191,0.3);}50%{box-shadow:0 0 40px rgba(45,212,191,0.5);}}
+.cta-primary:hover{filter:brightness(1.08);}
+.cta-secondary{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:var(--text2);font-family:'Manrope',sans-serif;font-weight:700;font-size:14px;padding:13px 28px;border-radius:999px;cursor:pointer;transition:all .15s;text-decoration:none;display:inline-flex;align-items:center;gap:8px;}
+.cta-secondary:hover{background:rgba(255,255,255,0.07);color:var(--text);}
+/* Trust strip */
+.trust{display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:center;margin-bottom:64px;}
+.trust-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);}
+.trust-item span{color:var(--accent);}
+/* Stats bar */
+.stats-bar{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:rgba(13,21,32,0.5);backdrop-filter:blur(20px);width:100%;max-width:580px;}
+.stat-item{flex:1;min-width:120px;padding:18px 20px;text-align:center;border-right:1px solid var(--border);}
+.stat-item:last-child{border-right:none;}
+.stat-n{font-family:'Manrope',sans-serif;font-size:24px;font-weight:900;color:var(--accent);line-height:1;}
+.stat-l{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-top:4px;}
+/* Footer */
+footer{position:fixed;bottom:0;left:0;right:0;height:48px;background:rgba(11,14,17,0.6);backdrop-filter:blur(16px);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:24px;z-index:100;}
+.f-link{font-size:11px;color:var(--text3);text-decoration:none;transition:color .15s;}
+.f-link:hover{color:var(--text2);}
+</style>
+</head>
+<body>
+<div class="grid"></div>
+<div class="g1"></div>
+<div class="g2"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="logo-icon">⚡</div>
+    <div class="logo-txt hl">Eon <span>Aurora</span></div>
+  </div>
+  <div class="nav-right">
+    <a href="#" class="nav-link">Features</a>
+    <a href="#" class="nav-link">Docs</a>
+    <div class="nav-sep"></div>
+    <a href="aurora.html" class="btn-login">
+      Sign in
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="eyebrow"><div class="eyebrow-dot"></div>Real-time Distribution OS</div>
+
+  <h1 class="hero-title">
+    Distribute.<br/><span class="grad">Effortlessly.</span>
+  </h1>
+
+  <p class="hero-sub">
+    The dashboard for real-time event distribution. Check in participants, track who's served, manage your team — one file, zero build tools.
+  </p>
+
+  <div class="cta-group">
+    <a href="aurora.html" class="cta-primary">
+      Get started — Sign in
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <a href="https://distributekit-demo.pages.dev" target="_blank" class="cta-secondary">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      View demo
+    </a>
+  </div>
+
+  <div class="trust">
+    <div class="trust-item"><span>⚡</span>Zero build tools</div>
+    <div class="trust-item"><span>🔥</span>Firebase real-time sync</div>
+    <div class="trust-item"><span>📱</span>Mobile-first</div>
+    <div class="trust-item"><span>☁️</span>Cloudflare Pages</div>
+    <div class="trust-item"><span>🔒</span>Role-based access</div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-n">1</div><div class="stat-l">HTML File</div></div>
+    <div class="stat-item"><div class="stat-n">9</div><div class="stat-l">Pages</div></div>
+    <div class="stat-item"><div class="stat-n">3</div><div class="stat-l">Role levels</div></div>
+    <div class="stat-item"><div class="stat-n">$0</div><div class="stat-l">Monthly cost</div></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="f-link">Privacy</a>
+  <a href="#" class="f-link">Terms</a>
+  <a href="mailto:abid99abdo@outlook.fr" class="f-link">Support</a>
+  <a href="https://distributekit-demo.pages.dev" target="_blank" class="f-link">Live Demo</a>
+</footer>
+</body>
+</html>

@@ -1,0 +1,4129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <meta name="theme-color" content="#0B0E11" />
+    <!-- ═══════════════════════════════════════════════════
+     ⚡ AURORA — Customisable Distribution Dashboard
+     ─────────────────────────────────────────────────
+     Edit the CONFIG block below to brand your instance.
+     Firebase credentials also go here.
+═══════════════════════════════════════════════════ -->
+    <script>
+      // ═══════════════════════════════════════════════════
+      //  ⚡ CONFIG — Edit here to brand your Aurora instance
+      // ═══════════════════════════════════════════════════
+      const CONFIG = {
+        appName: "Aurora",
+        appTagline: "Distribution OS",
+        accentColor: "#2DD4BF",
+        accentDim: "rgba(45,212,191,0.08)",
+        firebase: {
+          apiKey: "AIzaSyACnuPaazn4oIyuztW6aAMah0p18azFDQ0",
+          authDomain: "test-ee602.firebaseapp.com",
+          projectId: "test-ee602",
+          storageBucket: "test-ee602.firebasestorage.app",
+          messagingSenderId: "151226780343",
+          appId: "1:151226780343:web:453f1cd785ac65017e5b32",
+        },
+      };
+      function showLScreen(id) {
+        // Hide all screens
+        document
+          .querySelectorAll(".lscreen")
+          .forEach((s) => s.classList.remove("active"));
+        // Show the target screen
+        const target = document.getElementById(id);
+        if (target) target.classList.add("active");
+      }
+    </script>
+
+    <title id="docTitle">Aurora</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* ═══ LUMINESCENT VOID DESIGN SYSTEM ═══ */
+      :root {
+        --void: #0b0e11;
+        --s-low: #101417;
+        --s-mid: #0d1520;
+        --s-hi: #1c2024;
+        --s-top: #22262b;
+        --accent: #2dd4bf;
+        --accent-dim: rgba(45, 212, 191, 0.08);
+        --accent-glow: rgba(45, 212, 191, 0.18);
+        --violet: #a78bfa;
+        --violet-dim: rgba(167, 139, 250, 0.08);
+        --emerald: #34d399;
+        --amber: #f59e0b;
+        --blue: #60a5fa;
+        --error: #ff4d4d;
+        --error-dim: rgba(255, 77, 77, 0.08);
+        --text: #f1f5f9;
+        --text2: #94a3b8;
+        --text3: #45484c;
+        --ghost: rgba(255, 255, 255, 0.05);
+        --ghost2: rgba(255, 255, 255, 0.03);
+        --border: rgba(255, 255, 255, 0.05);
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+      html {
+        height: 100%;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--void);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+      }
+      .hl {
+        font-family: "Manrope", sans-serif;
+      }
+      .ms {
+        font-family: "Material Symbols Outlined";
+        font-weight: normal;
+        font-style: normal;
+        font-size: 20px;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-block;
+        white-space: nowrap;
+        direction: ltr;
+        font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 20;
+      }
+      ::-webkit-scrollbar {
+        width: 3px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 4px;
+      }
+
+      /* ═══ LOGIN SCREEN ═══ */
+      #loginScreen {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: var(--void);
+        position: relative;
+        overflow: hidden;
+      }
+      #loginScreen::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at 50% 30%,
+          rgba(45, 212, 191, 0.06),
+          transparent 65%
+        );
+        pointer-events: none;
+      }
+      #loginScreen::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient(
+            to right,
+            rgba(45, 212, 191, 0.03) 1px,
+            transparent 1px
+          ),
+          linear-gradient(
+            to bottom,
+            rgba(45, 212, 191, 0.03) 1px,
+            transparent 1px
+          );
+        background-size: 52px 52px;
+        pointer-events: none;
+        opacity: 0.6;
+      }
+      .login-wrap {
+        width: 100%;
+        max-width: 360px;
+        position: relative;
+        z-index: 1;
+      }
+      .login-brand {
+        text-align: center;
+        margin-bottom: 28px;
+      }
+      .login-logo {
+        width: 52px;
+        height: 52px;
+        border-radius: 15px;
+        background: var(--accent-dim);
+        border: 1px solid rgba(45, 212, 191, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 14px;
+        box-shadow: 0 0 24px rgba(45, 212, 191, 0.12);
+      }
+      .login-appname {
+        font-family: "Manrope", sans-serif;
+        font-size: 22px;
+        font-weight: 900;
+        letter-spacing: -0.5px;
+      }
+      .login-tagline {
+        font-size: 12px;
+        color: var(--text3);
+        margin-top: 3px;
+      }
+      .login-card {
+        background: var(--s-mid);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 28px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4);
+      }
+      .login-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 24px;
+        right: 24px;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent),
+          transparent
+        );
+      }
+      .login-subtitle {
+        font-family: "Manrope", sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 18px;
+        color: var(--text2);
+      }
+      .lfield {
+        margin-bottom: 14px;
+      }
+      .lfield label {
+        display: block;
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--text3);
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        margin-bottom: 5px;
+      }
+      .lfi {
+        width: 100%;
+        background: var(--s-top);
+        border: 1px solid transparent;
+        border-radius: 10px;
+        color: var(--text);
+        font-family: "Inter", sans-serif;
+        font-size: 13px;
+        padding: 11px 13px;
+        outline: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+      }
+      .lfi:focus {
+        border-color: rgba(45, 212, 191, 0.35);
+        box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.06);
+      }
+      .lfi::placeholder {
+        color: var(--text3);
+      }
+      .lbtn-primary {
+        width: 100%;
+        padding: 13px;
+        background: var(--accent);
+        color: #0b0e11;
+        font-family: "Manrope", sans-serif;
+        font-weight: 800;
+        font-size: 14px;
+        border: none;
+        border-radius: 11px;
+        cursor: pointer;
+        transition: filter 0.15s, box-shadow 0.15s;
+        letter-spacing: 0.01em;
+        margin-top: 4px;
+        position: relative;
+        overflow: hidden;
+      }
+      .lbtn-primary:hover {
+        filter: brightness(1.08);
+        box-shadow: 0 0 22px rgba(45, 212, 191, 0.28);
+      }
+      .lbtn-primary:disabled {
+        background: var(--s-hi);
+        color: var(--text3);
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+      .lbtn-google {
+        width: 100%;
+        padding: 11px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: var(--text2);
+        font-family: "Manrope", sans-serif;
+        font-weight: 700;
+        font-size: 13px;
+        border-radius: 11px;
+        cursor: pointer;
+        transition: all 0.15s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        margin-bottom: 14px;
+      }
+      .lbtn-google:hover {
+        background: rgba(255, 255, 255, 0.07);
+        color: var(--text);
+      }
+      .lor {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .lor-line {
+        flex: 1;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .lor-txt {
+        font-size: 11px;
+        color: var(--text3);
+        font-weight: 600;
+      }
+      .lerr {
+        background: var(--error-dim);
+        border: 1px solid rgba(255, 77, 77, 0.2);
+        border-radius: 9px;
+        padding: 9px 12px;
+        font-size: 12px;
+        color: var(--error);
+        margin-bottom: 14px;
+        display: none;
+        line-height: 1.5;
+      }
+      .login-footer {
+        text-align: center;
+        font-size: 11px;
+        color: var(--text3);
+        margin-top: 14px;
+        line-height: 1.6;
+      }
+      .login-footer a {
+        color: var(--accent);
+        cursor: pointer;
+        text-decoration: none;
+      }
+      /* Pending/Rejected sub-screens */
+      .login-msg {
+        text-align: center;
+        padding: 8px 0 4px;
+      }
+      .login-msg .msg-icon {
+        font-size: 36px;
+        margin-bottom: 12px;
+      }
+      .login-msg .msg-title {
+        font-family: "Manrope", sans-serif;
+        font-size: 17px;
+        font-weight: 800;
+        margin-bottom: 6px;
+      }
+      .login-msg .msg-sub {
+        font-size: 12px;
+        color: var(--text3);
+        line-height: 1.6;
+        max-width: 280px;
+        margin: 0 auto 16px;
+      }
+      .lbtn-ghost {
+        width: 100%;
+        padding: 11px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: var(--text2);
+        font-family: "Manrope", sans-serif;
+        font-weight: 700;
+        font-size: 13px;
+        border-radius: 11px;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .lbtn-ghost:hover {
+        background: rgba(255, 255, 255, 0.07);
+      }
+
+      /* ═══ AUTH SUB-SCREENS ═══ */
+      .lscreen {
+        display: none;
+      }
+      .lscreen.active {
+        display: block;
+      }
+
+      /* ═══ MAIN APP (hidden until authed) ═══ */
+      #mainApp {
+        display: none;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      /* ═══ DASHBOARD LAYOUT ═══ */
+      #app {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+      }
+      #sidebar {
+        width: 240px;
+        flex-shrink: 0;
+        background: var(--s-low);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+      #sidebar::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: linear-gradient(
+          180deg,
+          transparent,
+          rgba(45, 212, 191, 0.08),
+          rgba(45, 212, 191, 0.08),
+          transparent
+        );
+      }
+      .sb-brand {
+        padding: 20px 18px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      }
+      .sb-brand-inner {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .sb-logo {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        background: var(--accent-dim);
+        border: 1px solid rgba(45, 212, 191, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 0 12px rgba(45, 212, 191, 0.1);
+      }
+      .sb-app-name {
+        font-family: "Manrope", sans-serif;
+        font-size: 15px;
+        font-weight: 800;
+        letter-spacing: -0.3px;
+      }
+      .sb-app-name span {
+        color: var(--accent);
+      }
+      .sb-app-tag {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--text3);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-top: 2px;
+      }
+      .sb-nav {
+        flex: 1;
+        padding: 12px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        overflow-y: auto;
+      }
+      .sb-section {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--text3);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 10px 12px 5px;
+      }
+      .ni {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        width: 100%;
+        padding: 11px 12px;
+        border-radius: 10px;
+        border: none;
+        background: none;
+        color: var(--text3);
+        cursor: pointer;
+        transition: all 0.15s;
+        font-family: "Inter", sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        text-align: left;
+        position: relative;
+      }
+      .ni:hover {
+        color: var(--text2);
+        background: var(--ghost2);
+      }
+      .ni.on {
+        color: var(--accent);
+        background: var(--accent-dim);
+        font-weight: 600;
+      }
+      .ni-emoji {
+        font-size: 16px;
+        flex-shrink: 0;
+        width: 20px;
+        text-align: center;
+      }
+      .ni-txt {
+        flex: 1;
+      }
+      .ni-badge {
+        position: absolute;
+        right: 10px;
+        background: #a78bfa;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 999px;
+        min-width: 18px;
+        text-align: center;
+      }
+      .sb-footer {
+        padding: 12px 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.04);
+      }
+      .sb-user {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: var(--ghost2);
+      }
+      .sb-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        background: var(--accent-dim);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Manrope", sans-serif;
+        font-weight: 800;
+        font-size: 11px;
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+      .sb-uname {
+        font-size: 13px;
+        font-weight: 600;
+        flex: 1;
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .sb-role {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--accent);
+        background: var(--accent-dim);
+        padding: 2px 7px;
+        border-radius: 999px;
+      }
+      .sb-logout {
+        background: none;
+        border: none;
+        color: var(--text3);
+        cursor: pointer;
+        padding: 6px;
+        border-radius: 6px;
+        transition: all 0.15s;
+        display: flex;
+        align-items: center;
+      }
+      .sb-logout:hover {
+        color: var(--error);
+        background: var(--error-dim);
+      }
+
+      /* MAIN */
+      #main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        overflow: hidden;
+        background: var(--s-mid);
+        position: relative;
+      }
+      #main::before {
+        content: "";
+        position: absolute;
+        top: -60px;
+        left: 20%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(
+          circle,
+          rgba(45, 212, 191, 0.04),
+          transparent 70%
+        );
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* TOPBAR */
+      #topbar {
+        height: 64px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        background: rgba(11, 14, 17, 0.7);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        position: relative;
+        z-index: 10;
+      }
+      .page-title {
+        font-family: "Manrope", sans-serif;
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--text);
+        letter-spacing: -0.4px;
+        line-height: 1;
+      }
+      .page-sub {
+        font-size: 12px;
+        color: var(--text3);
+        line-height: 1;
+        margin-top: 4px;
+      }
+
+      /* SCROLL */
+      #scroll {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* MOBILE */
+      #bottomnav {
+        display: none;
+        height: 60px;
+        flex-shrink: 0;
+        background: rgba(11, 14, 17, 0.95);
+        backdrop-filter: blur(20px);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      @media (max-width: 767px) {
+        #sidebar {
+          display: none;
+        }
+        #bottomnav {
+          display: flex;
+          align-items: center;
+          justify-content: space-around;
+          padding: 0 4px;
+        }
+      }
+      .bni {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text3);
+        border: none;
+        background: none;
+        cursor: pointer;
+        padding: 4px 6px;
+        border-radius: 8px;
+        transition: color 0.15s;
+        min-width: 48px;
+      }
+      .bni.on {
+        color: var(--accent);
+      }
+
+      /* PAGES */
+      .pg {
+        display: none;
+        padding: 20px 24px;
+      }
+      .pg.on {
+        display: block;
+      }
+
+      /* CARDS */
+      .card {
+        background: var(--s-hi);
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .card-hover {
+        transition: background 0.15s;
+      }
+      .card-hover:hover {
+        background: var(--s-top);
+      }
+
+      /* STATS */
+      .stat {
+        background: var(--s-hi);
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 18px;
+        position: relative;
+        overflow: hidden;
+      }
+      .stat::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at 30% 50%,
+          rgba(45, 212, 191, 0.04),
+          transparent 70%
+        );
+      }
+
+      /* INPUTS */
+      .inp {
+        background: var(--s-top);
+        border: 1px solid transparent;
+        border-radius: 10px;
+        padding: 12px 15px;
+        color: var(--text);
+        font-family: "Inter", sans-serif;
+        font-size: 14px;
+        width: 100%;
+        outline: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+      }
+      .inp:focus {
+        border-color: rgba(45, 212, 191, 0.3);
+        box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.06);
+      }
+      .inp::placeholder {
+        color: var(--text3);
+      }
+      select.inp option {
+        background: var(--s-top);
+      }
+
+      /* BUTTONS */
+      .btn-p {
+        background: var(--accent);
+        color: #0b0e11;
+        font-family: "Manrope", sans-serif;
+        font-weight: 800;
+        border-radius: 9px;
+        padding: 10px 18px;
+        font-size: 13px;
+        border: none;
+        cursor: pointer;
+        transition: filter 0.15s, box-shadow 0.15s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        letter-spacing: 0.01em;
+      }
+      .btn-p:hover {
+        filter: brightness(1.08);
+        box-shadow: 0 0 16px rgba(45, 212, 191, 0.25);
+      }
+      .btn-g {
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text2);
+        font-weight: 600;
+        border-radius: 9px;
+        padding: 10px 18px;
+        font-size: 13px;
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        cursor: pointer;
+        transition: all 0.15s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: "Inter", sans-serif;
+      }
+      .btn-g:hover {
+        background: rgba(255, 255, 255, 0.07);
+        color: var(--text);
+      }
+      .btn-d {
+        background: var(--error-dim);
+        color: var(--error);
+        font-weight: 600;
+        border-radius: 9px;
+        padding: 10px 18px;
+        font-size: 13px;
+        border: 1px solid rgba(255, 77, 77, 0.12);
+        cursor: pointer;
+        transition: background 0.15s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: "Inter", sans-serif;
+      }
+      .btn-d:hover {
+        background: rgba(255, 77, 77, 0.14);
+      }
+      .btn-ic {
+        background: none;
+        border: none;
+        color: var(--text3);
+        cursor: pointer;
+        padding: 7px;
+        border-radius: 8px;
+        transition: all 0.15s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn-ic:hover {
+        color: var(--text);
+        background: var(--ghost);
+      }
+      .btn-ic.dng:hover {
+        color: var(--error);
+        background: var(--error-dim);
+      }
+
+      /* BADGE */
+      .bdg {
+        border-radius: 999px;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      /* TOGGLE */
+      .tog {
+        width: 40px;
+        height: 22px;
+        border-radius: 999px;
+        position: relative;
+        cursor: pointer;
+        transition: background 0.2s;
+        flex-shrink: 0;
+      }
+      .tog-t {
+        position: absolute;
+        top: 2px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #fff;
+        transition: left 0.2s;
+      }
+
+      /* PANEL */
+      .panel {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: min(400px, 100vw);
+        height: 100vh;
+        background: var(--s-mid);
+        border-left: 1px solid rgba(255, 255, 255, 0.06);
+        z-index: 500;
+        display: flex;
+        flex-direction: column;
+        transition: right 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: -20px 0 60px rgba(0, 0, 0, 0.5);
+      }
+      .panel.open {
+        right: 0;
+      }
+      .pov {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 499;
+        display: none;
+      }
+      .pov.open {
+        display: block;
+      }
+
+      /* MODAL */
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(6px);
+        z-index: 600;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+      }
+      .modal.open {
+        display: flex;
+      }
+      .mbox {
+        background: var(--s-mid);
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        padding: 24px;
+        width: 100%;
+        max-width: 440px;
+        max-height: 88vh;
+        overflow-y: auto;
+        position: relative;
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+      }
+
+      /* TOAST */
+      #toast {
+        position: fixed;
+        bottom: 72px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--s-mid);
+        border: 1px solid rgba(45, 212, 191, 0.2);
+        color: var(--text);
+        padding: 9px 20px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        z-index: 999;
+        opacity: 0;
+        transition: opacity 0.25s;
+        white-space: nowrap;
+        pointer-events: none;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      }
+
+      /* PROGRESS */
+      .pbar {
+        height: 4px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .pfill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent), var(--violet));
+        border-radius: 999px;
+        transition: width 0.4s;
+      }
+
+      /* SLABEL */
+      .slabel {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text3);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 12px;
+      }
+
+      /* DIV */
+      .div {
+        height: 1px;
+        background: rgba(255, 255, 255, 0.05);
+        margin: 14px 0;
+      }
+
+      /* AVATAR COLORS */
+      .av-teal {
+        background: rgba(45, 212, 191, 0.1);
+        color: var(--accent);
+      }
+      .av-violet {
+        background: rgba(167, 139, 250, 0.1);
+        color: var(--violet);
+      }
+      .av-amber {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--amber);
+      }
+      .av-emerald {
+        background: rgba(52, 211, 153, 0.1);
+        color: var(--emerald);
+      }
+      .av-blue {
+        background: rgba(96, 165, 250, 0.1);
+        color: var(--blue);
+      }
+      .av-red {
+        background: rgba(255, 77, 77, 0.1);
+        color: var(--error);
+      }
+      .name-teal {
+        color: var(--accent);
+      }
+      .name-violet {
+        color: var(--violet);
+      }
+      .name-amber {
+        color: var(--amber);
+      }
+      .name-emerald {
+        color: var(--emerald);
+      }
+      .name-blue {
+        color: var(--blue);
+      }
+
+      /* LANG SWITCHER */
+      .lang-row {
+        display: flex;
+        gap: 4px;
+        padding: 8px 10px 0;
+      }
+      .lbtn {
+        background: none;
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        color: var(--text3);
+        font-family: "Manrope", sans-serif;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .lbtn:hover {
+        color: var(--text2);
+        border-color: rgba(255, 255, 255, 0.15);
+      }
+      .lbtn.on {
+        background: var(--accent-dim);
+        color: var(--accent);
+        border-color: rgba(45, 212, 191, 0.25);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ═══ LOGIN SCREEN ═══ -->
+    <div id="loginScreen">
+      <div class="login-wrap">
+        <!-- Brand -->
+        <div class="login-brand">
+          <div class="login-logo">
+            <span class="ms" style="font-size: 22px; color: var(--accent)"
+              >bolt</span
+            >
+          </div>
+          <div class="login-appname hl" id="loginAppName">Aurora</div>
+          <div class="login-tagline" id="loginTagline">Distribution OS</div>
+        </div>
+
+        <div class="login-card">
+          <!-- Sign In -->
+          <div class="lscreen active" id="ls-signin">
+            <div class="login-subtitle">Sign in to continue</div>
+            <div class="lerr" id="signinErr"></div>
+            <button class="lbtn-google" id="googleBtn" onclick="handleGoogle()">
+              <svg width="16" height="16" viewBox="0 0 48 48">
+                <path
+                  fill="#EA4335"
+                  d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+                />
+                <path
+                  fill="#4285F4"
+                  d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
+                />
+              </svg>
+              Continue with Google
+            </button>
+            <div class="lor">
+              <div class="lor-line"></div>
+              <span class="lor-txt">or</span>
+              <div class="lor-line"></div>
+            </div>
+            <div class="lfield">
+              <label>Email</label
+              ><input
+                type="email"
+                class="lfi"
+                id="siEmail"
+                placeholder="you@email.com"
+                onkeydown="if(event.key==='Enter')document.getElementById('siPass').focus()"
+              />
+            </div>
+            <div class="lfield">
+              <label>Password</label
+              ><input
+                type="password"
+                class="lfi"
+                id="siPass"
+                placeholder="••••••••"
+                onkeydown="if(event.key==='Enter')doSignin()"
+              />
+            </div>
+            <button class="lbtn-primary" id="signinBtn" onclick="doSignin()">
+              <span id="signinLbl">Sign In</span>
+            </button>
+            <div class="login-footer">
+              No account?
+              <a onclick="showLScreen('ls-setup')" style="cursor: pointer"
+                >Create new account</a
+              >
+            </div>
+          </div>
+
+          <!-- First-time setup -->
+          <div class="lscreen" id="ls-setup">
+            <div class="login-subtitle">Create admin account</div>
+            <div class="lerr" id="setupErr"></div>
+            <div class="lfield">
+              <label>Your Name</label
+              ><input
+                type="text"
+                class="lfi"
+                id="setupName"
+                placeholder="Your name"
+              />
+            </div>
+            <div class="lfield">
+              <label>Email</label
+              ><input
+                type="email"
+                class="lfi"
+                id="setupEmail"
+                placeholder="you@email.com"
+              />
+            </div>
+            <div class="lfield">
+              <label>Password (min 6 chars)</label
+              ><input
+                type="password"
+                class="lfi"
+                id="setupPass"
+                placeholder="••••••••"
+                onkeydown="if(event.key==='Enter')doSetup()"
+              />
+            </div>
+            <button class="lbtn-primary" id="setupBtn" onclick="doSetup()">
+              <span id="setupLbl">Create Account</span>
+            </button>
+            <div class="login-footer">
+              <a onclick="showLScreen('ls-signin')">← Back to sign in</a>
+            </div>
+          </div>
+
+          <!-- Pending -->
+          <div class="lscreen" id="ls-pending">
+            <div class="login-msg">
+              <div class="msg-icon">⏳</div>
+              <div class="msg-title hl">Access Pending</div>
+              <div class="msg-sub">
+                Your account has been registered. The admin will review and
+                approve your access. Check back shortly.
+              </div>
+              <div
+                style="
+                  font-size: 11px;
+                  color: var(--text3);
+                  background: var(--s-hi);
+                  border-radius: 8px;
+                  padding: 7px 10px;
+                  margin-bottom: 14px;
+                "
+                id="pendingEmail"
+              ></div>
+              <button class="lbtn-ghost" onclick="doSignout()">
+                ← Sign out
+              </button>
+            </div>
+          </div>
+
+          <!-- Rejected -->
+          <div class="lscreen" id="ls-rejected">
+            <div class="login-msg">
+              <div class="msg-icon">🚫</div>
+              <div class="msg-title hl">Access Denied</div>
+              <div class="msg-sub">
+                This account does not have access. Contact your administrator.
+              </div>
+              <button class="lbtn-ghost" onclick="doSignout()">
+                ← Sign out
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MAIN APP (shown after login) ═══ -->
+    <div id="mainApp">
+      <div id="app">
+        <!-- SIDEBAR -->
+        <aside id="sidebar">
+          <div class="sb-brand">
+            <div class="sb-brand-inner">
+              <div class="sb-logo">
+                <span class="ms" style="font-size: 15px; color: var(--accent)"
+                  >bolt</span
+                >
+              </div>
+              <div>
+                <div class="sb-app-name hl" id="sbAppName">Aurora</div>
+                <div class="sb-app-tag" id="sbTagline">Distribution OS</div>
+              </div>
+            </div>
+          </div>
+          <nav class="sb-nav">
+            <div class="sb-section" data-section="sec_ops">Operations</div>
+            <button class="ni on" data-p="search">
+              <span class="ni-emoji">🔍</span
+              ><span class="ni-txt" data-i18n="nav_search">Search</span>
+            </button>
+            <button class="ni" data-p="list">
+              <span class="ni-emoji">📋</span
+              ><span class="ni-txt" data-i18n="nav_list">Participant List</span>
+            </button>
+            <button
+              class="ni"
+              data-p="pending"
+              id="pendingNav"
+              style="position: relative"
+            >
+              <span class="ni-emoji">⏳</span
+              ><span class="ni-txt" data-i18n="nav_pending">Pending</span
+              ><span class="ni-badge" id="pendingBadge" style="display: none"
+                >0</span
+              >
+            </button>
+            <button class="ni" data-p="incomplete" id="incompleteNav">
+              <span class="ni-emoji">⚠️</span
+              ><span class="ni-txt" data-i18n="nav_incomplete">Incomplete</span>
+            </button>
+            <button class="ni" data-p="add">
+              <span class="ni-emoji">➕</span
+              ><span class="ni-txt" data-i18n="nav_add"
+                >Add &amp; Register</span
+              >
+            </button>
+            <button
+              class="ni"
+              data-p="export"
+              id="navExport"
+              style="display: none"
+            >
+              <span class="ni-emoji">📤</span
+              ><span class="ni-txt" data-i18n="nav_export">Export</span>
+            </button>
+            <button class="ni" data-p="blacklist">
+              <span class="ni-emoji">🚫</span
+              ><span class="ni-txt" data-i18n="nav_blacklist">Blacklist</span>
+            </button>
+            <div
+              class="sb-section"
+              style="margin-top: 6px"
+              data-section="sec_mgmt"
+            >
+              Management
+            </div>
+            <button
+              class="ni"
+              data-p="announce"
+              id="navAnnounce"
+              style="display: none"
+            >
+              <span class="ni-emoji">📢</span
+              ><span class="ni-txt" data-i18n="nav_announce"
+                >Announcements</span
+              >
+            </button>
+            <button
+              class="ni"
+              data-p="staff"
+              id="navStaff"
+              style="display: none"
+            >
+              <span class="ni-emoji">👥</span
+              ><span class="ni-txt" data-i18n="nav_staff">Staff</span>
+            </button>
+            <div
+              class="sb-section"
+              style="margin-top: 6px"
+              data-section="sec_intel"
+            >
+              Intelligence
+            </div>
+            <button class="ni" onclick="openSummary()">
+              <span class="ni-emoji">📊</span
+              ><span class="ni-txt" data-i18n="nav_summary">Summary</span>
+            </button>
+            <button class="ni" onclick="openChat()">
+              <span class="ni-emoji">💬</span
+              ><span class="ni-txt" data-i18n="nav_chat">Team Chat</span>
+            </button>
+            <button
+              class="ni"
+              id="navCP"
+              style="display: none"
+              onclick="openCP()"
+            >
+              <span class="ni-emoji">⚙️</span
+              ><span class="ni-txt" data-i18n="nav_cp">Control Panel</span>
+            </button>
+          </nav>
+          <div class="sb-footer">
+            <div class="lang-row" style="margin-bottom: 10px">
+              <button class="lbtn on" onclick="setLang('en',this)">EN</button>
+              <button class="lbtn" onclick="setLang('fr',this)">FR</button>
+              <button class="lbtn" onclick="setLang('ar',this)">AR</button>
+            </div>
+            <div class="sb-user">
+              <div class="sb-avatar" id="sbAvatar">?</div>
+              <div style="flex: 1; min-width: 0">
+                <div class="sb-uname" id="sbUserName">Loading...</div>
+                <span class="sb-role" id="sbRole">Staff</span>
+              </div>
+              <button class="sb-logout" title="Sign out" onclick="doSignout()">
+                <span class="ms" style="font-size: 18px">logout</span>
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        <!-- MAIN -->
+        <div id="main">
+          <div id="topbar">
+            <div>
+              <div class="page-title hl" id="pgTitle">Search</div>
+              <div class="page-sub" id="pgSub">Find anyone instantly</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 4px">
+              <button class="btn-ic" onclick="openSummary()">
+                <span class="ms" style="font-size: 18px">analytics</span>
+              </button>
+              <button class="btn-ic" onclick="openChat()">
+                <span class="ms" style="font-size: 18px">chat_bubble</span>
+              </button>
+              <button
+                class="btn-ic"
+                id="topCP"
+                style="display: none"
+                onclick="openCP()"
+              >
+                <span class="ms" style="font-size: 18px">settings</span>
+              </button>
+              <div
+                id="topAvatar"
+                style="
+                  width: 30px;
+                  height: 30px;
+                  border-radius: 9px;
+                  background: var(--accent-dim);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-family: 'Manrope', sans-serif;
+                  font-weight: 800;
+                  font-size: 11px;
+                  color: var(--accent);
+                  margin-left: 4px;
+                  cursor: pointer;
+                  border: 1px solid rgba(45, 212, 191, 0.15);
+                "
+              >
+                ?
+              </div>
+            </div>
+          </div>
+
+          <div id="scroll">
+            <div style="padding: 22px 24px 96px">
+              <!-- Stats strip -->
+              <div
+                id="statsStrip"
+                style="
+                  display: grid;
+                  grid-template-columns: repeat(4, 1fr);
+                  gap: 12px;
+                  margin-bottom: 20px;
+                "
+              >
+                <div class="stat">
+                  <div
+                    style="
+                      font-size: 10px;
+                      color: var(--text3);
+                      font-weight: 700;
+                      text-transform: uppercase;
+                      letter-spacing: 0.06em;
+                      margin-bottom: 8px;
+                    "
+                    data-i18n="stat_total"
+                  >
+                    Total
+                  </div>
+                  <div
+                    style="
+                      font-size: 32px;
+                      font-weight: 900;
+                      color: var(--accent);
+                      font-family: 'Manrope', sans-serif;
+                      text-shadow: 0 0 12px rgba(45, 212, 191, 0.3);
+                    "
+                    id="sTotal"
+                  >
+                    0
+                  </div>
+                </div>
+                <div class="stat">
+                  <div
+                    style="
+                      font-size: 10px;
+                      color: var(--text3);
+                      font-weight: 700;
+                      text-transform: uppercase;
+                      letter-spacing: 0.06em;
+                      margin-bottom: 8px;
+                    "
+                    data-i18n="stat_served"
+                  >
+                    Served
+                  </div>
+                  <div
+                    style="
+                      font-size: 32px;
+                      font-weight: 900;
+                      color: var(--emerald);
+                      font-family: 'Manrope', sans-serif;
+                    "
+                    id="sServed"
+                  >
+                    0
+                  </div>
+                </div>
+                <div class="stat">
+                  <div
+                    style="
+                      font-size: 10px;
+                      color: var(--text3);
+                      font-weight: 700;
+                      text-transform: uppercase;
+                      letter-spacing: 0.06em;
+                      margin-bottom: 8px;
+                    "
+                    data-i18n="stat_priority"
+                  >
+                    Priority
+                  </div>
+                  <div
+                    style="
+                      font-size: 32px;
+                      font-weight: 900;
+                      color: var(--violet);
+                      font-family: 'Manrope', sans-serif;
+                    "
+                    id="sPri"
+                  >
+                    0
+                  </div>
+                </div>
+                <div class="stat">
+                  <div
+                    style="
+                      font-size: 10px;
+                      color: var(--text3);
+                      font-weight: 700;
+                      text-transform: uppercase;
+                      letter-spacing: 0.06em;
+                      margin-bottom: 8px;
+                    "
+                    data-i18n="stat_incomplete"
+                  >
+                    Incomplete
+                  </div>
+                  <div
+                    style="
+                      font-size: 32px;
+                      font-weight: 900;
+                      color: var(--error);
+                      font-family: 'Manrope', sans-serif;
+                    "
+                    id="sInc"
+                  >
+                    0
+                  </div>
+                </div>
+              </div>
+
+              <!-- SEARCH -->
+              <div class="pg on" id="pg-search">
+                <div
+                  class="card"
+                  style="
+                    padding: 10px 16px;
+                    margin-bottom: 16px;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                  "
+                >
+                  <span
+                    class="ms"
+                    style="color: var(--text3); flex-shrink: 0; font-size: 22px"
+                    >search</span
+                  >
+                  <input
+                    type="text"
+                    id="searchInput"
+                    class="inp"
+                    placeholder="Search by name, phone, university..."
+                    style="
+                      background: none;
+                      border: none;
+                      padding: 8px 0;
+                      font-size: 15px;
+                      flex: 1;
+                    "
+                    oninput="doSearch()"
+                  />
+                </div>
+                <div id="searchRes">
+                  <p
+                    style="
+                      text-align: center;
+                      color: var(--text3);
+                      font-size: 14px;
+                      padding: 60px 0;
+                    "
+                    data-i18n="search_prompt"
+                  >
+                    Start typing to search
+                  </p>
+                </div>
+              </div>
+
+              <!-- LIST -->
+              <div class="pg" id="pg-list">
+                <div
+                  class="card"
+                  style="
+                    padding: 8px 12px;
+                    margin-bottom: 10px;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                  "
+                >
+                  <span class="ms" style="color: var(--text3); flex-shrink: 0"
+                    >search</span
+                  >
+                  <input
+                    type="text"
+                    id="listSearch"
+                    class="inp"
+                    placeholder="Filter participants…"
+                    style="
+                      background: none;
+                      border: none;
+                      padding: 6px 0;
+                      flex: 1;
+                    "
+                    oninput="renderList()"
+                  />
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    gap: 8px;
+                    margin-bottom: 10px;
+                    flex-wrap: wrap;
+                  "
+                >
+                  <select
+                    id="filterSel"
+                    class="inp"
+                    style="max-width: 150px"
+                    onchange="renderList()"
+                  >
+                    <option value="all">All entries</option>
+                    <option value="served">Served</option>
+                    <option value="unserved">Not served</option>
+                    <option value="priority">Priority only</option>
+                  </select>
+                  <button class="btn-ic" onclick="renderList()">
+                    <span class="ms">refresh</span>
+                  </button>
+                </div>
+                <div
+                  id="listBox"
+                  style="display: flex; flex-direction: column; gap: 8px"
+                ></div>
+              </div>
+
+              <!-- PENDING -->
+              <div class="pg" id="pg-pending">
+                <div
+                  id="pendingBox"
+                  style="display: flex; flex-direction: column; gap: 8px"
+                ></div>
+              </div>
+
+              <!-- INCOMPLETE -->
+              <div class="pg" id="pg-incomplete">
+                <div
+                  class="card"
+                  style="
+                    padding: 10px 14px;
+                    margin-bottom: 12px;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    border-left: 3px solid var(--amber);
+                  "
+                >
+                  <span
+                    class="ms"
+                    style="color: var(--amber); flex-shrink: 0; font-size: 16px"
+                    >info</span
+                  >
+                  <p
+                    style="
+                      font-size: 11px;
+                      color: var(--text2);
+                      line-height: 1.5;
+                    "
+                  >
+                    These participants are missing required info. Fix inline or
+                    copy the completion link.
+                  </p>
+                </div>
+                <div
+                  id="incompleteBox"
+                  style="display: flex; flex-direction: column; gap: 6px"
+                ></div>
+              </div>
+
+              <!-- ADD -->
+              <div class="pg" id="pg-add">
+                <div class="card" style="padding: 16px; margin-bottom: 10px">
+                  <div class="slabel">🔗 Registration Control</div>
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      margin-bottom: 10px;
+                    "
+                  >
+                    <div>
+                      <div
+                        style="font-size: 13px; font-weight: 700"
+                        id="regLabel"
+                      >
+                        Registration Open
+                      </div>
+                      <div
+                        style="
+                          font-size: 11px;
+                          color: var(--text3);
+                          margin-top: 2px;
+                        "
+                        id="regSub"
+                      >
+                        Public form is accessible
+                      </div>
+                    </div>
+                    <div
+                      class="tog"
+                      id="regTrack"
+                      style="background: var(--accent)"
+                      onclick="toggleReg()"
+                    >
+                      <div class="tog-t" id="regThumb" style="left: 19px"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card" style="padding: 16px; margin-bottom: 10px">
+                  <div class="slabel">Add Manually</div>
+                  <div
+                    style="
+                      display: grid;
+                      grid-template-columns: 1fr 1fr;
+                      gap: 8px;
+                      margin-bottom: 8px;
+                    "
+                  >
+                    <div>
+                      <label
+                        style="
+                          font-size: 10px;
+                          font-weight: 700;
+                          color: var(--text3);
+                          display: block;
+                          margin-bottom: 4px;
+                        "
+                        >Name *</label
+                      ><input
+                        type="text"
+                        id="addName"
+                        class="inp"
+                        placeholder="Jane Smith"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        style="
+                          font-size: 10px;
+                          font-weight: 700;
+                          color: var(--text3);
+                          display: block;
+                          margin-bottom: 4px;
+                        "
+                        >Phone *</label
+                      ><input
+                        type="tel"
+                        id="addPhone"
+                        class="inp"
+                        placeholder="+1 555-0100"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    style="
+                      display: grid;
+                      grid-template-columns: 1fr 1fr 1fr;
+                      gap: 8px;
+                      margin-bottom: 8px;
+                    "
+                  >
+                    <div>
+                      <label
+                        style="
+                          font-size: 10px;
+                          font-weight: 700;
+                          color: var(--text3);
+                          display: block;
+                          margin-bottom: 4px;
+                        "
+                        >University</label
+                      ><input
+                        type="text"
+                        id="addUni"
+                        class="inp"
+                        placeholder="City Univ."
+                      />
+                    </div>
+                    <div>
+                      <label
+                        style="
+                          font-size: 10px;
+                          font-weight: 700;
+                          color: var(--text3);
+                          display: block;
+                          margin-bottom: 4px;
+                        "
+                        >Year</label
+                      ><select id="addYear" class="inp">
+                        <option value="">—</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label
+                        style="
+                          font-size: 10px;
+                          font-weight: 700;
+                          color: var(--text3);
+                          display: block;
+                          margin-bottom: 4px;
+                        "
+                        >Country</label
+                      ><input
+                        type="text"
+                        id="addCountry"
+                        class="inp"
+                        placeholder="USA"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="card"
+                    style="
+                      padding: 9px 12px;
+                      display: flex;
+                      align-items: center;
+                      gap: 8px;
+                      margin-bottom: 8px;
+                      cursor: pointer;
+                    "
+                    onclick="addPriOn=!addPriOn;updAddPri()"
+                  >
+                    <div
+                      class="tog"
+                      id="addPriTrack"
+                      style="background: var(--s-top)"
+                    >
+                      <div
+                        class="tog-t"
+                        id="addPriThumb"
+                        style="left: 2px"
+                      ></div>
+                    </div>
+                    <div>
+                      <div style="font-size: 12px; font-weight: 700">
+                        Priority Entry
+                      </div>
+                      <div style="font-size: 10px; color: var(--text3)">
+                        Mark as high-priority participant
+                      </div>
+                    </div>
+                  </div>
+                  <div style="display: flex; gap: 8px">
+                    <button
+                      class="btn-g"
+                      style="flex: 1; justify-content: center"
+                      onclick="clearAdd()"
+                    >
+                      Clear
+                    </button>
+                    <button
+                      class="btn-p"
+                      style="flex: 1; justify-content: center"
+                      onclick="submitAdd()"
+                    >
+                      <span class="ms" style="font-size: 15px">person_add</span
+                      >Add
+                    </button>
+                  </div>
+                </div>
+                <div class="card" style="padding: 16px">
+                  <div class="slabel">Bulk Add</div>
+                  <p
+                    style="
+                      font-size: 11px;
+                      color: var(--text3);
+                      margin-bottom: 8px;
+                      line-height: 1.5;
+                    "
+                  >
+                    One entry per line:
+                    <code
+                      style="
+                        color: var(--accent);
+                        background: var(--accent-dim);
+                        padding: 1px 5px;
+                        border-radius: 4px;
+                        font-size: 11px;
+                      "
+                      >Name, Phone</code
+                    >
+                  </p>
+                  <textarea
+                    id="bulkText"
+                    class="inp"
+                    rows="5"
+                    placeholder="Alice Martin, +1 555-0200&#10;Bruno Silva, +1 555-0201"
+                    style="resize: none; font-size: 12px; margin-bottom: 8px"
+                  ></textarea>
+                  <button
+                    class="btn-p"
+                    style="width: 100%; justify-content: center"
+                    onclick="submitBulk()"
+                  >
+                    <span class="ms" style="font-size: 15px">upload</span>Import
+                    Entries
+                  </button>
+                </div>
+              </div>
+
+              <!-- EXPORT -->
+              <div class="pg" id="pg-export">
+                <div style="display: flex; flex-direction: column; gap: 8px">
+                  <div
+                    class="card"
+                    style="
+                      padding: 13px 16px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      flex-wrap: wrap;
+                      gap: 8px;
+                    "
+                  >
+                    <div>
+                      <div style="font-size: 13px; font-weight: 700">
+                        All Participants
+                      </div>
+                      <div
+                        style="
+                          font-size: 11px;
+                          color: var(--text3);
+                          margin-top: 2px;
+                        "
+                        id="expAll"
+                      >
+                        0 records
+                      </div>
+                    </div>
+                    <div style="display: flex; gap: 6px">
+                      <button
+                        class="btn-g"
+                        style="font-size: 11px"
+                        onclick="expCSV('all')"
+                      >
+                        <span class="ms" style="font-size: 14px">download</span
+                        >CSV</button
+                      ><button
+                        class="btn-g"
+                        style="font-size: 11px"
+                        onclick="expJSON('all')"
+                      >
+                        <span class="ms" style="font-size: 14px"
+                          >data_object</span
+                        >JSON</button
+                      ><button
+                        class="btn-g"
+                        style="font-size: 11px"
+                        onclick="expTXT('all')"
+                      >
+                        TXT
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="card"
+                    style="
+                      padding: 13px 16px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      flex-wrap: wrap;
+                      gap: 8px;
+                    "
+                  >
+                    <div>
+                      <div
+                        style="
+                          font-size: 13px;
+                          font-weight: 700;
+                          color: var(--emerald);
+                        "
+                      >
+                        Served Only
+                      </div>
+                      <div
+                        style="
+                          font-size: 11px;
+                          color: var(--text3);
+                          margin-top: 2px;
+                        "
+                        id="expServed"
+                      >
+                        0 records
+                      </div>
+                    </div>
+                    <div style="display: flex; gap: 6px">
+                      <button
+                        class="btn-g"
+                        style="font-size: 11px"
+                        onclick="expCSV('served')"
+                      >
+                        CSV</button
+                      ><button
+                        class="btn-g"
+                        style="font-size: 11px"
+                        onclick="expJSON('served')"
+                      >
+                        JSON
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="card"
+                    style="
+                      padding: 13px 16px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      flex-wrap: wrap;
+                      gap: 8px;
+                    "
+                  >
+                    <div>
+                      <div
+                        style="
+                          font-size: 13px;
+                          font-weight: 700;
+                          color: var(--amber);
+                        "
+                      >
+                        Not Served
+                      </div>
+                      <div
+                        style="
+                          font-size: 11px;
+                          color: var(--text3);
+                          margin-top: 2px;
+                        "
+                        id="expPend"
+                      >
+                        0 records
+                      </div>
+                    </div>
+                    <div style="display: flex; gap: 6px">
+                      <button
+                        class="btn-g"
+                        style="font-size: 11px"
+                        onclick="expCSV('unserved')"
+                      >
+                        CSV</button
+                      ><button
+                        class="btn-g"
+                        style="font-size: 11px"
+                        onclick="expJSON('unserved')"
+                      >
+                        JSON
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="card"
+                    style="
+                      padding: 13px 16px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      flex-wrap: wrap;
+                      gap: 8px;
+                    "
+                  >
+                    <div>
+                      <div
+                        style="
+                          font-size: 13px;
+                          font-weight: 700;
+                          color: var(--error);
+                        "
+                      >
+                        Blacklisted
+                      </div>
+                      <div
+                        style="
+                          font-size: 11px;
+                          color: var(--text3);
+                          margin-top: 2px;
+                        "
+                        id="expBL"
+                      >
+                        0 records
+                      </div>
+                    </div>
+                    <button
+                      class="btn-g"
+                      style="font-size: 11px"
+                      onclick="expCSV('bl')"
+                    >
+                      CSV
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- BLACKLIST -->
+              <div class="pg" id="pg-blacklist">
+                <div
+                  id="blBox"
+                  style="display: flex; flex-direction: column; gap: 6px"
+                ></div>
+              </div>
+
+              <!-- ANNOUNCEMENTS -->
+              <div class="pg" id="pg-announce">
+                <div class="card" style="padding: 16px; margin-bottom: 12px">
+                  <div class="slabel">Post Announcement</div>
+                  <textarea
+                    id="annText"
+                    class="inp"
+                    rows="3"
+                    placeholder="Write your announcement…"
+                    style="resize: none; margin-bottom: 8px"
+                  ></textarea>
+                  <button
+                    class="btn-p"
+                    style="width: 100%; justify-content: center"
+                    onclick="postAnn()"
+                  >
+                    <span class="ms" style="font-size: 15px">campaign</span>Post
+                  </button>
+                </div>
+                <div
+                  id="annBox"
+                  style="display: flex; flex-direction: column; gap: 8px"
+                ></div>
+              </div>
+
+              <!-- STAFF -->
+              <div class="pg" id="pg-staff">
+                <div
+                  id="staffBox"
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                    margin-bottom: 12px;
+                  "
+                ></div>
+                <div class="card" style="padding: 16px">
+                  <div class="slabel">Add Staff Member</div>
+                  <div class="ebox" id="addStaffErr"></div>
+                  <div
+                    style="
+                      display: grid;
+                      grid-template-columns: 1fr 1fr;
+                      gap: 8px;
+                      margin-bottom: 8px;
+                    "
+                  >
+                    <input
+                      type="text"
+                      id="sName"
+                      class="inp"
+                      placeholder="Full name"
+                    />
+                    <input
+                      type="email"
+                      id="sEmail"
+                      class="inp"
+                      placeholder="Email"
+                    />
+                  </div>
+                  <input
+                    type="password"
+                    id="sPass"
+                    class="inp"
+                    placeholder="Temporary password (min 6 chars)"
+                    style="margin-bottom: 8px"
+                  />
+                  <button
+                    class="btn-p"
+                    style="width: 100%; justify-content: center"
+                    onclick="addStaff()"
+                  >
+                    <span class="ms" style="font-size: 15px">person_add</span
+                    >Add Staff Member
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MOBILE BOTTOM NAV -->
+          <div id="bottomnav">
+            <button class="bni on" data-p="search">
+              <span class="ms" style="font-size: 18px">search</span>Search
+            </button>
+            <button class="bni" data-p="list">
+              <span class="ms" style="font-size: 18px">list</span>List
+            </button>
+            <button class="bni" data-p="pending">
+              <span class="ms" style="font-size: 18px">pending_actions</span
+              >Pending
+            </button>
+            <button class="bni" data-p="add">
+              <span class="ms" style="font-size: 18px">person_add</span>Add
+            </button>
+            <button class="bni" onclick="openMMore()">
+              <span class="ms" style="font-size: 18px">more_horiz</span>More
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CHAT PANEL ═══ -->
+    <div class="pov" id="chatOv" onclick="closeChat()"></div>
+    <div class="panel" id="chatPanel">
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 12px 16px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          flex-shrink: 0;
+        "
+      >
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Manrope', sans-serif;
+            font-weight: 800;
+            font-size: 13px;
+          "
+        >
+          💬 Team Chat
+          <span
+            style="
+              display: flex;
+              align-items: center;
+              gap: 4px;
+              font-size: 9px;
+              font-weight: 700;
+              color: var(--accent);
+              background: var(--accent-dim);
+              padding: 2px 8px;
+              border-radius: 999px;
+            "
+          >
+            <span
+              style="
+                width: 5px;
+                height: 5px;
+                border-radius: 50%;
+                background: var(--accent);
+              "
+            ></span
+            >LIVE
+          </span>
+        </div>
+        <button class="btn-ic" onclick="closeChat()">
+          <span class="ms">close</span>
+        </button>
+      </div>
+      <div
+        id="chatOnline"
+        style="
+          padding: 8px 16px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+          display: flex;
+          gap: 8px;
+          flex-shrink: 0;
+          flex-wrap: wrap;
+          min-height: 36px;
+        "
+      ></div>
+      <div
+        id="chatMsgs"
+        style="
+          flex: 1;
+          overflow-y: auto;
+          padding: 12px;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        "
+      >
+        <p
+          style="
+            text-align: center;
+            color: var(--text3);
+            font-size: 12px;
+            padding: 20px 0;
+          "
+        >
+          No messages yet. Say hi! 👋
+        </p>
+      </div>
+      <div
+        style="
+          padding: 10px;
+          border-top: 1px solid rgba(255, 255, 255, 0.04);
+          display: flex;
+          gap: 8px;
+          flex-shrink: 0;
+        "
+      >
+        <input
+          type="text"
+          id="chatIn"
+          class="inp"
+          placeholder="Send a message…"
+          onkeydown="if(event.key==='Enter')sendMsg()"
+          style="flex: 1"
+        />
+        <button
+          class="btn-p"
+          onclick="sendMsg()"
+          style="padding: 8px 12px; flex-shrink: 0"
+        >
+          <span class="ms" style="font-size: 15px">send</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- CONTROL PANEL -->
+    <div class="pov" id="cpOv" onclick="closeCP()"></div>
+    <div class="panel" id="cpPanel">
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 12px 16px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          flex-shrink: 0;
+        "
+      >
+        <div
+          style="
+            font-family: 'Manrope', sans-serif;
+            font-weight: 800;
+            font-size: 13px;
+          "
+        >
+          ⚙️ Control Panel
+          <span
+            style="
+              font-size: 9px;
+              font-weight: 700;
+              background: var(--error-dim);
+              color: var(--error);
+              padding: 2px 7px;
+              border-radius: 999px;
+              margin-left: 4px;
+            "
+            >ROOT ONLY</span
+          >
+        </div>
+        <button class="btn-ic" onclick="closeCP()">
+          <span class="ms">close</span>
+        </button>
+      </div>
+      <div
+        style="
+          flex: 1;
+          overflow-y: auto;
+          padding: 14px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        "
+      >
+        <div class="card" style="padding: 14px">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+            "
+          >
+            <div>
+              <div style="font-size: 13px; font-weight: 700" id="cpSvcLbl">
+                Service Active
+              </div>
+              <div
+                style="font-size: 11px; color: var(--text3); margin-top: 2px"
+                id="cpSvcSub"
+              >
+                Public pages are accessible
+              </div>
+            </div>
+            <div
+              class="tog"
+              id="cpSvcTrk"
+              style="background: var(--accent)"
+              onclick="toggleSvc()"
+            >
+              <div class="tog-t" id="cpSvcThb" style="left: 19px"></div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="card"
+          style="
+            padding: 14px;
+            background: var(--error-dim);
+            border-color: rgba(255, 77, 77, 0.12);
+          "
+        >
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+            "
+          >
+            <div>
+              <div
+                style="font-size: 13px; font-weight: 700; color: var(--error)"
+              >
+                Master Killswitch
+              </div>
+              <div
+                style="
+                  font-size: 11px;
+                  color: rgba(255, 77, 77, 0.5);
+                  margin-top: 2px;
+                "
+              >
+                Suspends all operations
+              </div>
+            </div>
+            <div
+              class="tog"
+              id="killTrk"
+              style="background: var(--s-top)"
+              onclick="toggleKill()"
+            >
+              <div class="tog-t" id="killThb" style="left: 2px"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="padding: 14px">
+          <div style="font-size: 13px; font-weight: 700; margin-bottom: 4px">
+            Reset Session
+          </div>
+          <div
+            style="font-size: 11px; color: var(--text3); margin-bottom: 10px"
+          >
+            Clear all served statuses for a new distribution day
+          </div>
+          <button
+            class="btn-d"
+            style="width: 100%; justify-content: center"
+            onclick="confirmReset()"
+          >
+            <span class="ms" style="font-size: 15px">restart_alt</span>Reset Day
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODALS -->
+    <div
+      class="modal"
+      id="summModal"
+      onclick="if(event.target===this)closeSumm()"
+    >
+      <div class="mbox" id="summBox"></div>
+    </div>
+    <div
+      class="modal"
+      id="editModal"
+      onclick="if(event.target===this)closeEdit()"
+    >
+      <div class="mbox">
+        <button
+          class="btn-ic"
+          style="position: absolute; top: 14px; right: 14px"
+          onclick="closeEdit()"
+        >
+          <span class="ms">close</span>
+        </button>
+        <div
+          style="
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 14px;
+            font-family: 'Manrope', sans-serif;
+          "
+        >
+          Edit Participant
+        </div>
+        <div id="editBody"></div>
+      </div>
+    </div>
+    <div class="modal" id="blModal" onclick="if(event.target===this)closeBLM()">
+      <div class="mbox">
+        <button
+          class="btn-ic"
+          style="position: absolute; top: 14px; right: 14px"
+          onclick="closeBLM()"
+        >
+          <span class="ms">close</span>
+        </button>
+        <div
+          style="
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            font-family: 'Manrope', sans-serif;
+          "
+        >
+          Blacklist Participant
+        </div>
+        <div
+          style="font-size: 11px; color: var(--text3); margin-bottom: 12px"
+          id="blName"
+        ></div>
+        <label
+          style="
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text3);
+            display: block;
+            margin-bottom: 4px;
+          "
+          >Reason</label
+        >
+        <input
+          type="text"
+          id="blReason"
+          class="inp"
+          placeholder="e.g. Registered twice…"
+          style="margin-bottom: 12px"
+        />
+        <div style="display: flex; gap: 8px">
+          <button
+            class="btn-g"
+            style="flex: 1; justify-content: center"
+            onclick="closeBLM()"
+          >
+            Cancel</button
+          ><button
+            class="btn-d"
+            style="flex: 1; justify-content: center"
+            onclick="confirmBL()"
+          >
+            Blacklist
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal"
+      id="proxyModal"
+      onclick="if(event.target===this)closeProxy()"
+    >
+      <div class="mbox">
+        <button
+          class="btn-ic"
+          style="position: absolute; top: 14px; right: 14px"
+          onclick="closeProxy()"
+        >
+          <span class="ms">close</span>
+        </button>
+        <div
+          style="
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            font-family: 'Manrope', sans-serif;
+          "
+        >
+          Proxy Pickup
+        </div>
+        <div
+          style="font-size: 11px; color: var(--text3); margin-bottom: 12px"
+          id="proxyFor"
+        ></div>
+        <input
+          type="text"
+          id="proxyName"
+          class="inp"
+          placeholder="Who is collecting on their behalf?"
+          style="margin-bottom: 12px"
+        />
+        <div style="display: flex; gap: 8px">
+          <button
+            class="btn-g"
+            style="flex: 1; justify-content: center"
+            onclick="closeProxy()"
+          >
+            Cancel</button
+          ><button
+            class="btn-p"
+            style="flex: 1; justify-content: center"
+            onclick="confirmProxy()"
+          >
+            <span class="ms" style="font-size: 14px">group</span>Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal"
+      id="moreModal"
+      onclick="if(event.target===this)closeMMore()"
+    >
+      <div class="mbox" style="max-width: 300px">
+        <button
+          class="btn-ic"
+          style="position: absolute; top: 14px; right: 14px"
+          onclick="closeMMore()"
+        >
+          <span class="ms">close</span>
+        </button>
+        <div
+          style="
+            font-size: 13px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            font-family: 'Manrope', sans-serif;
+          "
+        >
+          More
+        </div>
+        <div
+          style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px"
+          id="moreGrid"
+        ></div>
+      </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <!-- FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script>
+      // Apply CONFIG
+      document.title = CONFIG.appName;
+      document.documentElement.style.setProperty(
+        "--accent",
+        CONFIG.accentColor
+      );
+      document.documentElement.style.setProperty(
+        "--accent-dim",
+        CONFIG.accentDim
+      );
+      document.getElementById("loginAppName").textContent = CONFIG.appName;
+      document.getElementById("loginTagline").textContent = CONFIG.appTagline;
+      document.getElementById("sbAppName").innerHTML =
+        CONFIG.appName.slice(0, -0) || CONFIG.appName;
+      document.getElementById("sbTagline").textContent = CONFIG.appTagline;
+
+      firebase.initializeApp(CONFIG.firebase);
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+      const ST = firebase.firestore.FieldValue.serverTimestamp;
+      const INC = firebase.firestore.FieldValue.increment;
+
+      // ── STATE ──
+      let CU = null,
+        CR = null,
+        people = [],
+        BL = [],
+        pending = [],
+        anns = [],
+        staffList = [];
+      let _uP = null,
+        _uB = null,
+        _uPend = null,
+        _uChat = null,
+        _presence = null;
+      let _blTarget = null,
+        _editTarget = null,
+        _proxyTarget = null,
+        _addPriOn = false;
+      let curPage = "search",
+        _authReady = false,
+        _authTimer = null,
+        svcOn = true,
+        killOn = false,
+        regOn = true;
+
+      // ── AUTH ──
+      const showL = (id) => {
+        document
+          .querySelectorAll(".lscreen")
+          .forEach((s) => s.classList.remove("active"));
+        const el = document.getElementById(id);
+        if (el) el.classList.add("active");
+      };
+      const sErr = (id, m) => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.textContent = m;
+          el.style.display = "block";
+        }
+      };
+      const cErr = (id) => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "none";
+      };
+      const fmtE = (c) =>
+        ({
+          "auth/invalid-email": "Invalid email.",
+          "auth/user-not-found": "No account found.",
+          "auth/wrong-password": "Incorrect password.",
+          "auth/invalid-credential": "Incorrect email or password.",
+          "auth/email-already-in-use": "Email already registered.",
+          "auth/weak-password": "Min 6 characters.",
+          "auth/too-many-requests": "Too many attempts. Please wait a moment.",
+        }[c] || "Error: " + c);
+
+      auth.onAuthStateChanged(async (user) => {
+        clearTimeout(_authTimer);
+        if (!user) {
+          if (!_authReady) {
+            _authTimer = setTimeout(async () => {
+              if (!auth.currentUser && !_authReady) {
+                try {
+                  const s = await db.collection("users").limit(1).get();
+                  if (s.empty) showL("ls-setup");
+                } catch (e) {}
+              }
+            }, 2200);
+          }
+          return;
+        }
+        _authReady = true;
+        try {
+          const ud = await db.doc("users/" + user.uid).get();
+          if (!ud.exists) {
+            const ps = await db.doc("pendingStaff/" + user.uid).get();
+            if (ps.exists && ps.data().status !== "rejected") {
+              document.getElementById("pendingEmail").textContent = user.email;
+              showL("ls-pending");
+              return;
+            }
+            showL("ls-rejected");
+            return;
+          }
+          if (ud.data().status === "rejected") {
+            showL("ls-rejected");
+            return;
+          }
+          CU = { uid: user.uid, ...ud.data() };
+          CU.root = ud.data().root === true;
+          CR = CU.role === "admin" ? "admin" : "staff";
+          bootApp();
+        } catch (e) {
+          showL("ls-rejected");
+        }
+      });
+
+      async function doSignin() {
+        console.log("Sign in logic goes here");
+        const e = document.getElementById("siEmail").value.trim(),
+          p = document.getElementById("siPass").value;
+        if (!e || !p) {
+          sErr("signinErr", "Please fill all fields.");
+          return;
+        }
+        cErr("signinErr");
+        const btn = document.getElementById("signinBtn"),
+          lbl = document.getElementById("signinLbl");
+        btn.disabled = true;
+        lbl.textContent = "Signing in…";
+        try {
+          await auth.signInWithEmailAndPassword(e, p);
+        } catch (err) {
+          sErr("signinErr", fmtE(err.code));
+          btn.disabled = false;
+          lbl.textContent = "Sign In";
+        }
+      }
+      async function handleGoogle() {
+        const btn = document.getElementById("googleBtn");
+        btn.disabled = true;
+        btn.textContent = "Opening Google…";
+        cErr("signinErr");
+        try {
+          const r = await auth.signInWithPopup(
+            new firebase.auth.GoogleAuthProvider()
+          );
+          const ud = await db.doc("users/" + r.user.uid).get();
+          if (ud.exists) return;
+          const ps = await db.doc("pendingStaff/" + r.user.uid).get();
+          if (ps.exists) {
+            document.getElementById("pendingEmail").textContent = r.user.email;
+            showL("ls-pending");
+            return;
+          }
+          await db.doc("pendingStaff/" + r.user.uid).set({
+            uid: r.user.uid,
+            email: r.user.email,
+            name: r.user.displayName || r.user.email,
+            photoURL: r.user.photoURL || "",
+            requestedAt: ST(),
+            requestedAtMs: Date.now(),
+            status: "pending",
+          });
+          document.getElementById("pendingEmail").textContent = r.user.email;
+          showL("ls-pending");
+        } catch (err) {
+          if (err.code !== "auth/popup-closed-by-user")
+            sErr("signinErr", fmtE(err.code));
+          btn.disabled = false;
+          btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Continue with Google`;
+        }
+      }
+      async function doSetup() {
+        console.log("Setup logic goes here");
+        const n = document.getElementById("setupName").value.trim(),
+          e = document.getElementById("setupEmail").value.trim(),
+          p = document.getElementById("setupPass").value;
+        if (!n || !e || !p) {
+          sErr("setupErr", "Please fill all fields.");
+          return;
+        }
+        if (p.length < 6) {
+          sErr("setupErr", "Min 6 characters.");
+          return;
+        }
+        cErr("setupErr");
+        const btn = document.getElementById("setupBtn"),
+          lbl = document.getElementById("setupLbl");
+        btn.disabled = true;
+        lbl.textContent = "Creating…";
+        try {
+          const c = await auth.createUserWithEmailAndPassword(e, p);
+          await db.doc("users/" + c.user.uid).set({
+            email: e,
+            name: n,
+            role: "admin",
+            root: true,
+            createdAt: ST(),
+            createdAtMs: Date.now(),
+          });
+        } catch (err) {
+          sErr("setupErr", fmtE(err.code));
+          btn.disabled = false;
+          lbl.textContent = "Create Account";
+        }
+      }
+      async function doSignout() {
+        [_uP, _uB, _uPend, _uChat, _presence].forEach((u) => {
+          if (u) u();
+        });
+        await auth.signOut();
+        window.location.reload();
+      }
+
+      // ── BOOT DASHBOARD ──
+      function bootApp() {
+        // Show app
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("mainApp").style.display = "block";
+        // Set user UI
+        const ini = (CU.name || CU.email || "?")
+          .split(" ")
+          .map((w) => w[0])
+          .join("")
+          .toUpperCase()
+          .slice(0, 2);
+        ["sbAvatar", "topAvatar"].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = ini;
+        });
+        document.getElementById("sbUserName").textContent = CU.name || CU.email;
+        document.getElementById("sbRole").textContent = CU.root
+          ? "Root"
+          : CR === "admin"
+          ? "Admin"
+          : "Staff";
+        // Show admin-only nav
+        if (CR === "admin" || CU.root) {
+          ["navExport", "navAnnounce", "navStaff"].forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = "";
+          });
+        }
+        if (CU.root) {
+          ["navCP", "topCP"].forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = "";
+          });
+        }
+        // Start Firestore listeners
+        startListeners();
+        // Nav
+        document
+          .querySelectorAll("[data-p]")
+          .forEach((el) =>
+            el.addEventListener("click", () => swPage(el.dataset.p))
+          );
+        swPage("search");
+        setInterval(() => {
+          if (curPage === "list") renderList();
+          if (curPage === "search") doSearch();
+        }, 30000);
+      }
+
+      // ── FIRESTORE LISTENERS ──
+      function startListeners() {
+        _uP = db
+          .collection("people")
+          .orderBy("name")
+          .onSnapshot((snap) => {
+            people = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+            updS();
+            renderCurrent();
+          });
+        _uB = db.collection("blacklist").onSnapshot((snap) => {
+          BL = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+          updS();
+          renderCurrent();
+        });
+        _uPend = db.collection("pending").onSnapshot((snap) => {
+          pending = snap.docs
+            .map((d) => ({ id: d.id, ...d.data() }))
+            .filter((p) => p.status === "pending");
+          const cnt = pending.length;
+          const b = document.getElementById("pendingBadge");
+          if (b) {
+            b.textContent = cnt;
+            b.style.display = cnt ? "" : "none";
+          }
+          if (curPage === "pending") renderPending();
+        });
+        if (CR === "admin" || CU.root) {
+          db.collection("users").onSnapshot((snap) => {
+            staffList = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+            if (curPage === "staff") renderStaff();
+          });
+        }
+        db.collection("announcements")
+          .orderBy("ts", "desc")
+          .onSnapshot((snap) => {
+            anns = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+            if (curPage === "announce") renderAnns();
+          });
+        // Load reg/svc settings
+        db.doc("settings/registration")
+          .get()
+          .then((s) => {
+            if (s.exists) {
+              regOn = s.data().open !== false;
+              updateRegUI();
+            }
+          });
+        db.doc("settings/serviceMode")
+          .get()
+          .then((s) => {
+            if (s.exists) {
+              svcOn = s.data().active !== false;
+              updateSvcUI();
+            }
+          });
+        // Chat
+        startChat();
+      }
+
+      // ── UTILITIES ──
+      const esc = (s) =>
+        String(s || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      const ini = (n) => {
+        const p = (n || "?").trim().split(/\s+/);
+        return p.length === 1
+          ? p[0][0].toUpperCase()
+          : (p[0][0] + p[p.length - 1][0]).toUpperCase();
+      };
+      const ts = (ms) => {
+        if (!ms) return "";
+        const d = Math.floor((Date.now() - ms) / 1000);
+        if (d < 60) return "just now";
+        if (d < 3600) return Math.floor(d / 60) + "m ago";
+        return Math.floor(d / 3600) + "h ago";
+      };
+      const isBL = (p) => BL.some((b) => b.personId === p.id);
+      const isInc = (p) =>
+        !p.university ||
+        !p.yearOfStudy ||
+        !p.country ||
+        /^[+\d\s\-()]{5,}$/.test((p.name || "").trim());
+      const dl = (c, n, m) => {
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(new Blob([c], { type: m }));
+        a.download = n;
+        a.click();
+      };
+      function toast(msg) {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.style.opacity = "1";
+        clearTimeout(t._t);
+        t._t = setTimeout(() => (t.style.opacity = "0"), 2500);
+      }
+      function setTog(ti, thi, on) {
+        const tr = document.getElementById(ti),
+          th = document.getElementById(thi);
+        if (tr) tr.style.background = on ? "var(--accent)" : "var(--s-top)";
+        if (th) th.style.left = on ? "19px" : "2px";
+      }
+
+      // ── STATS ──
+      function updS() {
+        document.getElementById("sTotal").textContent = people.length;
+        document.getElementById("sServed").textContent = people.filter(
+          (p) => p.served
+        ).length;
+        document.getElementById("sPri").textContent = people.filter(
+          (p) => p.priority && !p.served && !isBL(p)
+        ).length;
+        document.getElementById("sInc").textContent = people.filter((p) =>
+          isInc(p)
+        ).length;
+      }
+
+      // ── PAGE NAV ──
+      const pageMeta = {
+        search: { t: "Search", s: "Find anyone instantly" },
+        list: { t: "Participants", s: "Full registry" },
+        pending: { t: "Pending", s: "Awaiting approval" },
+        incomplete: { t: "Incomplete", s: "Missing info" },
+        add: { t: "Add & Register", s: "Manage participants" },
+        export: { t: "Export", s: "Download records" },
+        blacklist: { t: "Blacklist", s: "Restricted entries" },
+        announce: { t: "Announcements", s: "Broadcast to your team" },
+        staff: { t: "Staff", s: "Team management" },
+      };
+      function swPage(name) {
+        curPage = name;
+        document
+          .querySelectorAll(".pg")
+          .forEach((p) => p.classList.remove("on"));
+        const pg = document.getElementById("pg-" + name);
+        if (pg) pg.classList.add("on");
+        const strip = document.getElementById("statsStrip");
+        if (strip)
+          strip.style.display =
+            name === "search" || name === "list" ? "grid" : "none";
+        const m = pageMeta[name] || { t: name, s: "" };
+        document.getElementById("pgTitle").textContent = m.t;
+        document.getElementById("pgSub").textContent = m.s;
+        document
+          .querySelectorAll("[data-p].ni,[data-p].bni")
+          .forEach((el) => el.classList.toggle("on", el.dataset.p === name));
+        document.getElementById("scroll").scrollTop = 0;
+        if (name === "list") renderList();
+        if (name === "pending") renderPending();
+        if (name === "incomplete") renderIncomplete();
+        if (name === "blacklist") renderBL();
+        if (name === "announce") renderAnns();
+        if (name === "staff") renderStaff();
+        if (name === "export") updExport();
+        if (name === "search")
+          setTimeout(
+            () => document.getElementById("searchInput")?.focus(),
+            100
+          );
+      }
+      function renderCurrent() {
+        if (curPage === "search") doSearch();
+        else if (curPage === "list") renderList();
+        else if (curPage === "incomplete") renderIncomplete();
+        else if (curPage === "blacklist") renderBL();
+      }
+
+      // ── PERSON CARD ──
+      function pCard(p) {
+        const bl = isBL(p),
+          inc = isInc(p);
+        const palette = ["teal", "violet", "amber", "emerald", "blue"];
+        const ci =
+          p.name.split("").reduce((a, c) => a + c.charCodeAt(0), 0) %
+          palette.length;
+        const col = bl
+          ? "red"
+          : p.served
+          ? "emerald"
+          : p.priority
+          ? "violet"
+          : palette[ci];
+        let badges = "";
+        if (bl)
+          badges +=
+            '<span class="bdg" style="background:rgba(255,77,77,0.1);color:var(--error);">Banned</span>';
+        if (p.served && !bl)
+          badges +=
+            '<span class="bdg" style="background:rgba(52,211,153,0.08);color:var(--emerald);">Served</span>';
+        if (p.priority && !bl)
+          badges +=
+            '<span class="bdg" style="background:rgba(167,139,250,0.1);color:var(--violet);">Priority</span>';
+        if (inc && !bl && !p.served)
+          badges +=
+            '<span class="bdg" style="background:rgba(245,158,11,0.1);color:var(--amber);">Incomplete</span>';
+        const sub = [
+          p.phone,
+          p.university
+            ? p.university + (p.yearOfStudy ? " Y" + p.yearOfStudy : "")
+            : "",
+          p.country,
+        ]
+          .filter(Boolean)
+          .join(" · ");
+        let extra = "";
+        if (p.served && p.proxy)
+          extra = `<div style="font-size:10px;color:var(--accent);margin-top:3px;display:flex;align-items:center;gap:3px;"><span class="ms" style="font-size:13px;">group</span>Picked up by <strong>${esc(
+            p.proxy
+          )}</strong></div>`;
+        else if (p.served)
+          extra = `<div style="font-size:10px;color:var(--emerald);margin-top:3px;">${esc(
+            p.servedAt || ""
+          )} · ${ts(p.servedAtMs)}</div>`;
+        let acts = "";
+        if (!bl) {
+          const sb = p.served
+            ? `<button class="btn-g" style="font-size:11px;padding:5px 10px;" onclick="tServed('${p.id}')"><span class="ms" style="font-size:13px;">undo</span>Undo</button>`
+            : `<button class="btn-p" style="font-size:11px;padding:5px 10px;" onclick="tServed('${p.id}')"><span class="ms" style="font-size:13px;">check_circle</span>Serve</button>`;
+          const prx = p.served
+            ? ""
+            : `<button class="btn-ic" onclick="openProxy('${p.id}')" title="Proxy pickup"><span class="ms" style="font-size:16px;">group</span></button>`;
+          acts = `<div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">${sb}${prx}<button class="btn-ic" onclick="openEdit('${
+            p.id
+          }')"><span class="ms" style="font-size:16px;">edit</span></button><button class="btn-ic" onclick="openBLM('${
+            p.id
+          }')"><span class="ms" style="font-size:16px;">block</span></button>${
+            CR === "admin" || CU.root
+              ? `<button class="btn-ic dng" onclick="delP('${p.id}')"><span class="ms" style="font-size:16px;">delete</span></button>`
+              : ""
+          }</div>`;
+        } else {
+          if (CR === "admin" || CU.root)
+            acts = `<button class="btn-g" style="font-size:11px;padding:5px 10px;" onclick="remBL('${p.id}')">Remove Ban</button>`;
+        }
+        return `<div class="card card-hover" style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;${
+          p.served && !bl ? "opacity:0.6" : ""
+        }${bl ? ";border-left:3px solid rgba(255,77,77,0.3)" : ""}">
+        <div style="display:flex;align-items:center;gap:12px;min-width:0;flex:1;">
+          <div style="width:44px;height:44px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Manrope',sans-serif;font-weight:800;font-size:13px;" class="av-${col}">${esc(
+          ini(p.name)
+        )}</div>
+          <div style="min-width:0;"><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px;"><span style="font-family:'Manrope',sans-serif;font-weight:700;font-size:15px;" class="name-${
+            col === "red" || col === "emerald" ? col : col
+          }">${esc(p.name)}</span>${badges}</div>
+          <div style="font-size:12px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(
+            sub || "No details"
+          )}</div>${extra}</div>
+        </div>${acts}</div>`;
+      }
+
+      // ── SEARCH ──
+      function doSearch() {
+        const q = (document.getElementById("searchInput")?.value || "")
+          .toLowerCase()
+          .trim();
+        const box = document.getElementById("searchRes");
+        if (!box) return;
+        if (!q) {
+          box.innerHTML =
+            '<p style="text-align:center;color:var(--text3);font-size:12px;padding:40px 0;">Start typing to search</p>';
+          return;
+        }
+        const toks = q.split(/\s+/);
+        const hits = people.filter((p) => {
+          const h = [p.name, p.phone, p.university, p.country]
+            .join(" ")
+            .toLowerCase();
+          return toks.every((t) => h.includes(t));
+        });
+        if (!hits.length) {
+          box.innerHTML = `<p style="text-align:center;color:var(--text3);font-size:12px;padding:40px 0;">No results for "${esc(
+            q
+          )}"</p>`;
+          return;
+        }
+        box.innerHTML =
+          '<div style="font-size:10px;color:var(--text3);font-weight:700;margin-bottom:6px;">' +
+          hits.length +
+          " result" +
+          (hits.length > 1 ? "s" : "") +
+          '</div><div style="display:flex;flex-direction:column;gap:6px;">' +
+          hits.map((p) => pCard(p)).join("") +
+          "</div>";
+      }
+
+      // ── LIST ──
+      function renderList() {
+        const box = document.getElementById("listBox");
+        if (!box) return;
+        const f = document.getElementById("filterSel")?.value || "all";
+        const q = (document.getElementById("listSearch")?.value || "")
+          .toLowerCase()
+          .trim();
+        let list = [...people];
+        if (f === "served") list = list.filter((p) => p.served);
+        if (f === "unserved") list = list.filter((p) => !p.served && !isBL(p));
+        if (f === "priority")
+          list = list.filter((p) => p.priority && !p.served && !isBL(p));
+        if (q) {
+          const toks = q.split(/\s+/);
+          list = list.filter((p) => {
+            const h = [p.name, p.phone, p.university].join(" ").toLowerCase();
+            return toks.every((t) => h.includes(t));
+          });
+        }
+        if (!list.length) {
+          box.innerHTML =
+            '<p style="text-align:center;color:var(--text3);font-size:12px;padding:32px 0;">No entries match</p>';
+          return;
+        }
+        box.innerHTML =
+          '<div style="font-size:10px;color:var(--text3);font-weight:700;margin-bottom:8px;">' +
+          list.length +
+          " entr" +
+          (list.length === 1 ? "y" : "ies") +
+          "</div>" +
+          list.map((p) => pCard(p)).join("");
+      }
+
+      // ── PENDING ──
+      function renderPending() {
+        const box = document.getElementById("pendingBox");
+        if (!box) return;
+        if (!pending.length) {
+          box.innerHTML =
+            '<div style="text-align:center;padding:40px 0;color:var(--text3);font-size:12px;">All caught up! 🎉</div>';
+          return;
+        }
+        box.innerHTML = pending
+          .map(
+            (p) => `<div class="card" style="padding:12px 14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+          <div><div style="font-size:13px;font-weight:700;font-family:'Manrope',sans-serif;">${esc(
+            p.name
+          )} ${
+              p.priority
+                ? '<span class="bdg" style="background:rgba(167,139,250,0.1);color:var(--violet);">Priority</span>'
+                : ""
+            }</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px;">${esc(
+            p.phone || "—"
+          )} · ${esc(p.university || "—")} · ${ts(p.submittedAtMs)}</div></div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn-p" style="font-size:11px;padding:5px 10px;" onclick="approvePend('${
+              p.id
+            }')"><span class="ms" style="font-size:13px;">check</span>Approve</button>
+            <button class="btn-d" style="font-size:11px;padding:5px 10px;" onclick="rejectPend('${
+              p.id
+            }')"><span class="ms" style="font-size:13px;">close</span>Reject</button>
+          </div>
+        </div></div>`
+          )
+          .join("");
+      }
+      async function approvePend(id) {
+        const p = pending.find((x) => x.id === id);
+        if (!p) return;
+        await db.collection("people").add({
+          name: p.name,
+          phone: p.phone || "",
+          email: p.email || "",
+          university: p.university || "",
+          yearOfStudy: p.yearOfStudy || "",
+          country: p.country || "",
+          priority: p.priority || false,
+          served: false,
+          servedAt: null,
+          servedAtMs: null,
+          proxy: null,
+          addedBy: "pending-approval",
+          createdAt: ST(),
+        });
+        await db
+          .doc("pending/" + id)
+          .update({ status: "approved", approvedAt: ST() });
+        toast("✅ " + p.name + " approved");
+      }
+      async function rejectPend(id) {
+        const p = pending.find((x) => x.id === id);
+        if (!p || !confirm("Reject " + p.name + "?")) return;
+        await db.doc("pending/" + id).update({ status: "rejected" });
+        toast("✕ Rejected");
+      }
+
+      // ── INCOMPLETE ──
+      function renderIncomplete() {
+        const box = document.getElementById("incompleteBox");
+        if (!box) return;
+        const inc = people.filter((p) => isInc(p));
+        if (!inc.length) {
+          box.innerHTML =
+            '<div style="text-align:center;padding:40px 0;color:var(--text3);font-size:12px;">All profiles complete! ✅</div>';
+          return;
+        }
+        box.innerHTML = inc
+          .map(
+            (
+              p
+            ) => `<div class="card card-hover" style="padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:700;font-family:'Manrope',sans-serif;">${esc(
+          p.name
+        )}</div><div style="font-size:10px;color:var(--text3);">${esc(
+              p.phone
+            )}</div></div>
+        <button class="btn-g" style="font-size:11px;padding:5px 10px;" onclick="openEdit('${
+          p.id
+        }')"><span class="ms" style="font-size:13px;">edit</span>Fix</button>
+      </div>`
+          )
+          .join("");
+      }
+
+      // ── BLACKLIST ──
+      function renderBL() {
+        const box = document.getElementById("blBox");
+        if (!box) return;
+        if (!BL.length) {
+          box.innerHTML =
+            '<div style="text-align:center;padding:40px 0;color:var(--text3);font-size:12px;">Blacklist is empty 🛡️</div>';
+          return;
+        }
+        box.innerHTML = BL.map(
+          (
+            b
+          ) => `<div class="card" style="padding:11px 14px;border-left:3px solid rgba(255,77,77,0.3);">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+          <div><div style="font-size:13px;font-weight:700;color:var(--error);font-family:'Manrope',sans-serif;">${esc(
+            b.name || "Unknown"
+          )}</div>
+          <div style="font-size:10px;color:var(--text3);">${esc(
+            b.phone || "—"
+          )} · Added ${ts(b.addedAtMs)}</div>
+          ${
+            b.reason
+              ? `<div style="font-size:10px;color:var(--text3);font-style:italic;">"${esc(
+                  b.reason
+                )}"</div>`
+              : ""
+          }</div>
+          ${
+            CR === "admin" || CU.root
+              ? `<button class="btn-g" style="font-size:11px;padding:5px 10px;" onclick="remBLD('${b.id}')">Remove Ban</button>`
+              : ""
+          }
+        </div></div>`
+        ).join("");
+      }
+
+      // ── ANNOUNCEMENTS ──
+      function renderAnns() {
+        const box = document.getElementById("annBox");
+        if (!box) return;
+        if (!anns.length) {
+          box.innerHTML =
+            '<p style="text-align:center;color:var(--text3);font-size:12px;padding:20px 0;">No announcements yet</p>';
+          return;
+        }
+        box.innerHTML = anns
+          .map(
+            (
+              a
+            ) => `<div class="card" style="padding:11px 14px;display:flex;gap:10px;">
+        <span style="font-size:18px;flex-shrink:0;margin-top:1px;">📢</span>
+        <div style="flex:1;min-width:0;"><div style="font-size:12px;color:var(--text2);line-height:1.5;">${esc(
+          a.text
+        )}</div><div style="font-size:10px;color:var(--text3);margin-top:4px;">${ts(
+              a.ts
+            )}</div></div>
+        ${
+          CR === "admin" || CU.root
+            ? `<button class="btn-ic" onclick="delAnn('${a.id}')"><span class="ms" style="font-size:15px;">delete</span></button>`
+            : ""
+        }
+      </div>`
+          )
+          .join("");
+      }
+      async function postAnn() {
+        const t = document.getElementById("annText")?.value.trim();
+        if (!t) return;
+        await db.collection("announcements").add({
+          text: t,
+          ts: Date.now(),
+          postedBy: CU.email,
+          createdAt: ST(),
+        });
+        document.getElementById("annText").value = "";
+        toast("📢 Posted");
+      }
+      async function delAnn(id) {
+        await db.doc("announcements/" + id).delete();
+        toast("🗑 Deleted");
+      }
+
+      // ── STAFF ──
+      function renderStaff() {
+        const box = document.getElementById("staffBox");
+        if (!box) return;
+        const others = staffList.filter(
+          (u) => u.id !== CU.uid && u.root !== true
+        );
+        if (!others.length) {
+          box.innerHTML =
+            '<div style="text-align:center;padding:20px 0;color:var(--text3);font-size:12px;">No staff yet</div>';
+          return;
+        }
+        box.innerHTML = others
+          .map(
+            (
+              s
+            ) => `<div class="card card-hover" style="padding:11px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;">
+        <div style="display:flex;align-items:center;gap:9px;">
+          <div style="width:30px;height:30px;border-radius:8px;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-family:'Manrope',sans-serif;font-weight:800;font-size:10px;color:var(--accent);flex-shrink:0;">${esc(
+            ini(s.name || s.email)
+          )}</div>
+          <div><div style="font-size:12px;font-weight:700;">${esc(
+            s.name || s.email
+          )}</div><div style="font-size:10px;color:var(--text3);">${esc(
+              s.email
+            )} · <span style="color:var(--accent);font-weight:700;">${
+              s.role === "admin" ? "Admin" : "Staff"
+            }</span></div></div>
+        </div>
+        ${
+          CU.root
+            ? `<button class="btn-ic dng" onclick="rmStaff('${s.id}','${esc(
+                s.name || s.email
+              )}')"><span class="ms" style="font-size:16px;">person_remove</span></button>`
+            : ""
+        }</div>`
+          )
+          .join("");
+      }
+      async function addStaff() {
+        const n = document.getElementById("sName")?.value.trim(),
+          e = document.getElementById("sEmail")?.value.trim(),
+          p = document.getElementById("sPass")?.value;
+        if (!n || !e || !p) {
+          sErr("addStaffErr", "Name, email and password required.");
+          return;
+        }
+        if (p.length < 6) {
+          sErr("addStaffErr", "Password must be at least 6 characters.");
+          return;
+        }
+        const btn = document.querySelector('[onclick="addStaff()"]');
+        if (btn) btn.disabled = true;
+        try {
+          const sa = firebase.initializeApp(CONFIG.firebase, "s_" + Date.now());
+          const sa2 = firebase.auth(sa);
+          const c = await sa2.createUserWithEmailAndPassword(e, p);
+          await db.doc("users/" + c.user.uid).set({
+            email: e,
+            name: n,
+            role: "staff",
+            createdAt: ST(),
+            createdBy: CU.email,
+          });
+          await sa2.signOut();
+          document.getElementById("sName").value = "";
+          document.getElementById("sEmail").value = "";
+          document.getElementById("sPass").value = "";
+          toast("✅ " + n + " added");
+        } catch (err) {
+          sErr("addStaffErr", fmtE(err.code));
+        }
+        if (btn) btn.disabled = false;
+      }
+      async function rmStaff(id, name) {
+        if (!confirm("Remove " + name + "?")) return;
+        await db.doc("users/" + id).delete();
+        toast("🗑 Removed");
+      }
+
+      // ── CORE ACTIONS ──
+      async function tServed(id) {
+        const p = people.find((x) => x.id === id);
+        if (!p) return;
+        if (isBL(p)) {
+          toast("🚫 Blacklisted — cannot serve");
+          return;
+        }
+        const ms = Date.now(),
+          str = new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+        await db.doc("people/" + id).update({
+          served: !p.served,
+          servedAt: !p.served ? str : null,
+          servedAtMs: !p.served ? ms : null,
+          servedBy: !p.served ? CU.email : null,
+          proxy: null,
+        });
+        toast(
+          !p.served ? "✅ " + p.name + " served" : "↩ " + p.name + " un-served"
+        );
+      }
+      async function delP(id) {
+        const p = people.find((x) => x.id === id);
+        if (!p || !confirm("Remove " + p.name + "?")) return;
+        await db.doc("people/" + id).delete();
+        toast("🗑 Removed");
+      }
+
+      function openProxy(id) {
+        const p = people.find((x) => x.id === id);
+        if (!p) return;
+        _proxyTarget = id;
+        document.getElementById("proxyFor").textContent =
+          "Collecting on behalf of " + p.name;
+        document.getElementById("proxyName").value = "";
+        document.getElementById("proxyModal").classList.add("open");
+      }
+      function closeProxy() {
+        document.getElementById("proxyModal").classList.remove("open");
+        _proxyTarget = null;
+      }
+      async function confirmProxy() {
+        const p = people.find((x) => x.id === _proxyTarget);
+        if (!p) return;
+        const who = document.getElementById("proxyName").value.trim();
+        if (!who) {
+          toast("⚠️ Enter name");
+          return;
+        }
+        const ms = Date.now(),
+          str = new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+        await db.doc("people/" + _proxyTarget).update({
+          served: true,
+          proxy: who,
+          servedAt: str,
+          servedAtMs: ms,
+          servedBy: CU.email,
+        });
+        closeProxy();
+        toast("👥 " + p.name + " served via " + who);
+      }
+
+      function openBLM(id) {
+        const p = people.find((x) => x.id === id);
+        if (!p) return;
+        _blTarget = id;
+        document.getElementById("blName").textContent =
+          p.name + " · " + p.phone;
+        document.getElementById("blReason").value = "";
+        document.getElementById("blModal").classList.add("open");
+      }
+      function closeBLM() {
+        document.getElementById("blModal").classList.remove("open");
+        _blTarget = null;
+      }
+      async function confirmBL() {
+        const p = people.find((x) => x.id === _blTarget);
+        if (!p) return;
+        await db.collection("blacklist").add({
+          personId: p.id,
+          name: p.name,
+          phone: p.phone || "",
+          reason: document.getElementById("blReason").value.trim(),
+          addedBy: CU.email,
+          addedAtMs: Date.now(),
+          addedAt: ST(),
+        });
+        closeBLM();
+        toast("🚫 " + p.name + " blacklisted");
+      }
+      async function remBL(personId) {
+        const e = BL.find((b) => b.personId === personId);
+        if (e) await db.doc("blacklist/" + e.id).delete();
+        toast("✓ Removed from blacklist");
+      }
+      async function remBLD(id) {
+        if (!confirm("Remove from blacklist?")) return;
+        await db.doc("blacklist/" + id).delete();
+        toast("✓ Removed");
+      }
+
+      function openEdit(id) {
+        const p = people.find((x) => x.id === id);
+        if (!p) return;
+        _editTarget = id;
+        document.getElementById("editBody").innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+          <div><label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px;">Name *</label><input id="eN" class="inp" value="${esc(
+            p.name
+          )}"/></div>
+          <div><label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px;">Phone</label><input id="eP" class="inp" type="tel" value="${esc(
+            p.phone || ""
+          )}"/></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+          <div><label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px;">University</label><input id="eU" class="inp" value="${esc(
+            p.university || ""
+          )}"/></div>
+          <div><label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px;">Country</label><input id="eC" class="inp" value="${esc(
+            p.country || ""
+          )}"/></div>
+        </div>
+        <div style="margin-bottom:8px;"><label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px;">Email</label><input id="eE" class="inp" type="email" value="${esc(
+          p.email || ""
+        )}"/></div>
+        <div class="card" style="padding:9px 12px;display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer;" onclick="document.getElementById('ePri').click()">
+          <input type="checkbox" id="ePri" ${
+            p.priority ? "checked" : ""
+          } style="width:14px;height:14px;accent-color:var(--violet);"/>
+          <label for="ePri" style="font-size:12px;font-weight:700;cursor:pointer;">Priority Entry</label>
+        </div>
+        <div style="display:flex;gap:8px;"><button class="btn-g" style="flex:1;justify-content:center;" onclick="closeEdit()">Cancel</button><button class="btn-p" style="flex:1;justify-content:center;" onclick="applyEdit('${id}')"><span class="ms" style="font-size:14px;">save</span>Save</button></div>`;
+        document.getElementById("editModal").classList.add("open");
+      }
+      function closeEdit() {
+        document.getElementById("editModal").classList.remove("open");
+        _editTarget = null;
+      }
+      async function applyEdit(id) {
+        const p = people.find((x) => x.id === id);
+        if (!p) return;
+        await db.doc("people/" + id).update({
+          name: document.getElementById("eN").value.trim() || p.name,
+          phone: document.getElementById("eP").value.trim() || p.phone,
+          university: document.getElementById("eU").value.trim(),
+          country: document.getElementById("eC").value.trim(),
+          email: document.getElementById("eE").value.trim(),
+          priority: document.getElementById("ePri").checked,
+        });
+        closeEdit();
+        toast("✅ Saved");
+      }
+
+      // ── ADD ──
+      function updAddPri() {
+        setTog("addPriTrack", "addPriThumb", _addPriOn);
+      }
+      function clearAdd() {
+        ["addName", "addPhone", "addUni", "addCountry"].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.value = "";
+        });
+        const y = document.getElementById("addYear");
+        if (y) y.value = "";
+        _addPriOn = false;
+        updAddPri();
+      }
+      async function submitAdd() {
+        const n = document.getElementById("addName")?.value.trim(),
+          ph = document.getElementById("addPhone")?.value.trim();
+        if (!n || !ph) {
+          toast("⚠️ Name and phone required");
+          return;
+        }
+        await db.collection("people").add({
+          name: n,
+          phone: ph,
+          email: "",
+          university: document.getElementById("addUni")?.value.trim() || "",
+          yearOfStudy: document.getElementById("addYear")?.value || "",
+          country: document.getElementById("addCountry")?.value.trim() || "",
+          priority: _addPriOn,
+          served: false,
+          servedAt: null,
+          servedAtMs: null,
+          proxy: null,
+          addedBy: CU.email,
+          createdAt: ST(),
+        });
+        clearAdd();
+        toast("✅ " + n + " added");
+      }
+      async function submitBulk() {
+        const lines = (document.getElementById("bulkText")?.value || "")
+          .split("\n")
+          .map((l) => l.trim())
+          .filter(Boolean);
+        let added = 0;
+        for (const line of lines) {
+          const parts = line.split(",").map((s) => s.trim());
+          const n = parts[0],
+            ph = parts[1];
+          if (n && ph) {
+            await db.collection("people").add({
+              name: n,
+              phone: ph,
+              email: "",
+              university: "",
+              yearOfStudy: "",
+              country: "",
+              priority: false,
+              served: false,
+              servedAt: null,
+              servedAtMs: null,
+              proxy: null,
+              addedBy: CU.email,
+              createdAt: ST(),
+            });
+            added++;
+          }
+        }
+        document.getElementById("bulkText").value = "";
+        toast("✅ " + added + " imported");
+      }
+
+      // ── EXPORT ──
+      function updExport() {
+        document.getElementById("expAll").textContent =
+          people.length + " records";
+        document.getElementById("expServed").textContent =
+          people.filter((p) => p.served).length + " records";
+        document.getElementById("expPend").textContent =
+          people.filter((p) => !p.served).length + " records";
+        document.getElementById("expBL").textContent = BL.length + " records";
+      }
+      function getData(sc) {
+        if (sc === "served") return people.filter((p) => p.served);
+        if (sc === "unserved") return people.filter((p) => !p.served);
+        if (sc === "bl") return BL;
+        return people;
+      }
+      function expCSV(sc) {
+        const d = getData(sc);
+        const h =
+          "Name,Phone,University,Year,Country,Priority,Served,ServedAt,Proxy";
+        const rows = d.map((p) =>
+          [
+            p.name,
+            p.phone,
+            p.university,
+            p.yearOfStudy,
+            p.country,
+            p.priority ? "Yes" : "No",
+            p.served ? "Yes" : "No",
+            p.servedAt || "",
+            p.proxy || "",
+          ].join(",")
+        );
+        dl(
+          "\uFEFF" + h + "\n" + rows.join("\n"),
+          "aurora-" + sc + ".csv",
+          "text/csv"
+        );
+        toast("📊 CSV downloaded");
+      }
+      function expJSON(sc) {
+        dl(
+          JSON.stringify(
+            {
+              exported: new Date().toISOString(),
+              scope: sc,
+              data: getData(sc),
+            },
+            null,
+            2
+          ),
+          "aurora-" + sc + ".json",
+          "application/json"
+        );
+        toast("💾 JSON downloaded");
+      }
+      function expTXT(sc) {
+        const lines = getData(sc).map(
+          (p) =>
+            p.name +
+            " | " +
+            (p.phone || "") +
+            (p.served
+              ? " | Served " + p.servedAt + (p.proxy ? " via " + p.proxy : "")
+              : " | Pending")
+        );
+        dl(lines.join("\n"), "aurora-" + sc + ".txt", "text/plain");
+        toast("📄 TXT downloaded");
+      }
+
+      // ── REGISTRATION / SERVICE TOGGLES ──
+      let _regOn = true,
+        _svcOn = true,
+        _killOn = false;
+      function updateRegUI() {
+        setTog("regTrack", "regThumb", _regOn);
+        document.getElementById("regLabel").textContent = _regOn
+          ? "Registration Open"
+          : "Registration Closed";
+        document.getElementById("regSub").textContent = _regOn
+          ? "Public form is accessible"
+          : "Registration is closed";
+      }
+      async function toggleReg() {
+        _regOn = !_regOn;
+        await db
+          .doc("settings/registration")
+          .set({ open: _regOn, updatedAt: ST(), updatedBy: CU.email });
+        updateRegUI();
+        toast(_regOn ? "🔓 Registration opened" : "🔒 Registration closed");
+      }
+      function updateSvcUI() {
+        setTog("cpSvcTrk", "cpSvcThb", _svcOn);
+        document.getElementById("cpSvcLbl").textContent = _svcOn
+          ? "Service Active"
+          : "Service Paused";
+        document.getElementById("cpSvcSub").textContent = _svcOn
+          ? "Public pages are accessible"
+          : "Public pages are disabled";
+      }
+      async function toggleSvc() {
+        _svcOn = !_svcOn;
+        await db
+          .doc("settings/serviceMode")
+          .set({ active: _svcOn, updatedAt: ST(), updatedBy: CU.email });
+        updateSvcUI();
+        toast(_svcOn ? "✅ Service resumed" : "🔴 Service paused");
+      }
+      async function toggleKill() {
+        _killOn = !_killOn;
+        const kt = document.getElementById("killTrk"),
+          kth = document.getElementById("killThb");
+        if (kt) kt.style.background = _killOn ? "var(--error)" : "var(--s-top)";
+        if (kth) kth.style.left = _killOn ? "19px" : "2px";
+        toast(_killOn ? "🔴 Killswitch ACTIVE" : "✅ Killswitch off");
+      }
+      async function confirmReset() {
+        if (!confirm("Reset all served statuses?")) return;
+        const batch = db.batch();
+        people.forEach((p) =>
+          batch.update(db.doc("people/" + p.id), {
+            served: false,
+            servedAt: null,
+            servedAtMs: null,
+            proxy: null,
+          })
+        );
+        await batch.commit();
+        toast("✅ Session reset");
+        closeCP();
+      }
+
+      // ── SUMMARY ──
+      function openSummary() {
+        const tot = people.length,
+          srv = people.filter((p) => p.served).length,
+          pri = people.filter((p) => p.priority).length,
+          priS = people.filter((p) => p.priority && p.served).length,
+          prx = people.filter((p) => p.proxy).length,
+          pct = tot > 0 ? Math.round((srv / tot) * 100) : 0;
+        document.getElementById("summBox").innerHTML = `
+        <button class="btn-ic" style="position:absolute;top:14px;right:14px;" onclick="closeSumm()"><span class="ms">close</span></button>
+        <div style="font-family:'Manrope',sans-serif;font-size:16px;font-weight:800;margin-bottom:4px;">📊 Distribution Summary</div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:16px;">${new Date().toLocaleDateString(
+          [],
+          { weekday: "long", month: "long", day: "numeric" }
+        )}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+          <div class="stat"><div style="font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase;margin-bottom:4px;">Total</div><div style="font-size:24px;font-weight:900;font-family:'Manrope',sans-serif;">${tot}</div></div>
+          <div class="stat"><div style="font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase;margin-bottom:4px;">Served</div><div style="font-size:24px;font-weight:900;color:var(--emerald);font-family:'Manrope',sans-serif;">${srv}</div></div>
+          <div class="stat"><div style="font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase;margin-bottom:4px;">Remaining</div><div style="font-size:24px;font-weight:900;color:var(--amber);font-family:'Manrope',sans-serif;">${
+            tot - srv
+          }</div></div>
+          <div class="stat"><div style="font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase;margin-bottom:4px;">Priority waiting</div><div style="font-size:24px;font-weight:900;color:var(--violet);font-family:'Manrope',sans-serif;">${Math.max(
+            0,
+            pri - priS
+          )}</div></div>
+        </div>
+        ${
+          prx > 0
+            ? `<div style="font-size:11px;color:var(--accent);margin-bottom:8px;">👥 ${prx} served via proxy</div>`
+            : ""
+        }
+        <div style="display:flex;justify-content:space-between;font-size:10px;font-weight:700;color:var(--text3);margin-bottom:4px;"><span>Progress</span><span style="color:var(--text);">${pct}%</span></div>
+        <div class="pbar" style="margin-bottom:12px;"><div class="pfill" style="width:${pct}%;"></div></div>
+        <div style="background:var(--accent-dim);border-radius:10px;padding:11px 14px;font-size:11px;color:var(--text2);line-height:1.5;border-left:3px solid var(--accent);margin-bottom:12px;">${
+          Math.max(0, pri - priS) > 0
+            ? "⚠️ " +
+              (pri - priS) +
+              " priority participant" +
+              (pri - priS > 1 ? "s" : "") +
+              " still waiting."
+            : "✅ All priority participants have been served!"
+        }</div>
+        <button class="btn-g" style="width:100%;justify-content:center;" onclick="expCSV('all')"><span class="ms" style="font-size:14px;">download</span>Export Report</button>`;
+        document.getElementById("summModal").classList.add("open");
+      }
+      function closeSumm() {
+        document.getElementById("summModal").classList.remove("open");
+      }
+
+      // ── PANELS ──
+      function openChat() {
+        document.getElementById("chatPanel").classList.add("open");
+        document.getElementById("chatOv").classList.add("open");
+        setTimeout(() => document.getElementById("chatIn")?.focus(), 300);
+      }
+      function closeChat() {
+        document.getElementById("chatPanel").classList.remove("open");
+        document.getElementById("chatOv").classList.remove("open");
+      }
+      function openCP() {
+        document.getElementById("cpPanel").classList.add("open");
+        document.getElementById("cpOv").classList.add("open");
+      }
+      function closeCP() {
+        document.getElementById("cpPanel").classList.remove("open");
+        document.getElementById("cpOv").classList.remove("open");
+      }
+
+      // ── CHAT ──
+      let _chatUnsub = null,
+        _presInterval = null;
+      const PTTL = 45000;
+      function startChat() {
+        if (!CU) return;
+        _chatUnsub = db
+          .collection("chat")
+          .orderBy("sentAtMs")
+          .limitToLast(60)
+          .onSnapshot((snap) => {
+            const msgs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+            const box = document.getElementById("chatMsgs");
+            if (!box) return;
+            if (!msgs.length) {
+              box.innerHTML =
+                '<p style="text-align:center;color:var(--text3);font-size:12px;padding:20px 0;">No messages yet. Say hi! 👋</p>';
+              return;
+            }
+            box.innerHTML = msgs
+              .map((m) => {
+                const mine = m.senderUid === CU.uid;
+                const d = new Date(m.sentAtMs || 0);
+                return `<div style="max-width:85%;padding:9px 13px;border-radius:${
+                  mine ? "13px 13px 3px 13px" : "13px 13px 13px 3px"
+                };font-size:12px;line-height:1.4;word-break:break-word;align-self:${
+                  mine ? "flex-end" : "flex-start"
+                };background:${
+                  mine ? "rgba(45,212,191,0.1)" : "var(--s-hi)"
+                };border:1px solid ${
+                  mine ? "rgba(45,212,191,0.12)" : "rgba(255,255,255,0.05)"
+                };">
+            ${
+              !mine
+                ? `<div style="font-size:9px;font-weight:700;color:var(--violet);margin-bottom:3px;">${esc(
+                    m.senderName || "?"
+                  )}</div>`
+                : ""
+            }
+            ${esc(
+              m.text
+            )}<div style="font-size:9px;color:var(--text3);margin-top:3px;text-align:right;">${d.toLocaleTimeString(
+                  [],
+                  { hour: "2-digit", minute: "2-digit" }
+                )}</div>
+          </div>`;
+              })
+              .join("");
+            box.scrollTop = box.scrollHeight;
+          });
+        db.collection("presence").onSnapshot((snap) => {
+          const now = Date.now();
+          const online = snap.docs
+            .map((d) => ({ id: d.id, ...d.data() }))
+            .filter((u) => now - (u.lastSeenMs || 0) < PTTL);
+          const box = document.getElementById("chatOnline");
+          if (!box) return;
+          if (!online.length) {
+            box.innerHTML =
+              '<span style="font-size:10px;color:var(--text3);">No one online</span>';
+            return;
+          }
+          box.innerHTML = online
+            .map(
+              (u) =>
+                `<div style="display:flex;align-items:center;gap:4px;background:var(--s-hi);border:1px solid rgba(255,255,255,0.05);border-radius:20px;padding:3px 9px;font-size:10px;font-weight:600;"><span style="width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;"></span>${esc(
+                  u.name?.split(" ")[0] || "?"
+                )}</div>`
+            )
+            .join("");
+        });
+        const upPres = () =>
+          db.doc("presence/" + CU.uid).set({
+            name: CU.name || CU.email,
+            role: CR,
+            lastSeenMs: Date.now(),
+          });
+        upPres();
+        _presInterval = setInterval(upPres, 30000);
+      }
+      async function sendMsg() {
+        const i = document.getElementById("chatIn"),
+          t = i?.value.trim();
+        if (!t) return;
+        i.value = "";
+        await db.collection("chat").add({
+          text: t,
+          senderName: CU.name || CU.email,
+          senderUid: CU.uid,
+          sentAtMs: Date.now(),
+          sentAt: ST(),
+        });
+      }
+
+      // ── MOBILE MORE ──
+      function openMMore() {
+        const pages = [
+          { p: "incomplete", emoji: "⚠️", lbl: "Incomplete" },
+          { p: "export", emoji: "📤", lbl: "Export" },
+          { p: "blacklist", emoji: "🚫", lbl: "Blacklist" },
+          { p: "announce", emoji: "📢", lbl: "Announce" },
+          { p: "staff", emoji: "👥", lbl: "Staff" },
+        ];
+        document.getElementById("moreGrid").innerHTML = pages
+          .map(
+            (x) =>
+              `<button class="card" style="padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:5px;border:none;cursor:pointer;" onclick="swPage('${x.p}');closeMMore()"><span style="font-size:20px;">${x.emoji}</span><span style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;">${x.lbl}</span></button>`
+          )
+          .join("");
+        document.getElementById("moreModal").classList.add("open");
+      }
+      function closeMMore() {
+        document.getElementById("moreModal").classList.remove("open");
+      }
+
+      // ── i18n ──
+      const LANG = {
+        en: {
+          stat_total: "Total",
+          stat_served: "Served",
+          stat_priority: "Priority",
+          stat_incomplete: "Incomplete",
+          search_prompt: "Start typing to search",
+          nav_search: "Search",
+          nav_list: "Participant List",
+          nav_pending: "Pending",
+          nav_incomplete: "Incomplete",
+          nav_add: "Add & Register",
+          nav_export: "Export",
+          nav_blacklist: "Blacklist",
+          nav_announce: "Announcements",
+          nav_staff: "Staff",
+          nav_summary: "Summary",
+          nav_chat: "Team Chat",
+          nav_cp: "Control Panel",
+          sec_ops: "Operations",
+          sec_mgmt: "Management",
+          sec_intel: "Intelligence",
+        },
+        fr: {
+          stat_total: "Total",
+          stat_served: "Servis",
+          stat_priority: "Priorité",
+          stat_incomplete: "Incomplet",
+          search_prompt: "Commencez à taper pour chercher",
+          nav_search: "Recherche",
+          nav_list: "Liste des participants",
+          nav_pending: "En attente",
+          nav_incomplete: "Incomplet",
+          nav_add: "Ajouter",
+          nav_export: "Exporter",
+          nav_blacklist: "Liste noire",
+          nav_announce: "Annonces",
+          nav_staff: "Équipe",
+          nav_summary: "Résumé",
+          nav_chat: "Chat équipe",
+          nav_cp: "Panneau de contrôle",
+          sec_ops: "Opérations",
+          sec_mgmt: "Gestion",
+          sec_intel: "Analyse",
+        },
+        ar: {
+          stat_total: "الإجمالي",
+          stat_served: "تم التقديم",
+          stat_priority: "أولوية",
+          stat_incomplete: "غير مكتمل",
+          search_prompt: "ابدأ الكتابة للبحث",
+          nav_search: "بحث",
+          nav_list: "قائمة المشاركين",
+          nav_pending: "قيد الانتظار",
+          nav_incomplete: "غير مكتمل",
+          nav_add: "إضافة",
+          nav_export: "تصدير",
+          nav_blacklist: "القائمة السوداء",
+          nav_announce: "الإعلانات",
+          nav_staff: "الفريق",
+          nav_summary: "ملخص",
+          nav_chat: "محادثة الفريق",
+          nav_cp: "لوحة التحكم",
+          sec_ops: "العمليات",
+          sec_mgmt: "الإدارة",
+          sec_intel: "التحليل",
+        },
+      };
+      let CL = "en";
+      function setLang(lang, btn) {
+        CL = lang;
+        document.documentElement.lang = lang;
+        document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+        document
+          .querySelectorAll(".lbtn")
+          .forEach((b) => b.classList.remove("on"));
+        if (btn) btn.classList.add("on");
+        const t = LANG[lang] || LANG.en;
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          const k = el.getAttribute("data-i18n");
+          if (t[k]) el.textContent = t[k];
+        });
+        // Nav items
+        const navMap = {
+          search: "nav_search",
+          list: "nav_list",
+          pending: "nav_pending",
+          incomplete: "nav_incomplete",
+          add: "nav_add",
+          export: "nav_export",
+          blacklist: "nav_blacklist",
+          announce: "nav_announce",
+          staff: "nav_staff",
+        };
+        Object.entries(navMap).forEach(([p, k]) => {
+          const el = document.querySelector(`.ni[data-p="${p}"] .ni-txt`);
+          if (el && t[k]) el.textContent = t[k];
+        });
+        // Section labels
+        document.querySelectorAll("[data-section]").forEach((el) => {
+          const k = el.getAttribute("data-section");
+          if (t[k]) el.textContent = t[k];
+        });
+      }
+
+      // ── MOBILE RESPONSIVE ──
+      function checkMobile() {
+        const el = document.getElementById("mobileLogo");
+        if (el) el.style.display = window.innerWidth < 768 ? "block" : "none";
+      }
+      window.addEventListener("resize", checkMobile);
+    </script>
+  </body>
+</html>
